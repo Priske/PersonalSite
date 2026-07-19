@@ -1,4 +1,3 @@
-using BookTracker.Api.Application;
 using Microsoft.AspNetCore.Identity;
 using PersonalSite.Api.Domain.Exceptions;
 using PersonalSite.Api.Domain.Users;

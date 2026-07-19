@@ -1,4 +1,3 @@
-using BookTracker.Api.Application;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -12,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using PersonalSite.Api.Security.Password;
 using PersonalSite.Api.Seeding;
 using PersonalSite.Api.Infrastructure.Security.Password;
+using PersonalSite.Api.Application;
 
 namespace PersonalSite.Api.Wiring;
 

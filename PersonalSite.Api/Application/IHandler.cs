@@ -1,3 +1,3 @@
-namespace BookTracker.Api.Application;
+namespace PersonalSite.Api.Application;
 
 public interface IHandler;

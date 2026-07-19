@@ -1,4 +1,3 @@
-using BookTracker.Api.Application;
 using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Domain.Actors;
 using PersonalSite.Api.Domain.Users;
