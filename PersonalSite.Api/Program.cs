@@ -1,7 +1,7 @@
 using PersonalSite.Api.Wiring;
 
 var builder = WebApplication.CreateBuilder(args);
-//builder.AddApplicationServices();
+builder.AddApplicationServices();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -12,9 +12,11 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-//app.UseBookTracker();
+app.UsePersonalSite();
 app.UseCors();
 app.Run();
 

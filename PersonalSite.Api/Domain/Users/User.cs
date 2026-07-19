@@ -9,5 +9,5 @@ public class User
     public required UserEmail Email { get; set; }
 
     public string PasswordHash { get; set; } = string.Empty;
-    //public UserRole Role { get; set; } = UserRole.Member;
+    public UserRole Role { get; set; } = UserRole.User;
 }
