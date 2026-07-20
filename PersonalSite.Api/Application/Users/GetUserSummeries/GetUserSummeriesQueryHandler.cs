@@ -14,7 +14,7 @@ public class GetUserSummeriesQueryHandler(AppDbContext dbContext) : IHandler
     private const int MinPage = 1;
     private const int MaxPageSize = 50;
 
-    public async Task<GetUserSummeriesResponse> Execute(
+    public async Task<GetUserSummariesResponse> Execute(
         Actor actor,
         GetUserSummariesRequest request)
     {
@@ -49,7 +49,7 @@ public class GetUserSummeriesQueryHandler(AppDbContext dbContext) : IHandler
             .ToListAsync();
 
         return
-            new GetUserSummeriesResponse
+            new GetUserSummariesResponse
             {
                 Items = users,
                 Page = page,

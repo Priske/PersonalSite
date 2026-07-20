@@ -15,7 +15,7 @@ public static class UserEndpoints
     {
         app.MapGet("/users", GetUserList)
             .RequireAuthorization();
-        app.MapGet("/members/{id:int}", GetUserDetails)
+        app.MapGet("/users/{id:int}", GetUserDetails)
             .RequireAuthorization();
 
         app.MapPost("/users", CreateUser);

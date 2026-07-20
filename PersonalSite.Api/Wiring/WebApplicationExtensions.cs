@@ -39,6 +39,9 @@ public static class WebApplicationExtensions
 
         }
 
+        app.UseSwagger();
+        app.UseSwaggerUI();
+
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapUserEndpoints();
