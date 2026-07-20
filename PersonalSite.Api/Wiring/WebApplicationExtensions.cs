@@ -1,6 +1,6 @@
 
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+
 using PersonalSite.Api.Domain.Users;
 using PersonalSite.Api.Endpoints.Auth;
 using PersonalSite.Api.Endpoints.Users;

@@ -1,0 +1,335 @@
+@import "../theme.css";
+
+/* --------------------------------
+   Shared authentication pages
+-------------------------------- */
+
+.login-page,
+.register-page {
+  display: grid;
+  grid-template-columns:
+    minmax(250px, var(--sidebar-width))
+    minmax(0, 1fr);
+
+  min-height: calc(100vh - 5rem);
+}
+
+/* --------------------------------
+   Intro panel
+-------------------------------- */
+
+.login-page__intro,
+.register-page__intro {
+  display: grid;
+  align-content: center;
+
+  padding: clamp(2rem, 6vw, 6rem);
+
+  background: var(--color-panel);
+}
+
+.login-page__intro h1,
+.register-page__intro h1 {
+  max-width: 8ch;
+  margin-bottom: var(--space-5);
+
+  font-size: clamp(3.25rem, 5vw, 5rem);
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+}
+
+.login-page__intro-text,
+.register-page__intro-text {
+  max-width: 28rem;
+  margin: 0;
+
+  color: var(--color-muted);
+  line-height: 1.65;
+}
+
+/* --------------------------------
+   Content panel
+-------------------------------- */
+
+.login-page__content,
+.register-page__content {
+  position: relative;
+
+  display: grid;
+  grid-template-columns:
+    minmax(5rem, 1fr)
+    minmax(0, 36rem)
+    minmax(3rem, 1fr);
+
+  align-items: center;
+
+  padding-block: clamp(2rem, 6vw, 6rem);
+
+  border-left: 3px solid var(--color-ink);
+}
+
+/* --------------------------------
+   Connector
+-------------------------------- */
+
+.login-page__connector,
+.register-page__connector {
+  position: relative;
+
+  grid-column: 1;
+  align-self: start;
+
+  width: 100%;
+  height: 1.4rem;
+
+  margin-top: clamp(5rem, 8vw, 6.5rem);
+
+  pointer-events: none;
+}
+
+.login-page__connector-line,
+.register-page__connector-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+
+  width: 100%;
+  height: 1px;
+
+  background: var(--color-ink);
+
+  transform: translateY(-50%);
+}
+
+.login-page__connector-dot,
+.register-page__connector-dot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+
+  width: 1.4rem;
+  aspect-ratio: 1;
+
+  background: var(--color-ink);
+  border-radius: 50%;
+
+  transform: translate(-50%, -50%);
+}
+
+/* --------------------------------
+   Cards
+-------------------------------- */
+
+.login-card,
+.register-card {
+  grid-column: 2;
+
+  width: 100%;
+
+  background: var(--color-paper);
+  border: 2px solid var(--color-ink);
+  box-shadow: var(--shadow-soft);
+}
+
+.login-card__header,
+.register-card__header {
+  padding: clamp(1.75rem, 4vw, 3rem);
+
+  border-bottom: var(--border-thin);
+}
+
+.login-card__header h2,
+.register-card__header h2 {
+  margin: 0;
+
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.login-card__eyebrow,
+.register-card__eyebrow {
+  display: inline-flex;
+  width: fit-content;
+
+  margin-bottom: var(--space-3);
+  padding: 0.5rem 1rem;
+
+  color: var(--color-paper);
+  background: var(--color-ink);
+  border-radius: var(--radius-pill);
+
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+/* --------------------------------
+   Forms
+-------------------------------- */
+
+.login-form,
+.register-form {
+  padding: clamp(1.75rem, 4vw, 3rem);
+}
+
+.login-form__field,
+.register-form__field {
+  display: grid;
+  gap: var(--space-2);
+
+  margin-bottom: var(--space-4);
+}
+
+.login-form__field label,
+.register-form__field label {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.login-form__field input,
+.register-form__field input {
+  width: 100%;
+  min-height: 3.5rem;
+
+  padding: 0.8rem 1rem;
+
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border: 1px solid var(--color-ink);
+  border-radius: 0;
+
+  font: inherit;
+}
+
+.login-form__field input:focus,
+.register-form__field input:focus {
+  outline: 3px solid rgb(0 0 0 / 0.18);
+  outline-offset: 2px;
+}
+
+/* --------------------------------
+   Register help text
+-------------------------------- */
+
+.register-form__help {
+  margin: 0.35rem 0 0;
+
+  color: var(--color-muted);
+
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* --------------------------------
+   Messages
+-------------------------------- */
+
+.login-form__messages,
+.register-form__messages {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.login-form__messages:empty,
+.register-form__messages:empty {
+  display: none;
+}
+
+/* --------------------------------
+   Form actions
+-------------------------------- */
+
+.login-form__actions,
+.register-form__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+
+  margin-top: var(--space-5);
+}
+
+.login-form__actions .button,
+.register-form__actions .button {
+  min-width: 9rem;
+}
+
+.register-form__actions {
+  justify-content: space-between;
+}
+
+/* --------------------------------
+   Mobile
+-------------------------------- */
+
+@media (max-width: 780px) {
+  .login-page,
+  .register-page {
+    grid-template-columns: 1fr;
+  }
+
+  .login-page__intro,
+  .register-page__intro {
+    min-height: 24rem;
+  }
+
+  .login-page__intro h1,
+  .register-page__intro h1 {
+    font-size: clamp(3rem, 14vw, 4.25rem);
+  }
+
+  .login-page__content,
+  .register-page__content {
+    display: block;
+
+    padding: var(--space-5) var(--space-3);
+
+    border-top: 3px solid var(--color-ink);
+    border-left: 0;
+  }
+
+  .login-page__connector,
+  .register-page__connector {
+    position: absolute;
+    top: 0;
+    left: var(--space-4);
+
+    width: 1rem;
+    height: 1rem;
+
+    margin-top: 0;
+  }
+
+  .login-page__connector-line,
+  .register-page__connector-line {
+    display: none;
+  }
+
+  .login-page__connector-dot,
+  .register-page__connector-dot {
+    width: 1rem;
+  }
+
+  .login-card,
+  .register-card {
+    width: 100%;
+  }
+
+  .login-form__actions,
+  .register-form__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .login-form__actions .button,
+  .register-form__actions .button {
+    width: 100%;
+  }
+}

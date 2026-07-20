@@ -1,0 +1,46 @@
+@import "../theme.css";
+
+.cv-page {
+  width: min(100%, var(--page-width));
+  min-height: 100vh;
+  margin-inline: auto;
+  background: var(--color-paper);
+  box-shadow: var(--shadow-soft);
+}
+
+.cv-layout {
+  display: grid;
+  grid-template-columns: minmax(250px, var(--sidebar-width)) 1fr;
+}
+
+.cv-sidebar {
+  position: relative;
+  padding: clamp(2rem, 5vw, 5rem);
+  background: var(--color-panel);
+}
+
+.cv-main {
+  position: relative;
+  padding: clamp(2rem, 5vw, 5rem);
+}
+
+.cv-main::before {
+  content: "";
+  position: absolute;
+  top: 8rem;
+  bottom: 4rem;
+  left: 0;
+  width: 3px;
+  background: var(--color-ink);
+  transform: translateX(-50%);
+}
+
+@media (max-width: 780px) {
+  .cv-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cv-main::before {
+    display: none;
+  }
+}

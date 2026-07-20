@@ -1,0 +1,32 @@
+@import "./theme.css";
+
+.split-layout {
+  display: grid;
+  grid-template-columns:
+    minmax(250px, var(--sidebar-width))
+    minmax(0, 1fr);
+  min-height: calc(100vh - 4.5rem);
+}
+
+.split-layout__aside {
+  position: relative;
+  padding: clamp(2rem, 5vw, 5rem);
+  background: var(--color-panel);
+}
+
+.split-layout__main {
+  position: relative;
+  padding: clamp(2rem, 5vw, 5rem);
+  border-left: 3px solid var(--color-ink);
+}
+
+@media (max-width: 780px) {
+  .split-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .split-layout__main {
+    border-top: 3px solid var(--color-ink);
+    border-left: 0;
+  }
+}

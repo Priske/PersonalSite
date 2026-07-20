@@ -1,0 +1,404 @@
+@import "../theme.css";
+
+/* -----------------------------
+   Edit account page
+----------------------------- */
+
+.edit-account-page {
+  display: grid;
+  grid-template-columns:
+    minmax(250px, var(--sidebar-width))
+    minmax(0, 1fr);
+  min-height: calc(100vh - 5rem);
+}
+
+.edit-account-page__intro {
+  display: grid;
+  align-content: center;
+  padding: clamp(2rem, 6vw, 6rem);
+  background: var(--color-panel);
+}
+
+.edit-account-page__intro h1 {
+  margin-bottom: var(--space-5);
+}
+
+.edit-account-page__intro-text {
+  max-width: 28rem;
+  margin-bottom: var(--space-5);
+  color: var(--color-muted);
+}
+
+.edit-account-page__back-link {
+  width: fit-content;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--color-ink);
+}
+
+.edit-account-page__content {
+  position: relative;
+  display: grid;
+  grid-template-columns:
+    minmax(5rem, 1fr)
+    minmax(0, 44rem)
+    minmax(3rem, 1fr);
+  align-items: center;
+  padding-block: clamp(2rem, 6vw, 6rem);
+  border-left: 3px solid var(--color-ink);
+}
+
+/* -----------------------------
+   Connector
+----------------------------- */
+
+.edit-account-page__connector {
+  position: relative;
+  grid-column: 1;
+  align-self: start;
+  width: 100%;
+  height: 1.4rem;
+  margin-top: clamp(5rem, 8vw, 6.5rem);
+  pointer-events: none;
+}
+
+.edit-account-page__connector-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--color-ink);
+  transform: translateY(-50%);
+}
+
+.edit-account-page__connector-dot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 1.4rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--color-ink);
+  transform: translate(-50%, -50%);
+}
+
+/* -----------------------------
+   Card
+----------------------------- */
+
+.edit-account-card {
+  grid-column: 2;
+  width: 100%;
+  background: var(--color-paper);
+  border: 2px solid var(--color-ink);
+  box-shadow: var(--shadow-soft);
+}
+
+.edit-account-card__header {
+  padding: clamp(1.75rem, 4vw, 3rem);
+  border-bottom: var(--border-thin);
+}
+
+.edit-account-card__header h2 {
+  margin: 0;
+  font-size: clamp(2.25rem, 5vw, 4rem);
+}
+
+.edit-account-card__eyebrow {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: var(--space-3);
+  padding: 0.5rem 1rem;
+  color: var(--color-paper);
+  background: var(--color-ink);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+/* -----------------------------
+   Form
+----------------------------- */
+
+.edit-account-form {
+  padding: clamp(1.75rem, 4vw, 3rem);
+}
+
+.edit-account-form__field {
+  display: grid;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.edit-account-form__field label {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.edit-account-form__field input {
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 0.8rem 1rem;
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border: 1px solid var(--color-ink);
+  border-radius: 0;
+  font: inherit;
+}
+
+.edit-account-form__field input:focus {
+  outline: 3px solid rgb(0 0 0 / 0.18);
+  outline-offset: 2px;
+}
+
+.edit-account-form__messages {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.edit-account-form__messages:empty {
+  display: none;
+}
+
+.edit-account-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.edit-account-form__actions .button {
+  min-width: 9rem;
+}
+
+/* -----------------------------
+   Danger zone
+----------------------------- */
+
+.edit-account-danger {
+  display: block;
+  padding: clamp(1.75rem, 4vw, 3rem);
+  border-top: 2px solid var(--color-ink);
+}
+
+.edit-account-danger > div:first-child {
+  max-width: 32rem;
+}
+
+.edit-account-danger h3 {
+  margin-bottom: var(--space-2);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.edit-account-danger p {
+  margin-bottom: 0;
+  color: var(--color-muted);
+}
+
+.edit-account-danger__eyebrow {
+  margin-bottom: var(--space-2) !important;
+  color: var(--color-ink) !important;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.edit-account-danger__action {
+  margin-top: var(--space-4);
+}
+
+.delete-user-trigger {
+  min-height: 3rem;
+  padding-inline: 1.25rem;
+  color: var(--color-paper);
+  background: var(--color-ink);
+  border: 2px solid var(--color-ink);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.delete-user-trigger:hover {
+  color: var(--color-ink);
+  background: var(--color-paper);
+}
+
+/* -----------------------------
+   Delete confirmation
+----------------------------- */
+
+.delete-user-confirmation {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  padding: clamp(1.25rem, 3vw, 2rem);
+  background: var(--color-panel);
+  border: 1px solid var(--color-ink);
+}
+
+.delete-user-confirmation__content {
+  max-width: 34rem;
+}
+
+.delete-user-confirmation__eyebrow {
+  margin-bottom: var(--space-2) !important;
+  color: var(--color-ink) !important;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.delete-user-confirmation h3 {
+  margin-bottom: var(--space-2);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  line-height: 0.95;
+}
+
+.delete-user-confirmation__description {
+  max-width: 32rem;
+  color: var(--color-muted);
+}
+
+.delete-user-confirmation__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.delete-user-confirmation__actions button {
+  min-height: 3rem;
+  padding-inline: 1.25rem;
+  border: 2px solid var(--color-ink);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.delete-user-confirmation__confirm {
+  color: var(--color-paper);
+  background: var(--color-ink);
+}
+
+.delete-user-confirmation__cancel {
+  color: var(--color-ink);
+  background: var(--color-paper);
+}
+
+.delete-user-confirmation__actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.delete-user-confirmation__messages {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.delete-user-confirmation__messages:empty {
+  display: none;
+}
+
+.delete-user-confirmation__missing {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+}
+
+/* -----------------------------
+   Loading and error states
+----------------------------- */
+
+.edit-account-status {
+  display: grid;
+  min-height: calc(100vh - 5rem);
+  place-items: center;
+  padding: var(--space-5);
+  background: var(--color-panel);
+}
+
+.edit-account-status__message {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+/* -----------------------------
+   Mobile
+----------------------------- */
+
+@media (max-width: 780px) {
+  .edit-account-page {
+    grid-template-columns: 1fr;
+  }
+
+  .edit-account-page__intro {
+    min-height: 24rem;
+  }
+
+  .edit-account-page__content {
+    display: block;
+    padding: var(--space-5) var(--space-3);
+    border-top: 3px solid var(--color-ink);
+    border-left: 0;
+  }
+
+  .edit-account-page__connector {
+    position: absolute;
+    top: 0;
+    left: var(--space-4);
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0;
+  }
+
+  .edit-account-page__connector-line {
+    display: none;
+  }
+
+  .edit-account-page__connector-dot {
+    width: 1rem;
+    transform: translate(-50%, -50%);
+  }
+
+  .edit-account-card {
+    width: 100%;
+  }
+
+  .edit-account-form__actions {
+    flex-direction: column-reverse;
+  }
+
+  .edit-account-form__actions .button {
+    width: 100%;
+  }
+
+  .delete-user-trigger,
+  .delete-user-confirmation__actions button {
+    width: 100%;
+  }
+
+  .delete-user-confirmation__actions {
+    display: grid;
+  }
+}

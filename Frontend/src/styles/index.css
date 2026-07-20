@@ -1,0 +1,10 @@
+@import "./theme.css";
+@import "./global.css";
+@import "./components.css";
+@import "./layout.css";
+
+@import "./pages/auth.css";
+@import "./pages/account.css";
+@import "./pages/cv.css";
+@import "./pages/edit-account.css";
+@import "./pages/home.css";
