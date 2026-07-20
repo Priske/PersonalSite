@@ -79,42 +79,38 @@ export function Navigation() {
 
           {loggedIn ? (
             <>
-              <li>
-                <LogoutButton className="site-nav__link site-nav__logout" />
-              </li>
+                <li>
+                    <NavLink className={navLinkClass} to="/users">
+                        Users
+                    </NavLink>
+                </li>
 
-              <li>
-                <NavLink
-                  className={accountLinkClass}
-                  to="/account"
-                >
-                  Account
-                </NavLink>
-              </li>
+                <li>
+                    <LogoutButton className="site-nav__link site-nav__logout" />
+                </li>
+
+                <li>
+                    <NavLink className={accountLinkClass} to="/account">
+                        Account
+                    </NavLink>
+                </li>
             </>
-          ) : (
+            ) : (
             <>
-              <li>
-                <NavLink
-                    className={accountLinkClass}
-                    to="/login"
-                >
-                    Log in
-                </NavLink>
-              </li>
+                <li>
+                    <NavLink className={navLinkClass} to="/login">
+                        Log in
+                    </NavLink>
+                </li>
 
-              <li>
-                <NavLink
-                    className={accountLinkClass}
-                    to="/register"
-                >
-                    Register
-                </NavLink>
-              </li>
-
+                <li>
+                    <NavLink
+                        className={accountLinkClass} to="/register">
+                            Register
+                    </NavLink>
+                </li>
             </>
-
-          )}
+            )}
         </ul>
       </nav>
     </header>

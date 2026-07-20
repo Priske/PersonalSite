@@ -8,6 +8,8 @@ import { RequireAccountAccess } from "./auth/RequireAccountAccess";
 import { EditAccountPage } from "./users/EditAccountPage";
 import { HomePage } from "./HomePage";
 import { RegisterPage } from "./users/RegisterPage";
+import { RequireAdministrator } from "./auth/RequireAdministrator";
+import { UserListPage } from "./users/UsersListPage";
 
 function App()
 {
@@ -23,7 +25,12 @@ function App()
                 <Route element={<RequireAccountAccess />}>
                   <Route path="/account" element={<AccountPage />} />
                   <Route path="/account/edit" element={<EditAccountPage />} />
-              </Route>
+                </Route>
+
+                <Route element={<RequireAdministrator />}>
+                  <Route path="/users/:memberId/edit" element={<UserListPage />} />
+                  <Route path="/users" element={<UserListPage />} />
+                </Route>
             </Routes>
         </>
     );
