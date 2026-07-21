@@ -1,7 +1,7 @@
 using PersonalSite.Api.Domain.Exceptions;
 using PersonalSite.Api.Domain.Users;
 
-namespace PersonalSite.Api.Tests.IntegrationTests.Domain;
+namespace PersonalSite.Api.Tests.Domain.Users;
 
 public class UserEmailTests
 {

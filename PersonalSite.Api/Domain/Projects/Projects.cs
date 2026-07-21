@@ -1,0 +1,20 @@
+using PersonalSite.Api.Domain.Common;
+
+namespace PersonalSite.Api.Domain.Projects;
+
+public sealed class Project
+{
+    public int Id { get; init; }
+
+    public required ProjectTitle Title { get; set; }
+
+    public required ProjectDiscription Description { get; set; }
+
+    public required Url RepositoryUrl { get; set; }
+
+    public Url? LiveUrl { get; private set; }
+
+    public bool IsFeatured { get; private set; }
+
+    public int DisplayOrder { get; private set; }
+}
