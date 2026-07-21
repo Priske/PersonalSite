@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using PersonalSite.Api.Domain.Projects;
+using PersonalSite.Api.Domain.Skills;
 using PersonalSite.Api.Domain.Users;
 using PersonalSite.Api.Infrastructure.Security.Password;
 
@@ -11,6 +13,9 @@ public sealed class AppDbContext(
     public DbSet<User> Users => Set<User>();
     public DbSet<CompromisedPasswordHash> CompromisedPasswordHashes => Set<CompromisedPasswordHash>();
 
+    public DbSet<Skill> Skills => Set<Skill>();
+    public DbSet<SkillGroup> SkillGroups => Set<SkillGroup>();
+    public DbSet<Project> Projects => Set<Project>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

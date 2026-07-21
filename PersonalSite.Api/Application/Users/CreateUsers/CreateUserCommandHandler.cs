@@ -24,7 +24,6 @@ public class CreateUserCommandHandler(
             {
                 Name = new UserName(request.Name),
                 Email = mail,
-                //Role = MemberRole.Member
             };
 
         if (string.IsNullOrWhiteSpace(request.Password))

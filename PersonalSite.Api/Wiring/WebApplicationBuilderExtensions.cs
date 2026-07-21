@@ -12,6 +12,8 @@ using PersonalSite.Api.Security.Password;
 using PersonalSite.Api.Seeding;
 using PersonalSite.Api.Infrastructure.Security.Password;
 using PersonalSite.Api.Application;
+using PersonalSite.Api.Storage.Skills;
+using PersonalSite.Api.Storage.Projects;
 
 namespace PersonalSite.Api.Wiring;
 
@@ -33,6 +35,9 @@ public static class WebApplicationBuilderExtensions
             options.UseSqlite(builder.Configuration.GetConnectionString("PersonalSite")));
 
         builder.Services.AddScoped<IUserRepository, EfUserRepository>();
+        builder.Services.AddScoped<ISkillRepository, EfSkillRepository>();
+        builder.Services.AddScoped<ISkillGroupRepository, EfSkillGroupRepository>();
+        builder.Services.AddScoped<IProjectRepository, EfProjectRepository>();
         builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
         builder.Services.AddScoped<ICompromisedPasswordChecker, DatabaseCompromisedPasswordChecker>();

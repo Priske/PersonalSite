@@ -6,7 +6,7 @@ public sealed class SkillGroup
 
     public required SkillGroupName Name { get; set; }
 
-    public int DisplayOrder { get; private set; }
+    public int DisplayOrder { get; set; }
 
     public ICollection<Skill> Skills { get; } = [];
 }

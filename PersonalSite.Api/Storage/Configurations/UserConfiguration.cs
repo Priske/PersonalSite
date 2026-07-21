@@ -26,10 +26,9 @@ public sealed class UserConfiguration
             .HasMaxLength(UserName.MaxLength)
             .IsRequired();
 
-        /*
         user.Property(u => u.Role)
             .HasConversion<string>()
             .HasMaxLength(50);
-        */
+
     }
 }

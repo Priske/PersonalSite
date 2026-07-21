@@ -12,9 +12,9 @@ public sealed class Project
 
     public required Url RepositoryUrl { get; set; }
 
-    public Url? LiveUrl { get; private set; }
+    public Url? LiveUrl { get; set; }
 
-    public bool IsFeatured { get; private set; }
+    public bool IsFeatured { get; set; }
 
-    public int DisplayOrder { get; private set; }
+    public int DisplayOrder { get; set; }
 }
