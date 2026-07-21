@@ -501,3 +501,391 @@
     max-width: 13rem;
   }
 }
+
+/* --------------------------------
+   Edit user page
+-------------------------------- */
+
+.edit-user-page {
+  display: grid;
+  grid-template-columns:
+    minmax(250px, var(--sidebar-width))
+    minmax(0, 1fr);
+
+  min-height: calc(100vh - 5rem);
+}
+
+.edit-user-page__intro {
+  display: grid;
+  align-content: center;
+
+  padding: clamp(2rem, 6vw, 6rem);
+
+  background: var(--color-panel);
+}
+
+.edit-user-page__intro h1 {
+  max-width: 8ch;
+  margin-bottom: var(--space-5);
+
+  font-size: clamp(3.25rem, 5vw, 5rem);
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+}
+
+.edit-user-page__intro-text {
+  max-width: 28rem;
+  margin: 0;
+
+  color: var(--color-muted);
+  line-height: 1.65;
+}
+
+.edit-user-page__content {
+  position: relative;
+
+  display: grid;
+  grid-template-columns:
+    minmax(5rem, 1fr)
+    minmax(0, 42rem)
+    minmax(3rem, 1fr);
+
+  align-items: center;
+
+  padding-block: clamp(2rem, 6vw, 6rem);
+
+  border-left: 3px solid var(--color-ink);
+}
+
+/* --------------------------------
+   Connector
+-------------------------------- */
+
+.edit-user-page__connector {
+  position: relative;
+
+  grid-column: 1;
+  align-self: start;
+
+  width: 100%;
+  height: 1.4rem;
+
+  margin-top: clamp(5rem, 8vw, 6.5rem);
+
+  pointer-events: none;
+}
+
+.edit-user-page__connector-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+
+  width: 100%;
+  height: 1px;
+
+  background: var(--color-ink);
+
+  transform: translateY(-50%);
+}
+
+.edit-user-page__connector-dot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+
+  width: 1.4rem;
+  aspect-ratio: 1;
+
+  background: var(--color-ink);
+  border-radius: 50%;
+
+  transform: translate(-50%, -50%);
+}
+
+/* --------------------------------
+   Edit user card
+-------------------------------- */
+
+.edit-user-card {
+  grid-column: 2;
+
+  width: 100%;
+
+  background: var(--color-paper);
+  border: 2px solid var(--color-ink);
+  box-shadow: var(--shadow-soft);
+}
+
+.edit-user-card__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+
+  padding: clamp(1.75rem, 4vw, 3rem);
+
+  border-bottom: var(--border-thin);
+}
+
+.edit-user-card__header h2 {
+  margin: 0;
+
+  overflow-wrap: anywhere;
+
+  font-size: clamp(2.25rem, 4vw, 4rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.edit-user-card__eyebrow {
+  display: inline-flex;
+  width: fit-content;
+
+  margin-bottom: var(--space-3);
+  padding: 0.5rem 1rem;
+
+  color: var(--color-paper);
+  background: var(--color-ink);
+  border-radius: var(--radius-pill);
+
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.edit-user-card__cancel {
+  flex: 0 0 auto;
+
+  color: var(--color-ink);
+
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-underline-offset: 0.35rem;
+}
+
+.edit-user-card__body {
+  padding: clamp(1.75rem, 4vw, 3rem);
+}
+
+/* --------------------------------
+   Edit form
+-------------------------------- */
+
+.edit-user-form__field {
+  display: grid;
+  gap: var(--space-2);
+
+  margin-bottom: var(--space-4);
+}
+
+.edit-user-form__field label {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.edit-user-form__field input {
+  width: 100%;
+  min-height: 3.5rem;
+
+  padding: 0.8rem 1rem;
+
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border: 1px solid var(--color-ink);
+  border-radius: 0;
+
+  font: inherit;
+}
+
+.edit-user-form__field input:focus {
+  outline: 3px solid rgb(0 0 0 / 0.18);
+  outline-offset: 2px;
+}
+
+.edit-user-form__messages {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.edit-user-form__messages:empty {
+  display: none;
+}
+
+.edit-user-form__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+
+  margin-top: var(--space-5);
+}
+
+/* --------------------------------
+   Danger zone
+-------------------------------- */
+
+.edit-user-danger {
+  display: grid;
+  gap: var(--space-4);
+
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+
+  border-top: 3px solid var(--color-ink);
+}
+
+.edit-user-danger__header h3 {
+  margin-bottom: var(--space-2);
+
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+.edit-user-danger__header p:last-child {
+  max-width: 38rem;
+  margin: 0;
+
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+.edit-user-danger__eyebrow {
+  display: inline-flex;
+  width: fit-content;
+
+  margin-bottom: var(--space-3);
+  padding: 0.45rem 0.9rem;
+
+  color: var(--color-paper);
+  background: var(--color-ink);
+  border-radius: var(--radius-pill);
+
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+/* --------------------------------
+   Error and loading pages
+-------------------------------- */
+
+.admin-message-page {
+  display: grid;
+  place-items: center;
+
+  min-height: calc(100vh - 5rem);
+  padding: var(--space-5);
+
+  background: var(--color-panel);
+}
+
+.admin-message-card {
+  width: min(100%, 36rem);
+  padding: clamp(2rem, 5vw, 4rem);
+
+  background: var(--color-paper);
+  border: 2px solid var(--color-ink);
+  box-shadow: var(--shadow-soft);
+}
+
+.admin-message-card h1 {
+  margin-bottom: var(--space-3);
+
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 0.95;
+}
+
+.admin-message-card p:not(.admin-message-card__eyebrow) {
+  margin-bottom: var(--space-5);
+
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+.admin-message-card__eyebrow {
+  display: inline-flex;
+  width: fit-content;
+
+  margin-bottom: var(--space-3);
+  padding: 0.5rem 1rem;
+
+  color: var(--color-paper);
+  background: var(--color-ink);
+  border-radius: var(--radius-pill);
+
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* --------------------------------
+   Edit user mobile
+-------------------------------- */
+
+@media (max-width: 780px) {
+  .edit-user-page {
+    grid-template-columns: 1fr;
+  }
+
+  .edit-user-page__intro {
+    min-height: 24rem;
+  }
+
+  .edit-user-page__intro h1 {
+    font-size: clamp(3rem, 14vw, 4.25rem);
+  }
+
+  .edit-user-page__content {
+    display: block;
+
+    padding: var(--space-5) var(--space-3);
+
+    border-top: 3px solid var(--color-ink);
+    border-left: 0;
+  }
+
+  .edit-user-page__connector {
+    position: absolute;
+    top: 0;
+    left: var(--space-4);
+
+    width: 1rem;
+    height: 1rem;
+
+    margin-top: 0;
+  }
+
+  .edit-user-page__connector-line {
+    display: none;
+  }
+
+  .edit-user-page__connector-dot {
+    width: 1rem;
+  }
+
+  .edit-user-card__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .edit-user-form__actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .edit-user-form__actions .button {
+    width: 100%;
+  }
+}

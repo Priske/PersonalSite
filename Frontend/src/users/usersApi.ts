@@ -16,7 +16,7 @@ export function registerUser(request: RegisterUserRequest) {
   });
 }
 
-export function getuser(userId: number) {
+export function getUser(userId: number) {
   return apiRequest<UserDetails>(`/users/${userId}`);
 }
 

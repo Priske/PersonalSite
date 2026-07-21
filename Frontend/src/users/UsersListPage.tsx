@@ -1,7 +1,4 @@
-import {
-  keepPreviousData,
-  useQuery,
-} from "@tanstack/react-query";
+import {keepPreviousData, useQuery} from "@tanstack/react-query";
 import type { FormEvent } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { getUsers } from "./usersApi";
@@ -63,9 +60,7 @@ export function UserListPage() {
       event.currentTarget,
     );
 
-    const value =
-      formData.get("search")?.toString().trim() ??
-      "";
+    const value = formData.get("search")?.toString().trim() ?? "";
 
     const next = new URLSearchParams();
 

@@ -10,6 +10,7 @@ import { HomePage } from "./HomePage";
 import { RegisterPage } from "./users/RegisterPage";
 import { RequireAdministrator } from "./auth/RequireAdministrator";
 import { UserListPage } from "./users/UsersListPage";
+import { EditUserPage } from "./users/EditUserPage";
 
 function App()
 {
@@ -28,7 +29,7 @@ function App()
                 </Route>
 
                 <Route element={<RequireAdministrator />}>
-                  <Route path="/users/:memberId/edit" element={<UserListPage />} />
+                  <Route path="/users/:userId/edit" element={<EditUserPage />} />
                   <Route path="/users" element={<UserListPage />} />
                 </Route>
             </Routes>
