@@ -18,3 +18,4 @@ export type SkillSummary = {
 export type GetSkillSummariesResponse = {
   items: SkillSummary[];
 };
+

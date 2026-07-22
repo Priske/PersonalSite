@@ -3,8 +3,10 @@ using PersonalSite.Api.Application.Skills.CreateSkillGroup;
 using PersonalSite.Api.Application.Skills.DeleteSkillgroup;
 using PersonalSite.Api.Application.Skills.GetSkillGroupDetails;
 using PersonalSite.Api.Application.Skills.GetSkillGroupSummeries;
+using PersonalSite.Api.Application.Skills.UpdateSkill;
 using PersonalSite.Api.Application.Skills.UpdateSkillGroup;
 using PersonalSite.Api.Domain.Exceptions;
+
 
 namespace PersonalSite.Api.Endpoints.Skills;
 
@@ -15,11 +17,11 @@ public static class SkillGroupEndpoints
     {
         app.MapGet(
             "/skill-groups",
-                GetSkillGroupSummaries);
+            GetSkillGroupSummaries);
 
         app.MapGet(
             "/skill-groups/{groupId:int}",
-                GetSkillGroupDetails);
+            GetSkillGroupDetails);
 
         app.MapPost(
                 "/skill-groups",
@@ -29,6 +31,11 @@ public static class SkillGroupEndpoints
         app.MapPut(
                 "/skill-groups/{groupId:int}",
                 UpdateSkillGroup)
+            .RequireAuthorization();
+
+        app.MapPut(
+                "/skill-groups/{groupId:int}/skills/order",
+                UpdateSkillOrder)
             .RequireAuthorization();
 
         app.MapDelete(
@@ -46,16 +53,14 @@ public static class SkillGroupEndpoints
 
         return Results.Ok(response);
     }
-    private static async Task<IResult> GetSkillGroupDetails(
-    int groupId,
 
-    GetSkillGroupDetailsQueryHandler handler)
+    private static async Task<IResult> GetSkillGroupDetails(
+        int groupId,
+        GetSkillGroupDetailsQueryHandler handler)
     {
         try
         {
-
-            var group = await handler.Execute(
-                groupId);
+            var group = await handler.Execute(groupId);
 
             return group is null
                 ? Results.NotFound()
@@ -112,6 +117,32 @@ public static class SkillGroupEndpoints
             return updated
                 ? Results.NoContent()
                 : Results.NotFound();
+        }
+        catch (ForbiddenOperationException)
+        {
+            return Results.Forbid();
+        }
+        catch (DomainException exception)
+        {
+            return Results.BadRequest(
+                new { error = exception.Message });
+        }
+    }
+
+    private static async Task<IResult> UpdateSkillOrder(
+     int groupId,
+     UpdateSkillOrderRequest request,
+     UpdateSkillOrderHandler handler,
+     CancellationToken cancellationToken)
+    {
+        try
+        {
+            await handler.Execute(
+                groupId,
+                request,
+                cancellationToken);
+
+            return Results.NoContent();
         }
         catch (ForbiddenOperationException)
         {

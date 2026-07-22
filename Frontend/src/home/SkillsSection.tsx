@@ -1,28 +1,3 @@
-/*
-const skills = [
-  {
-    category: "Backend",
-    items: [
-      "C#",
-      "ASP.NET Core",
-      "Minimal APIs",
-      "Entity Framework Core",
-    ],
-  },
-  {
-    category: "Frontend",
-    items: ["React", "TypeScript", "HTML", "CSS"],
-  },
-  {
-    category: "Data",
-    items: ["SQL", "SQLite", "Relational database design"],
-  },
-  {
-    category: "Workflow",
-    items: ["Git", "REST APIs", "Testing", "Clean architecture"],
-  },
-];
-*/
 import { SkillList } from "../skills/SkillList";
 import { useSkillGroups } from "../skills/useSkillGroups";
 
@@ -53,17 +28,33 @@ export function SkillsSection() {
         </div>
 
         <div className="skills-grid">
-          {groupsQuery.isPending && (
-            <p>Loading skill groups...</p>
-          )}
+          {groupsQuery.isPending &&
+            Array.from({ length: 6 }).map((_, index) => (
+              <article className="skill-group" key={index}>
+                <h3>Loading...</h3>
+                <ul>
+                  <li>Loading...</li>
+                  <li>Loading...</li>
+                  <li>Loading...</li>
+                </ul>
+              </article>
+            ))}
 
           {groupsQuery.isError && (
-            <p>Could not load skill groups.</p>
+            <article className="skill-group skill-group--error">
+              <h3>Skills unavailable</h3>
+              <p>
+                The skills could not be loaded at the moment.
+              </p>
+            </article>
           )}
 
           {groupsQuery.isSuccess &&
             groupsQuery.data.items.length === 0 && (
-              <p>No skill groups added yet.</p>
+              <article className="skill-group">
+                <h3>No skills yet</h3>
+                <p>Skills will appear here soon.</p>
+              </article>
             )}
 
           {groupsQuery.isSuccess &&

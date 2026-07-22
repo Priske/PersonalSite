@@ -10,4 +10,5 @@ public interface ISkillRepository
     Task<bool> DeleteAsync(int groupId, int skillId);
     Task<bool> SkillExistsAsync(Skill skill);
     Task<Skill?> GetByIdAsync(int id);
+    Task<bool> UpdateOrderAsync(int groupId, IReadOnlyList<int> skillIds);
 }

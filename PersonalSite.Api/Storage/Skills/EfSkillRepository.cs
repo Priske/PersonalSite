@@ -69,4 +69,34 @@ public class EfSkillRepository(AppDbContext dbContext) : ISkillRepository
 
         return true;
     }
+
+    public async Task<bool> UpdateOrderAsync(
+        int groupId,
+        IReadOnlyList<int> skillIds)
+    {
+        var skills = await dbContext.Skills
+            .Where(skill => skill.SkillGroupId == groupId)
+            .ToListAsync();
+
+        if (skills.Count != skillIds.Count)
+        {
+            return false;
+        }
+
+        var skillsById = skills.ToDictionary(skill => skill.Id);
+
+        if (skillIds.Any(skillId => !skillsById.ContainsKey(skillId)))
+        {
+            return false;
+        }
+
+        for (var index = 0; index < skillIds.Count; index++)
+        {
+            skillsById[skillIds[index]].DisplayOrder = index + 1;
+        }
+
+        await dbContext.SaveChangesAsync();
+
+        return true;
+    }
 }

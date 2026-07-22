@@ -7,6 +7,7 @@ import { useAccessToken } from "../auth/tokenStorage";
 export function Navigation() {
   const accessToken = useAccessToken();
   const hasAccessToken = accessToken !== null;
+  
 
   const currentUserQuery = useQuery({
     queryKey: ["current-user"],
@@ -35,7 +36,8 @@ export function Navigation() {
 
   const loggedIn =
     hasAccessToken && currentUserQuery.data !== undefined;
-
+  const isAdministrator =
+    currentUserQuery.data?.role === "Administrator";
   return (
     <header className="site-header">
       <nav
@@ -79,12 +81,13 @@ export function Navigation() {
 
           {loggedIn ? (
             <>
+            {isAdministrator && (
                 <li>
                     <NavLink className={navLinkClass} to="/users">
                         Users
                     </NavLink>
                 </li>
-
+            )}
                 <li>
                     <LogoutButton className="site-nav__link site-nav__logout" />
                 </li>
