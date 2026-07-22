@@ -41,37 +41,22 @@ public static class SkillEndpoints
 
     private static async Task<IResult> GetSkillSummaries(
         int groupId,
-        ClaimsPrincipal principal,
         GetSkillSummariesQueryHandler handler)
     {
-        try
-        {
-            var actor = principal.ToActor();
+        var response = await handler.Execute(groupId);
 
-            var skills = await handler.Execute(
-                actor,
-                groupId);
-
-            return Results.Ok(skills);
-        }
-        catch (ForbiddenOperationException)
-        {
-            return Results.Forbid();
-        }
+        return Results.Ok(response);
     }
 
     private static async Task<IResult> GetSkillDetails(
         int groupId,
         int skillId,
-        ClaimsPrincipal principal,
         GetSkillDetailsQueryHandler handler)
     {
         try
         {
-            var actor = principal.ToActor();
 
             var skill = await handler.Execute(
-                actor,
                 groupId,
                 skillId);
 

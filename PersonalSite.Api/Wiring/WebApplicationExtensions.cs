@@ -1,6 +1,4 @@
-
 using Microsoft.AspNetCore.Identity;
-
 using PersonalSite.Api.Domain.Users;
 using PersonalSite.Api.Endpoints.Auth;
 using PersonalSite.Api.Endpoints.Projects;
@@ -36,6 +34,8 @@ public static class WebApplicationExtensions
                 dbContext,
                 app.Configuration,
                 passwordHasher);
+
+                DatabaseSeeder.SeedSkills(dbContext);
 
             }
 

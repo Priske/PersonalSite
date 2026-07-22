@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using PersonalSite.Api.Domain.Actors;
-using PersonalSite.Api.Domain.Common;
 using PersonalSite.Api.Storage;
 
 namespace PersonalSite.Api.Application.Skills.GetSkillGroupSummeries;
@@ -8,10 +6,8 @@ namespace PersonalSite.Api.Application.Skills.GetSkillGroupSummeries;
 public class GetSkillGroupSummariesQueryHandler(
     AppDbContext dbContext) : IHandler
 {
-    public async Task<GetSkillGroupSummariesResponse> Execute(
-        Actor actor)
+    public async Task<GetSkillGroupSummariesResponse> Execute()
     {
-        Permissions.EnsureCanViewDirectory(actor);
 
         var groups = await dbContext.SkillGroups
             .AsNoTracking()

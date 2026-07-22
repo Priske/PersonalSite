@@ -40,33 +40,21 @@ public static class SkillGroupEndpoints
     }
 
     private static async Task<IResult> GetSkillGroupSummaries(
-        ClaimsPrincipal principal,
         GetSkillGroupSummariesQueryHandler handler)
     {
-        try
-        {
-            var actor = principal.ToActor();
+        var response = await handler.Execute();
 
-            var groups = await handler.Execute(actor);
-
-            return Results.Ok(groups);
-        }
-        catch (ForbiddenOperationException)
-        {
-            return Results.Forbid();
-        }
+        return Results.Ok(response);
     }
     private static async Task<IResult> GetSkillGroupDetails(
     int groupId,
-    ClaimsPrincipal principal,
+
     GetSkillGroupDetailsQueryHandler handler)
     {
         try
         {
-            var actor = principal.ToActor();
 
             var group = await handler.Execute(
-                actor,
                 groupId);
 
             return group is null

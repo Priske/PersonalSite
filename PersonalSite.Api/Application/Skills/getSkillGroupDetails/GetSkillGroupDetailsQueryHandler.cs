@@ -10,11 +10,8 @@ public class GetSkillGroupDetailsQueryHandler(
     AppDbContext dbContext) : IHandler
 {
     public async Task<GetSkillGroupDetailsResponse?> Execute(
-        Actor actor,
         int groupId)
     {
-        Permissions.EnsureCanViewDirectory(actor);
-
         return await dbContext.SkillGroups
             .AsNoTracking()
             .Where(group => group.Id == groupId)
