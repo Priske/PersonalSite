@@ -13,12 +13,24 @@ public class EfSkillRepository(AppDbContext dbContext) : ISkillRepository
         return skill;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(
+        int groupId,
+        int skillId)
     {
-        var skill = await dbContext.Skills.FindAsync(id);
-        if (skill is null) return false;
+        var skill = await dbContext.Skills
+            .SingleOrDefaultAsync(skill =>
+                skill.Id == skillId &&
+                skill.SkillGroupId == groupId);
+
+        if (skill is null)
+        {
+            return false;
+        }
+
         dbContext.Skills.Remove(skill);
+
         await dbContext.SaveChangesAsync();
+
         return true;
     }
 
@@ -36,9 +48,14 @@ public class EfSkillRepository(AppDbContext dbContext) : ISkillRepository
         return true;
     }
 
-    public async Task<bool> UpdateAsync(Skill skill)
+    public async Task<bool> UpdateAsync(
+        int groupId,
+        Skill skill)
     {
-        var existingSkill = await dbContext.Skills.FindAsync(skill.Id);
+        var existingSkill = await dbContext.Skills
+            .SingleOrDefaultAsync(existing =>
+                existing.Id == skill.Id &&
+                existing.SkillGroupId == groupId);
 
         if (existingSkill is null)
         {

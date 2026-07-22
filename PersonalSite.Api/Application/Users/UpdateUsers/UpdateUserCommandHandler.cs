@@ -7,7 +7,7 @@ using PersonalSite.Api.Storage.Users;
 
 namespace PersonalSite.Api.Application.Users.UpdateUsers;
 
-public class UpdateMemberCommandHandler(IUserRepository userRepository) : IHandler
+public class UpdateUserCommandHandler(IUserRepository userRepository) : IHandler
 {
     public async Task<bool> Execute(
         Actor actor,

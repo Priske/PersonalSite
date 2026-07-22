@@ -47,7 +47,7 @@ public class GetProjectSummeriesQueryHandler(AppDbContext dbContext) : IHandler
                     Title = project.Title.Value,
                     Discription = project.Description.Value,
                     RepositoryUrl = project.RepositoryUrl.Value,
-                    LiveUrl = project.LiveUrl.Value,
+                    LiveUrl = project.LiveUrl == null ? null : project.LiveUrl.Value,
                     IsFeatured = project.IsFeatured,
                     DisplayOrder = project.DisplayOrder
                 })

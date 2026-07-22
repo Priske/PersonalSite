@@ -72,7 +72,7 @@ public static class UserEndpoints
         int id,
         ClaimsPrincipal principal,
         UpdateUserRequest request,
-        UpdateMemberCommandHandler handler)
+        UpdateUserCommandHandler handler)
     {
         try
         {

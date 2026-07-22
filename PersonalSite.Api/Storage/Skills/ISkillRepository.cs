@@ -6,8 +6,8 @@ public interface ISkillRepository
 {
 
     Task<Skill> AddAsync(Skill skill);
-    Task<bool> UpdateAsync(Skill skill);
-    Task<bool> DeleteAsync(int id);
+    Task<bool> UpdateAsync(int groupId, Skill skill);
+    Task<bool> DeleteAsync(int groupId, int skillId);
     Task<bool> SkillExistsAsync(Skill skill);
     Task<Skill?> GetByIdAsync(int id);
 }

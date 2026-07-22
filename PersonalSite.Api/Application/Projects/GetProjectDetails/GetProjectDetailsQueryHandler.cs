@@ -1,20 +1,15 @@
 using Microsoft.EntityFrameworkCore;
-using PersonalSite.Api.Application.Users.GetUserDetails;
 using PersonalSite.Api.Domain.Actors;
 using PersonalSite.Api.Domain.Projects;
 using PersonalSite.Api.Storage;
 
 namespace PersonalSite.Api.Application.Projects.GetProjectDetails;
 
-
-public class GetProjectDetailsQueryHandler(AppDbContext dbContext) : IHandler
+public class GetProjectDetailsQueryHandler(
+    AppDbContext dbContext) : IHandler
 {
-    public async Task<GetProjectDetailsResponse?> Execute(
-        Actor actor,
-        int id)
+    public async Task<GetProjectDetailsResponse?> Execute(int id)
     {
-        ProjectPermissions.EnsureCanViewDirectory(actor);
-
         return await dbContext.Projects
             .AsNoTracking()
             .Where(project => project.Id == id)
@@ -25,7 +20,9 @@ public class GetProjectDetailsQueryHandler(AppDbContext dbContext) : IHandler
                     Title = project.Title.Value,
                     Discription = project.Description.Value,
                     RepositoryUrl = project.RepositoryUrl.Value,
-                    LiveUrl = project.LiveUrl.Value,
+                    LiveUrl = project.LiveUrl == null
+                        ? null
+                        : project.LiveUrl.Value,
                     IsFeatured = project.IsFeatured,
                     DisplayOrder = project.DisplayOrder
                 })

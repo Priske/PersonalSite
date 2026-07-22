@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 
 using PersonalSite.Api.Domain.Users;
 using PersonalSite.Api.Endpoints.Auth;
+using PersonalSite.Api.Endpoints.Projects;
+using PersonalSite.Api.Endpoints.Skills;
 using PersonalSite.Api.Endpoints.Users;
 using PersonalSite.Api.Seeding;
 using PersonalSite.Api.Storage;
@@ -46,6 +48,9 @@ public static class WebApplicationExtensions
         app.UseAuthorization();
         app.MapUserEndpoints();
         app.MapAuthEndpoints();
+        app.MapSkillEndpoints();
+        app.MapSkillGroupEndpoints();
+        app.MapProjectEndpoints();
 
 
         return app;

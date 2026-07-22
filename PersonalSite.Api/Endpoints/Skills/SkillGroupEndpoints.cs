@@ -1,0 +1,160 @@
+using System.Security.Claims;
+using PersonalSite.Api.Application.Skills.CreateSkillGroup;
+using PersonalSite.Api.Application.Skills.DeleteSkillgroup;
+using PersonalSite.Api.Application.Skills.GetSkillGroupDetails;
+using PersonalSite.Api.Application.Skills.GetSkillGroupSummeries;
+using PersonalSite.Api.Application.Skills.UpdateSkillGroup;
+using PersonalSite.Api.Domain.Exceptions;
+
+namespace PersonalSite.Api.Endpoints.Skills;
+
+public static class SkillGroupEndpoints
+{
+    public static IEndpointRouteBuilder MapSkillGroupEndpoints(
+        this IEndpointRouteBuilder app)
+    {
+        app.MapGet(
+            "/skill-groups",
+                GetSkillGroupSummaries);
+
+        app.MapGet(
+            "/skill-groups/{groupId:int}",
+                GetSkillGroupDetails);
+
+        app.MapPost(
+                "/skill-groups",
+                CreateSkillGroup)
+            .RequireAuthorization();
+
+        app.MapPut(
+                "/skill-groups/{groupId:int}",
+                UpdateSkillGroup)
+            .RequireAuthorization();
+
+        app.MapDelete(
+                "/skill-groups/{groupId:int}",
+                DeleteSkillGroup)
+            .RequireAuthorization();
+
+        return app;
+    }
+
+    private static async Task<IResult> GetSkillGroupSummaries(
+        ClaimsPrincipal principal,
+        GetSkillGroupSummariesQueryHandler handler)
+    {
+        try
+        {
+            var actor = principal.ToActor();
+
+            var groups = await handler.Execute(actor);
+
+            return Results.Ok(groups);
+        }
+        catch (ForbiddenOperationException)
+        {
+            return Results.Forbid();
+        }
+    }
+    private static async Task<IResult> GetSkillGroupDetails(
+    int groupId,
+    ClaimsPrincipal principal,
+    GetSkillGroupDetailsQueryHandler handler)
+    {
+        try
+        {
+            var actor = principal.ToActor();
+
+            var group = await handler.Execute(
+                actor,
+                groupId);
+
+            return group is null
+                ? Results.NotFound()
+                : Results.Ok(group);
+        }
+        catch (ForbiddenOperationException)
+        {
+            return Results.Forbid();
+        }
+    }
+
+    private static async Task<IResult> CreateSkillGroup(
+        CreateSkillGroupRequest request,
+        ClaimsPrincipal principal,
+        CreateSkillGroupCommandHandler handler)
+    {
+        try
+        {
+            var actor = principal.ToActor();
+
+            var created =
+                await handler.Execute(actor, request);
+
+            return Results.Created(
+                $"/skill-groups/{created.Id}",
+                created);
+        }
+        catch (ForbiddenOperationException)
+        {
+            return Results.Forbid();
+        }
+        catch (DomainException exception)
+        {
+            return Results.BadRequest(
+                new { error = exception.Message });
+        }
+    }
+
+    private static async Task<IResult> UpdateSkillGroup(
+        int groupId,
+        UpdateSkillGroupRequest request,
+        ClaimsPrincipal principal,
+        UpdateSkillGroupCommandHandler handler)
+    {
+        try
+        {
+            var actor = principal.ToActor();
+
+            var updated = await handler.Execute(
+                actor,
+                groupId,
+                request);
+
+            return updated
+                ? Results.NoContent()
+                : Results.NotFound();
+        }
+        catch (ForbiddenOperationException)
+        {
+            return Results.Forbid();
+        }
+        catch (DomainException exception)
+        {
+            return Results.BadRequest(
+                new { error = exception.Message });
+        }
+    }
+
+    private static async Task<IResult> DeleteSkillGroup(
+        int groupId,
+        ClaimsPrincipal principal,
+        DeleteSkillGroupCommandHandler handler)
+    {
+        try
+        {
+            var actor = principal.ToActor();
+
+            var deleted =
+                await handler.Execute(actor, groupId);
+
+            return deleted
+                ? Results.NoContent()
+                : Results.NotFound();
+        }
+        catch (ForbiddenOperationException)
+        {
+            return Results.Forbid();
+        }
+    }
+}
