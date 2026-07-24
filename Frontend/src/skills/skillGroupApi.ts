@@ -1,4 +1,4 @@
-import { apiRequest } from "../api";
+import { apiRequest, apiRequestWithoutResponse } from "../api";
 import type {
   GetSkillGroupSummariesResponse,
   GetSkillSummariesResponse,
@@ -15,3 +15,9 @@ export function getSkills(groupId: number) {
     `/skill-groups/${groupId}/skills`,
   );
 }
+
+export function deleteSkillGroup(skillGroupId: number) {
+  return apiRequestWithoutResponse(`/skill-groups/${skillGroupId}`, { method: "DELETE" });
+}
+
+

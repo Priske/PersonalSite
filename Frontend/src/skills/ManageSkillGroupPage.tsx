@@ -1,14 +1,5 @@
-import {
-  type FormEvent,
-  useEffect,
-  useState,
-} from "react";
-import {
-  Link,
-  Navigate,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { type FormEvent, useEffect, useState, } from "react";
+import { Link, Navigate, useNavigate, useParams, } from "react-router-dom";
 import { ApiError } from "../api";
 import { useCreateSkill } from "./useCreateSkill";
 import { useDeleteSkill } from "./useDeleteSkill";
@@ -17,6 +8,8 @@ import { useSkills } from "./useSkills";
 import { useUpdateSkill } from "./useUpdateSkill";
 import { useUpdateSkillGroup } from "./useUpdateSkillGroup";
 import { useUpdateSkillOrder } from "./useUpdateSkillOrder";
+import { DeleteSkillGroupButton } from "./DeleteSkillGroupButton";
+
 
 type EditableSkill = {
   key: string;
@@ -44,20 +37,11 @@ export function ManageSkillGroupPage() {
     hasValidGroupId,
   );
 
-  const updateSkillGroupMutation =
-    useUpdateSkillGroup(parsedGroupId);
-
-  const createSkillMutation =
-    useCreateSkill(parsedGroupId);
-
-  const updateSkillMutation =
-    useUpdateSkill(parsedGroupId);
-
-  const deleteSkillMutation =
-    useDeleteSkill(parsedGroupId);
-
-  const updateSkillOrderMutation =
-    useUpdateSkillOrder(parsedGroupId);
+  const updateSkillGroupMutation = useUpdateSkillGroup(parsedGroupId);
+  const createSkillMutation = useCreateSkill(parsedGroupId);
+  const updateSkillMutation = useUpdateSkill(parsedGroupId);
+  const deleteSkillMutation = useDeleteSkill(parsedGroupId);
+  const updateSkillOrderMutation = useUpdateSkillOrder(parsedGroupId);
 
   const [name, setName] = useState("");
 
@@ -195,9 +179,9 @@ export function ManageSkillGroupPage() {
       currentSkills.map((skill) =>
         skill.key === skillKey
           ? {
-              ...skill,
-              name: newName,
-            }
+            ...skill,
+            name: newName,
+          }
           : skill,
       ),
     );
@@ -402,12 +386,14 @@ export function ManageSkillGroupPage() {
         >
           Back to skills
         </Link>
+
       </header>
 
       <form
         className="manage-skill-group-form"
         onSubmit={handleSubmit}
       >
+
         <section className="manage-skill-group-section">
           <header className="manage-skill-group-section__header">
             <div>
@@ -416,7 +402,9 @@ export function ManageSkillGroupPage() {
               </p>
 
               <h3>Group details</h3>
+              <></>
             </div>
+
           </header>
 
           <div className="manage-skill-group-form__fields">
@@ -530,7 +518,7 @@ export function ManageSkillGroupPage() {
                       disabled={
                         isSaving ||
                         index ===
-                          skills.length - 1
+                        skills.length - 1
                       }
                     >
                       ↓
@@ -552,6 +540,7 @@ export function ManageSkillGroupPage() {
             </div>
           )}
         </section>
+
 
         {validationMessage && (
           <p className="form-message form-message--error">
@@ -583,6 +572,25 @@ export function ManageSkillGroupPage() {
             Cancel
           </Link>
         </div>
+        <section className="manage-skill-group-danger">
+          <header className="manage-skill-group-danger__header">
+            <p className="manage-skill-group-page__eyebrow">
+              Danger zone
+            </p>
+
+            <h3>Delete skill group</h3>
+
+            <p>
+              Permanently delete this skill group and all of its
+              attached skills. This action cannot be undone.
+            </p>
+          </header>
+
+          <DeleteSkillGroupButton
+            skillGroupId={parsedGroupId}
+            skillGroupName={skillGroupQuery.data.name}
+          />
+        </section>
       </form>
     </section>
   );
