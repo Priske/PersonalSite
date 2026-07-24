@@ -1,19 +1,25 @@
-import {
-    type FormEvent,
-    useState,
-} from "react";
-import {
-    Link,
-    useNavigate,
-} from "react-router-dom";
+import { type FormEvent, useMemo, useState } from "react";
+import {Link, useNavigate} from "react-router-dom";
 
 import { useCreateSkillGroup } from "./useCreateSkillGroup";
+import { useSkillGroups } from "./useSkillGroups";
 
-export function AddSkillGroupPage() {
+export function AddSkillGroupPage()
+{
     const navigate = useNavigate();
 
-    const createSkillGroupMutation =
-        useCreateSkillGroup();
+    const createSkillGroupMutation = useCreateSkillGroup();
+    const groupsQuery = useSkillGroups();
+
+    const highestDisplayOrder = useMemo(() => {
+        const groups = groupsQuery.data?.items ?? [];
+
+        return groups.length === 0
+            ? 0
+            : Math.max(
+                ...groups.map(group => group.displayOrder)
+            );
+    }, [groupsQuery.data]);
 
     const [name, setName] = useState("");
     const [validationMessage, setValidationMessage] =
@@ -40,16 +46,16 @@ export function AddSkillGroupPage() {
         }
 
         try {
-            await createSkillGroupMutation.mutateAsync({
+            const group = await createSkillGroupMutation.mutateAsync({
                 name: cleanedName,
-                displayOrder: 10_000,
+                displayOrder: highestDisplayOrder + 1,
             });
 
-            navigate("/account/skills", {
+            navigate(`/account/skills/${group.id}/edit`, {
                 replace: true,
             });
         } catch {
-            // The mutation error is displayed below.
+                setValidationMessage("Could not create the skill group.");
         }
     }
 
