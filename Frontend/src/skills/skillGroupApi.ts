@@ -1,8 +1,5 @@
 import { apiRequest, apiRequestWithoutResponse } from "../api";
-import type {
-  GetSkillGroupSummariesResponse,
-  GetSkillSummariesResponse,
-} from "./types";
+import type { GetSkillGroupSummariesResponse, GetSkillSummariesResponse } from "./types";
 
 export function getSkillGroups() {
   return apiRequest<GetSkillGroupSummariesResponse>(

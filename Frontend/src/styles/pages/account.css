@@ -1066,9 +1066,9 @@
 
 .delete-skill-group-confirmation {
   margin-top: 2rem;
-  padding: 2rem;
-  border: 1px solid var(--border-color);
-  background: var(--surface-muted);
+  padding: clamp(2rem, 4vw, 3rem);
+  border: var(--border-thin);
+  background: var(--color-panel);
 }
 
 .delete-skill-group-confirmation__eyebrow {

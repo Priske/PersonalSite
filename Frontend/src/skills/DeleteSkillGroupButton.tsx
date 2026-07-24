@@ -1,8 +1,5 @@
 import { useState } from "react";
-import {
-    useMutation,
-    useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { ApiError } from "../api";
 import { deleteSkillGroup } from "./skillGroupApi";

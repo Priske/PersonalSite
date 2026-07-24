@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { SkillGroupManagementItem } from "../skills/SkillGroupManagementItem";
 import { useSkillGroups } from "../skills/useSkillGroups";
 
@@ -19,10 +20,9 @@ export function AccountSkillsPage() {
             homepage.
           </p>
         </div>
-
-        <button className="button" type="button">
+        <Link className="button" to="/account/skills/new">
           Add skill group
-        </button>
+        </Link>
       </header>
 
       <div className="account-management__body">
