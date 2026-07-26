@@ -1,4 +1,4 @@
-namespace PersonalSite.Api.Application.Projects.UpdateProject;
+namespace PersonalSite.Api.Application.Projects.UpdateProjects;
 
 public class UpdateProjectRequest
 {

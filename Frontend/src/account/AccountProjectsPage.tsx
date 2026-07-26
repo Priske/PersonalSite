@@ -1,5 +1,11 @@
+import { useProjects } from "../projects/useProjects";
+
 export function AccountProjectsPage()
 {
+    const projectQuerry = useProjects();
+    //order update order
+ const [projets, setGroups] = useState<SkillGroupSummary[]>([]);
+
     return (
         <article className="account-card">
             <header className="account-card__header account-management__header">

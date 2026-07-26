@@ -4,10 +4,18 @@ import { useSkills } from "./useSkills";
 
 type SkillGroupManagementItemProps = {
   group: SkillGroupSummary;
+  index: number;
+  groupCount: number;
+  isSaving: boolean;
+  onMove: (currentIndex: number, direction: -1 | 1) => Promise<void>;
 };
 
 export function SkillGroupManagementItem({
   group,
+  index,
+  groupCount,
+  isSaving,
+  onMove,
 }: SkillGroupManagementItemProps) {
   const skillsQuery = useSkills(group.id);
 
@@ -16,18 +24,42 @@ export function SkillGroupManagementItem({
       <header className="skill-management-group__header">
         <div>
           <p className="skill-management-group__order">
-            Group {String(group.displayOrder).padStart(2, "0")}
+            Group {String(index + 1).padStart(2, "0")}
           </p>
 
           <h3>{group.name}</h3>
         </div>
 
-        <Link
-          className="button button--secondary"
-          to={`/account/skills/${group.id}/edit`}
-        >
-          Edit group
-        </Link>
+        <div className="skill-management-group__actions">
+          <button
+            className="button button--secondary"
+            type="button"
+            aria-label={`Move ${group.name} up`}
+            title="Move up"
+            onClick={() => void onMove(index, -1)}
+            disabled={isSaving || index === 0}
+          >
+            ↑
+          </button>
+
+          <button
+            className="button button--secondary"
+            type="button"
+            aria-label={`Move ${group.name} down`}
+            title="Move down"
+            onClick={() => void onMove(index, 1)}
+            disabled={isSaving || index === groupCount - 1}
+          >
+            ↓
+          </button>
+
+          <Link
+            className="button button--secondary"
+            to={`/account/skills/${group.id}/edit`}
+          >
+            Edit group
+          </Link>
+        </div>
       </header>
 
       <div className="skill-management-group__content">
@@ -54,10 +86,7 @@ export function SkillGroupManagementItem({
           skillsQuery.data.items.length > 0 && (
             <ol className="skill-management-skills">
               {skillsQuery.data.items.map((skill) => (
-                <li
-                  className="skill-management-skill"
-                  key={skill.id}
-                >
+                <li className="skill-management-skill" key={skill.id}>
                   <span className="skill-management-skill__order">
                     {String(skill.displayOrder).padStart(2, "0")}
                   </span>

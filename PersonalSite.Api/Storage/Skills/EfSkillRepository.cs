@@ -6,6 +6,59 @@ namespace PersonalSite.Api.Storage.Skills;
 
 public class EfSkillRepository(AppDbContext dbContext) : ISkillRepository
 {
+
+    public async Task UpdateOrderAsync(
+   int groupId,
+   IReadOnlyList<int> skillIds,
+   CancellationToken cancellationToken)
+    {
+        if (skillIds.Count == 0)
+        {
+            return;
+        }
+
+        if (skillIds.Distinct().Count() != skillIds.Count)
+        {
+            throw new ArgumentException(
+                "A skill cannot appear more than once.");
+        }
+
+        var skills = await dbContext.Skills
+            .Where(skill => skill.SkillGroupId == groupId)
+            .ToListAsync(cancellationToken);
+
+        if (skills.Count != skillIds.Count)
+        {
+            throw new ArgumentException(
+                "The supplied skill list does not contain every skill in the group.");
+        }
+
+        var skillsById = skills.ToDictionary(skill => skill.Id);
+
+        if (skillIds.Any(skillId => !skillsById.ContainsKey(skillId)))
+        {
+            throw new ArgumentException(
+                "One or more skills do not belong to this group.");
+        }
+
+        await using var transaction =
+            await dbContext.Database.BeginTransactionAsync(cancellationToken);
+
+        for (var index = 0; index < skillIds.Count; index++)
+        {
+            skillsById[skillIds[index]].DisplayOrder = 10_000 + index;
+        }
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        for (var index = 0; index < skillIds.Count; index++)
+        {
+            skillsById[skillIds[index]].DisplayOrder = index + 1;
+        }
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
+    }
     public async Task<Skill> AddAsync(Skill skill)
     {
         dbContext.Skills.Add(skill);
@@ -99,4 +152,6 @@ public class EfSkillRepository(AppDbContext dbContext) : ISkillRepository
 
         return true;
     }
+
+
 }

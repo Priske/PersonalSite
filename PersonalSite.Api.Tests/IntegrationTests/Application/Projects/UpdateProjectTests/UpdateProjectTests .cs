@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
-using PersonalSite.Api.Application.Projects.UpdateProject;
+using PersonalSite.Api.Application.Projects.UpdateProjects;
 using PersonalSite.Api.Domain.Common;
 using PersonalSite.Api.Domain.Projects;
 using PersonalSite.Api.Domain.Users;

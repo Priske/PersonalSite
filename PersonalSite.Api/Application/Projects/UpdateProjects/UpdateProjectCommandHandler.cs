@@ -3,7 +3,7 @@ using PersonalSite.Api.Domain.Common;
 using PersonalSite.Api.Domain.Projects;
 using PersonalSite.Api.Storage.Projects;
 
-namespace PersonalSite.Api.Application.Projects.UpdateProject;
+namespace PersonalSite.Api.Application.Projects.UpdateProjects;
 
 public class UpdateProjectCommandHandler(
     IProjectRepository projectRepository) : IHandler
@@ -11,7 +11,8 @@ public class UpdateProjectCommandHandler(
     public async Task<bool> Execute(
         Actor actor,
         int id,
-        UpdateProjectRequest request)
+        UpdateProjectRequest request,
+        CancellationToken cancellationToken)
     {
         ProjectPermissions.EnsureCanManage(actor);
 
@@ -31,6 +32,6 @@ public class UpdateProjectCommandHandler(
             DisplayOrder = request.DisplayOrder
         };
 
-        return await projectRepository.UpdateAsync(project);
+        return await projectRepository.UpdateAsync(project, cancellationToken);
     }
 }

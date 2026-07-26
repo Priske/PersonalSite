@@ -32,11 +32,16 @@ public static class SkillGroupEndpoints
                 "/skill-groups/{groupId:int}",
                 UpdateSkillGroup)
             .RequireAuthorization();
+        app.MapPut(
+                "/skill-groups/order",
+                UpdateSkillGroupOrder)
+            .RequireAuthorization();
 
         app.MapPut(
                 "/skill-groups/{groupId:int}/skills/order",
                 UpdateSkillOrder)
             .RequireAuthorization();
+
 
         app.MapDelete(
                 "/skill-groups/{groupId:int}",
@@ -130,15 +135,46 @@ public static class SkillGroupEndpoints
     }
 
     private static async Task<IResult> UpdateSkillOrder(
-     int groupId,
-     UpdateSkillOrderRequest request,
-     UpdateSkillOrderHandler handler,
-     CancellationToken cancellationToken)
+    int groupId,
+    UpdateSkillOrderRequest request,
+    UpdateSkillOrderHandler handler,
+    ClaimsPrincipal principal,
+    CancellationToken cancellationToken)
     {
         try
         {
+            var actor = principal.ToActor();
+
             await handler.Execute(
+                actor,
                 groupId,
+                request,
+                cancellationToken);
+
+            return Results.NoContent();
+        }
+        catch (ForbiddenOperationException)
+        {
+            return Results.Forbid();
+        }
+        catch (DomainException exception)
+        {
+            return Results.BadRequest(
+                new { error = exception.Message });
+        }
+    }
+    private static async Task<IResult> UpdateSkillGroupOrder(
+    UpdateSkillGroupOrderRequest request,
+    ClaimsPrincipal principal,
+    UpdateSkillGroupOrderHandler handler,
+    CancellationToken cancellationToken)
+    {
+        try
+        {
+            var actor = principal.ToActor();
+
+            await handler.Execute(
+                actor,
                 request,
                 cancellationToken);
 

@@ -3,7 +3,7 @@ using PersonalSite.Api.Application.Projects.CreateProject;
 using PersonalSite.Api.Application.Projects.DeleteProject;
 using PersonalSite.Api.Application.Projects.GetProjectDetails;
 using PersonalSite.Api.Application.Projects.GetProjectSummeries;
-using PersonalSite.Api.Application.Projects.UpdateProject;
+using PersonalSite.Api.Application.Projects.UpdateProjects;
 using PersonalSite.Api.Domain.Exceptions;
 
 namespace PersonalSite.Api.Endpoints.Projects;
@@ -22,6 +22,8 @@ public static class ProjectEndpoints
         app.MapPut("/projects/{id:int}", UpdateProject).RequireAuthorization();
 
         app.MapDelete("/projects/{id:int}", DeleteProject).RequireAuthorization();
+
+        app.MapPut("/projects/order", UpdateProjectOrder).RequireAuthorization();
 
         return app;
 
@@ -75,12 +77,13 @@ public static class ProjectEndpoints
         int id,
         ClaimsPrincipal principal,
         UpdateProjectRequest request,
-        UpdateProjectCommandHandler handler)
+        UpdateProjectCommandHandler handler,
+        CancellationToken cancellationToken)
     {
         try
         {
             var actor = principal.ToActor();
-            var updated = await handler.Execute(actor, id, request);
+            var updated = await handler.Execute(actor, id, request, cancellationToken);
 
             if (!updated)
             {
@@ -95,6 +98,32 @@ public static class ProjectEndpoints
         catch (DomainException exception)
         {
             return Results.BadRequest(new { error = exception.Message });
+        }
+    }
+
+    private static async Task<IResult> UpdateProjectOrder(
+     int groupId,
+     UpdateProjectsOrderRequest request,
+     UpdateProjectsGroupOrderHandler handler,
+     CancellationToken cancellationToken)
+    {
+        try
+        {
+            await handler.Execute(
+                groupId,
+                request,
+                cancellationToken);
+
+            return Results.NoContent();
+        }
+        catch (ForbiddenOperationException)
+        {
+            return Results.Forbid();
+        }
+        catch (DomainException exception)
+        {
+            return Results.BadRequest(
+                new { error = exception.Message });
         }
     }
 
