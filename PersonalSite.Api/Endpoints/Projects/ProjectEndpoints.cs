@@ -10,53 +10,45 @@ namespace PersonalSite.Api.Endpoints.Projects;
 
 public static class ProjectEndpoints
 {
-
-    public static IEndpointRouteBuilder MapProjectEndpoints(this IEndpointRouteBuilder app)
+    public static IEndpointRouteBuilder MapProjectEndpoints(
+        this IEndpointRouteBuilder app)
     {
         app.MapGet("/projects", GetProjectList);
-
         app.MapGet("/projects/{id:int}", GetProjectDetails);
 
-        app.MapPost("/projects", CreateProject).RequireAuthorization();
+        app.MapPost("/projects", CreateProject)
+            .RequireAuthorization();
 
-        app.MapPut("/projects/{id:int}", UpdateProject).RequireAuthorization();
+        app.MapPut("/projects/{id:int}", UpdateProject)
+            .RequireAuthorization();
 
-        app.MapDelete("/projects/{id:int}", DeleteProject).RequireAuthorization();
+        app.MapDelete("/projects/{id:int}", DeleteProject)
+            .RequireAuthorization();
 
-        app.MapPut("/projects/order", UpdateProjectOrder).RequireAuthorization();
+        app.MapPut("/projects/order", UpdateProjectOrder)
+            .RequireAuthorization();
 
         return app;
-
     }
-    public static async Task<IResult> GetProjectList(
-    [AsParameters] GetProjectSummariesRequest request,
-    ClaimsPrincipal principal,
-    GetProjectSummeriesQueryHandler handler)
-    {
-        try
-        {
-            var actor = principal.ToActor();
-            var response = await handler.Execute(actor, request);
 
-            return Results.Ok(response);
-        }
-        catch (ForbiddenOperationException)
-        {
-            return Results.Forbid();
-        }
+    public static async Task<IResult> GetProjectList(
+        [AsParameters] GetProjectSummariesRequest request,
+        GetProjectSummeriesQueryHandler handler)
+    {
+        var response = await handler.Execute(request);
+
+        return Results.Ok(response);
     }
 
     public static async Task<IResult> CreateProject(
-    CreateProjectRequest request,
-    ClaimsPrincipal principal,
-    CreateProjectCommandHandler handler)
+        CreateProjectRequest request,
+        ClaimsPrincipal principal,
+        CreateProjectCommandHandler handler)
     {
         try
         {
             var actor = principal.ToActor();
-
-            var created =
-                await handler.Execute(request, actor);
+            var created = await handler.Execute(request, actor);
 
             return Results.Created(
                 $"/projects/{created.Id}",
@@ -83,13 +75,16 @@ public static class ProjectEndpoints
         try
         {
             var actor = principal.ToActor();
-            var updated = await handler.Execute(actor, id, request, cancellationToken);
 
-            if (!updated)
-            {
-                return Results.NotFound();
-            }
-            return Results.NoContent();
+            var updated = await handler.Execute(
+                actor,
+                id,
+                request,
+                cancellationToken);
+
+            return updated
+                ? Results.NoContent()
+                : Results.NotFound();
         }
         catch (ForbiddenOperationException)
         {
@@ -97,19 +92,21 @@ public static class ProjectEndpoints
         }
         catch (DomainException exception)
         {
-            return Results.BadRequest(new { error = exception.Message });
+            return Results.BadRequest(
+                new { error = exception.Message });
         }
     }
 
     private static async Task<IResult> UpdateProjectOrder(
-     ClaimsPrincipal principal,
-     UpdateProjectsOrderRequest request,
-     UpdateProjectsGroupOrderHandler handler,
-     CancellationToken cancellationToken)
+        ClaimsPrincipal principal,
+        UpdateProjectsOrderRequest request,
+        UpdateProjectsGroupOrderHandler handler,
+        CancellationToken cancellationToken)
     {
         try
         {
             var actor = principal.ToActor();
+
             await handler.Execute(
                 actor,
                 request,
@@ -140,21 +137,18 @@ public static class ProjectEndpoints
     }
 
     public static async Task<IResult> DeleteProject(
-       int id,
-       ClaimsPrincipal principal,
-       DeleteProjectCommandHandler handler)
+        int id,
+        ClaimsPrincipal principal,
+        DeleteProjectCommandHandler handler)
     {
         try
         {
             var actor = principal.ToActor();
             var deleted = await handler.Execute(actor, id);
 
-            if (!deleted)
-            {
-                return Results.NotFound();
-            }
-
-            return Results.NoContent();
+            return deleted
+                ? Results.NoContent()
+                : Results.NotFound();
         }
         catch (ForbiddenOperationException)
         {
@@ -162,8 +156,8 @@ public static class ProjectEndpoints
         }
         catch (DomainException exception)
         {
-            return Results.BadRequest(new { error = exception.Message });
+            return Results.BadRequest(
+                new { error = exception.Message });
         }
-
     }
 }

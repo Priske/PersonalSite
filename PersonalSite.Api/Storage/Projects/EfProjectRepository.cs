@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Domain.Exceptions;
 using PersonalSite.Api.Domain.Projects;
@@ -11,6 +10,7 @@ public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
     {
         dbContext.Projects.Add(project);
         await dbContext.SaveChangesAsync();
+
         return project;
     }
 
@@ -22,21 +22,23 @@ public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
         {
             return false;
         }
+
         dbContext.Projects.Remove(project);
         await dbContext.SaveChangesAsync();
+
         return true;
     }
 
     public async Task<Project?> GetByIdAsync(int id)
     {
         return await dbContext.Projects
-           .AsNoTracking()
-           .SingleOrDefaultAsync(project => project.Id == id);
+            .AsNoTracking()
+            .SingleOrDefaultAsync(project => project.Id == id);
     }
 
     public async Task<bool> ProjectExistsAsync(
-       Project project,
-       CancellationToken cancellationToken)
+        Project project,
+        CancellationToken cancellationToken)
     {
         var existingProject = await dbContext.Projects.FindAsync(
             [project.Id],
@@ -46,8 +48,8 @@ public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
     }
 
     public async Task<bool> UpdateAsync(
-     Project project,
-     CancellationToken cancellationToken)
+        Project project,
+        CancellationToken cancellationToken)
     {
         var existingProject = await dbContext.Projects.FindAsync(
             [project.Id],
@@ -70,12 +72,15 @@ public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
         return true;
     }
 
-    public async Task<bool> UpdateOrderAsync(IReadOnlyList<int> projectIds, CancellationToken cancellationToken)
+    public async Task<bool> UpdateOrderAsync(
+        IReadOnlyList<int> projectIds,
+        CancellationToken cancellationToken)
     {
         if (projectIds.Count == 0)
         {
             return false;
         }
+
         if (projectIds.Distinct().Count() != projectIds.Count)
         {
             throw new DomainException(
@@ -83,23 +88,39 @@ public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
         }
 
         var projects = await dbContext.Projects
-        .Where(project => projectIds.Contains(project.Id))
-        .ToListAsync(cancellationToken);
+            .Where(project => projectIds.Contains(project.Id))
+            .ToListAsync(cancellationToken);
 
-        if (projects.Count() != projectIds.Count())
+        if (projects.Count != projectIds.Count)
         {
-            throw new DomainException("One or more projects do not exist.");
+            throw new DomainException(
+                "One or more projects do not exist.");
         }
-        var projectsById = projects.ToDictionary(project => project.Id);
-        await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
 
-        for (var index = 0; index < projectIds.Count(); index++)
+        var projectsById = projects.ToDictionary(
+            project => project.Id);
+
+        await using var transaction =
+            await dbContext.Database.BeginTransactionAsync(
+                cancellationToken);
+
+        for (var index = 0; index < projectIds.Count; index++)
         {
-            projectsById[projectIds[index]].DisplayOrder = index + 1;
+            projectsById[projectIds[index]].DisplayOrder =
+                10_000 + index;
+        }
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        for (var index = 0; index < projectIds.Count; index++)
+        {
+            projectsById[projectIds[index]].DisplayOrder =
+                index + 1;
         }
 
         await dbContext.SaveChangesAsync(cancellationToken);
         await transaction.CommitAsync(cancellationToken);
+
         return true;
     }
 }
