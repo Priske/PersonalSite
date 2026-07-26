@@ -129,7 +129,7 @@ export function AddSkillGroupPage()
 
                 {createSkillGroupMutation.isError && (
                     <p className="form-message form-message--error">
-                        Could not create the skill group.
+                        
                     </p>
                 )}
 

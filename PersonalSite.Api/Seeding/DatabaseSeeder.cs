@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using PersonalSite.Api.Domain.Skills;
+using PersonalSite.Api.Domain.Tags;
 using PersonalSite.Api.Domain.Users;
 using PersonalSite.Api.Security;
 using PersonalSite.Api.Storage;
@@ -225,6 +226,48 @@ public static class DatabaseSeeder
                 DisplayOrder = 4
             });
 
+        dbContext.SaveChanges();
+    }
+
+
+    public static IReadOnlyList<Tag> SeedTags(
+    AppDbContext dbContext,
+    TagFuzzr tagFuzzr,
+    int count = 10)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(count);
+
+        if (dbContext.Tags.Any())
+        {
+            return dbContext.Tags.ToList();
+        }
+
+        var tags = tagFuzzr.Many(count);
+
+        dbContext.Tags.AddRange(tags);
+        dbContext.SaveChanges();
+
+        return tags;
+    }
+
+    public static void SeedProjects(
+        AppDbContext dbContext,
+        ProjectFuzzr projectFuzzr,
+        IReadOnlyList<Tag> tags,
+        int count = 10)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(count);
+
+        if (dbContext.Projects.Any())
+        {
+            return;
+        }
+
+        var projects = projectFuzzr.Many(
+            count,
+            tags);
+
+        dbContext.Projects.AddRange(projects);
         dbContext.SaveChanges();
     }
 }

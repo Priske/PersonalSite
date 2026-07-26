@@ -30,6 +30,13 @@ public sealed class EfTagRepository(AppDbContext dbContext) : ITagRepository
 
         return true;
     }
+    public async Task<IReadOnlyList<Tag>> GetByIdsAsync(
+    IReadOnlyCollection<int> ids)
+    {
+        return await dbContext.Tags
+            .Where(tag => ids.Contains(tag.Id))
+            .ToListAsync();
+    }
 
     public async Task<bool> DeleteAsync(int id)
     {

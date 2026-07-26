@@ -4,12 +4,12 @@ using PersonalSite.Api.Domain.Projects;
 namespace PersonalSite.Api.Tests.Domain.Projects;
 // Most Gets Tested in ValueText
 // This is Added incase functionality diverges
-public sealed class ProjectDiscriptionTests
+public sealed class ProjectDescriptionTests
 {
     [Fact]
-    public void Constructor_WithValidValue_CreatesProjectDiscription()
+    public void Constructor_WithValidValue_CreatesProjectDescription()
     {
-        var description = new ProjectDiscription("A personal portfolio website.");
+        var description = new ProjectDescription("A personal portfolio website.");
 
         Assert.Equal("A personal portfolio website.", description.Value);
     }
@@ -17,13 +17,13 @@ public sealed class ProjectDiscriptionTests
     [Fact]
     public void Constructor_WithInvalidValue_ThrowsDomainException()
     {
-        Assert.Throws<DomainException>(() => new ProjectDiscription(""));
+        Assert.Throws<DomainException>(() => new ProjectDescription(""));
     }
 
     [Fact]
     public void ImplicitOperator_ReturnsUnderlyingValue()
     {
-        var description = new ProjectDiscription("A personal portfolio website.");
+        var description = new ProjectDescription("A personal portfolio website.");
 
         string value = description;
 
@@ -33,7 +33,7 @@ public sealed class ProjectDiscriptionTests
     [Fact]
     public void ToString_ReturnsUnderlyingValue()
     {
-        var description = new ProjectDiscription("A personal portfolio website.");
+        var description = new ProjectDescription("A personal portfolio website.");
 
         Assert.Equal("A personal portfolio website.", description.ToString());
     }

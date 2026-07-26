@@ -16,6 +16,8 @@ import { AccountSkillsPage } from "./account/AccountSkillsPage";
 import { AccountProjectsPage } from "./account/AccountProjectsPage";
 import { ManageSkillGroupPage } from "./skills/ManageSkillGroupPage";
 import { AddSkillGroupPage } from "./skills/AddSkillGroupPage";
+import { ManageProjectPage } from "./projects/ManageProjectPage";
+import { AddProjectPage } from "./projects/AddProjectPage";
 
 function App() {
     return (
@@ -32,8 +34,9 @@ function App() {
                         <Route index element={<AccountPage />} />
                         <Route path="edit" element={<EditAccountPage />} />
                         <Route path="skills/:groupId/edit" element={<ManageSkillGroupPage />} />
-                        <Route path="/account/skills/new" element={<AddSkillGroupPage />}
-                        />
+                        <Route path="/account/skills/new" element={<AddSkillGroupPage />} />
+                        <Route path="projects/:projectId/edit" element={<ManageProjectPage />} />
+                        <Route path="projects/new" element={<AddProjectPage />}/>
                         <Route path="skills" element={<AccountSkillsPage />} />
                         <Route path="projects" element={<AccountProjectsPage />} />
                     </Route>

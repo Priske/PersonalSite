@@ -9,7 +9,7 @@ public sealed class Project
 
     public required ProjectTitle Title { get; set; }
 
-    public required ProjectDiscription Description { get; set; }
+    public required ProjectDescription Description { get; set; }
 
     public required Url RepositoryUrl { get; set; }
 

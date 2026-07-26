@@ -20,7 +20,8 @@ public static class WebApplicationExtensions
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
             var userFuzzr = scope.ServiceProvider.GetRequiredService<UserFuzzr>();
-
+            var projectFuzzr = scope.ServiceProvider.GetRequiredService<ProjectFuzzr>();
+            var tagFuzzr = scope.ServiceProvider.GetRequiredService<TagFuzzr>();
             //dbContext.Database.Migrate();
             dbContext.Database.EnsureCreated();
             if (app.Configuration.GetValue<bool>("SeedDatabase"))
@@ -36,6 +37,8 @@ public static class WebApplicationExtensions
                 passwordHasher);
 
                 DatabaseSeeder.SeedSkills(dbContext);
+                DatabaseSeeder.SeedProjects(dbContext, projectFuzzr, DatabaseSeeder.SeedTags(dbContext, tagFuzzr));
+
 
             }
 

@@ -20,10 +20,17 @@ export function SkillList({
   if (skillsQuery.data.items.length === 0) {
     return <p>No skills added yet.</p>;
   }
+  if (skillsQuery.data.items.length === 0) {
+    return <p>No skills added yet.</p>;
+  }
+
+  const skills = [...skillsQuery.data.items].sort(
+    (a, b) => a.displayOrder - b.displayOrder,
+  );
 
   return (
     <ul>
-      {skillsQuery.data.items.map((skill) => (
+      {skills.map((skill) => (
         <li key={skill.id}>
           {skill.name}
         </li>

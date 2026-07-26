@@ -106,6 +106,18 @@ export function ProjectManagementItem({
               )}
             </dd>
           </div>
+           <div>
+            <dt>Tags</dt>
+            <dd>
+              {project.tags.length > 0 && (
+                <ul className="project-management-item__tags">
+                  {project.tags.map((tag) => (
+                    <li key={tag}>{tag}</li>
+                  ))}
+                </ul>
+              )}
+            </dd>
+          </div>
         </dl>
       </div>
     </section>

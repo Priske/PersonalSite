@@ -22,8 +22,8 @@ public sealed class ProjectConfiguration
         project.Property(p => p.Description)
             .HasConversion(
                 description => description.Value,
-                value => new ProjectDiscription(value))
-            .HasMaxLength(ProjectDiscription.MaxLength)
+                value => new ProjectDescription(value))
+            .HasMaxLength(ProjectDescription.MaxLength)
             .IsRequired();
 
         project.Property(p => p.RepositoryUrl)

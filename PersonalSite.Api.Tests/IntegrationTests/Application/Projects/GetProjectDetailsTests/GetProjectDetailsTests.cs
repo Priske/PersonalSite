@@ -19,7 +19,7 @@ public class GetProjectDetailsTests : IntegrationTest
         {
             Title = new ProjectTitle("Personal site"),
             Description =
-                new ProjectDiscription("My personal portfolio site"),
+                new ProjectDescription("My personal portfolio site"),
             RepositoryUrl =
                 new Url("https://github.com/example/personal-site"),
             LiveUrl =
@@ -41,7 +41,7 @@ public class GetProjectDetailsTests : IntegrationTest
         Assert.Equal("Personal site", content.Title);
         Assert.Equal(
             "My personal portfolio site",
-            content.Discription);
+            content.Description);
         Assert.Equal(
             "https://github.com/example/personal-site",
             content.RepositoryUrl);
@@ -61,7 +61,7 @@ public class GetProjectDetailsTests : IntegrationTest
         {
             Title = new ProjectTitle("Personal site"),
             Description =
-                new ProjectDiscription("My personal portfolio site"),
+                new ProjectDescription("My personal portfolio site"),
             RepositoryUrl =
                 new Url("https://github.com/example/personal-site"),
             LiveUrl = null,

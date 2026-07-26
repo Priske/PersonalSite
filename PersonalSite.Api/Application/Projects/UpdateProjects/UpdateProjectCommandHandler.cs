@@ -21,7 +21,7 @@ public class UpdateProjectCommandHandler(
             Id = id,
             Title = new ProjectTitle(request.Title),
             Description =
-                new ProjectDiscription(request.Discription),
+                new ProjectDescription(request.Description),
             RepositoryUrl =
                 new Url(request.RepositoryUrl),
             LiveUrl =

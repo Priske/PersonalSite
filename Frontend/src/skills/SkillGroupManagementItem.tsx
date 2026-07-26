@@ -18,6 +18,9 @@ export function SkillGroupManagementItem({
   onMove,
 }: SkillGroupManagementItemProps) {
   const skillsQuery = useSkills(group.id);
+  const skills = skillsQuery.data
+  ? [...skillsQuery.data.items].sort((a, b) => a.displayOrder - b.displayOrder)
+  : [];
 
   return (
     <section className="skill-management-group">
@@ -75,29 +78,27 @@ export function SkillGroupManagementItem({
           </p>
         )}
 
-        {skillsQuery.isSuccess &&
-          skillsQuery.data.items.length === 0 && (
-            <p className="skill-management-group__empty">
-              No skills attached to this group.
-            </p>
-          )}
+        {skillsQuery.isSuccess && skills.length === 0 && (
+          <p className="skill-management-group__empty">
+            No skills attached to this group.
+          </p>
+        )}
 
-        {skillsQuery.isSuccess &&
-          skillsQuery.data.items.length > 0 && (
-            <ol className="skill-management-skills">
-              {skillsQuery.data.items.map((skill) => (
-                <li className="skill-management-skill" key={skill.id}>
-                  <span className="skill-management-skill__order">
-                    {String(skill.displayOrder).padStart(2, "0")}
-                  </span>
+        {skillsQuery.isSuccess && skills.length > 0 && (
+          <ol className="skill-management-skills">
+            {skills.map((skill) => (
+              <li className="skill-management-skill" key={skill.id}>
+                <span className="skill-management-skill__order">
+                  {String(skill.displayOrder).padStart(2, "0")}
+                </span>
 
-                  <span className="skill-management-skill__name">
-                    {skill.name}
-                  </span>
-                </li>
-              ))}
-            </ol>
-          )}
+                <span className="skill-management-skill__name">
+                  {skill.name}
+                </span>
+              </li>
+            ))}
+          </ol>
+        )}
       </div>
     </section>
   );

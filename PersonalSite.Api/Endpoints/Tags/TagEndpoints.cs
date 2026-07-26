@@ -1,0 +1,123 @@
+using System.Security.Claims;
+using PersonalSite.Api.Application.Tags.CreateTag;
+using PersonalSite.Api.Application.Tags.DeleteTag;
+using PersonalSite.Api.Application.Tags.GetTagDetails;
+using PersonalSite.Api.Application.Tags.GetTagSummaries;
+using PersonalSite.Api.Application.Tags.UpdateTags;
+using PersonalSite.Api.Domain.Exceptions;
+
+namespace PersonalSite.Api.Endpoints.Tags;
+
+public static class TagEndpoints
+{
+    public static IEndpointRouteBuilder MapTagEndpoints(
+        this IEndpointRouteBuilder app)
+    {
+        app.MapGet("/tags", GetTagSummaries);
+
+        app.MapGet("/tags/{id:int}", GetTagDetails);
+
+        app.MapPost("/tags", CreateTag)
+            .RequireAuthorization();
+
+        app.MapPut("/tags/{id:int}", UpdateTag)
+            .RequireAuthorization();
+
+        app.MapDelete("/tags/{id:int}", DeleteTag)
+            .RequireAuthorization();
+
+        return app;
+    }
+
+    public static async Task<IResult> GetTagSummaries(
+        [AsParameters] GetTagSummariesRequest request,
+        GetTagSummariesQueryHandler handler)
+    {
+        var response = await handler.Execute(request);
+
+        return Results.Ok(response);
+    }
+    private static async Task<IResult> GetTagDetails(
+        int id,
+        GetTagDetailsQueryHandler handler)
+    {
+        var tag = await handler.Execute(id);
+
+        return tag is null
+            ? Results.NotFound()
+            : Results.Ok(tag);
+    }
+
+    private static async Task<IResult> CreateTag(
+        CreateTagRequest request,
+        CreateTagCommandHandler handler)
+    {
+        try
+        {
+            var created =
+                await handler.Execute(request);
+
+            return Results.Created(
+                $"/tags/{created.Id}",
+                created);
+        }
+        catch (DomainException exception)
+        {
+            return Results.BadRequest(
+                new { error = exception.Message });
+        }
+    }
+
+    private static async Task<IResult> UpdateTag(
+        int id,
+        UpdateTagRequest request,
+        ClaimsPrincipal principal,
+        UpdateTagCommandHandler handler)
+    {
+        try
+        {
+            var actor = principal.ToActor();
+
+            var updated = await handler.Execute(
+                actor,
+                id,
+                request);
+
+            return updated
+                ? Results.NoContent()
+                : Results.NotFound();
+        }
+        catch (ForbiddenOperationException)
+        {
+            return Results.Forbid();
+        }
+        catch (DomainException exception)
+        {
+            return Results.BadRequest(
+                new { error = exception.Message });
+        }
+    }
+
+    private static async Task<IResult> DeleteTag(
+        int id,
+        ClaimsPrincipal principal,
+        DeleteTagCommandHandler handler)
+    {
+        try
+        {
+            var actor = principal.ToActor();
+
+            var deleted = await handler.Execute(
+                actor,
+                id);
+
+            return deleted
+                ? Results.NoContent()
+                : Results.NotFound();
+        }
+        catch (ForbiddenOperationException)
+        {
+            return Results.Forbid();
+        }
+    }
+}

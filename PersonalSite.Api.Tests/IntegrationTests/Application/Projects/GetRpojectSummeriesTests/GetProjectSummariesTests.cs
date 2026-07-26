@@ -46,7 +46,7 @@ public class GetProjectSummariesTests : IntegrationTest
         var first = content.Items[0];
 
         Assert.Equal("Personal Site", first.Title);
-        Assert.Equal("My portfolio website", first.Discription);
+        Assert.Equal("My portfolio website", first.Description);
         Assert.Equal(
             "https://github.com/example/personal-site",
             first.RepositoryUrl);
@@ -233,7 +233,7 @@ public class GetProjectSummariesTests : IntegrationTest
         var project = new Project
         {
             Title = new ProjectTitle(title),
-            Description = new ProjectDiscription(description),
+            Description = new ProjectDescription(description),
             RepositoryUrl = new Url(repositoryUrl),
             LiveUrl = liveUrl is null
                 ? null

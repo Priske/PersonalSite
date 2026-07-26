@@ -16,7 +16,7 @@ public class DeleteProjectTests : IntegrationTest
         var project = new Project
         {
             Title = new ProjectTitle("Portfolio"),
-            Description = new ProjectDiscription("My portfolio"),
+            Description = new ProjectDescription("My portfolio"),
             RepositoryUrl = new Url("https://github.com/example/portfolio"),
             DisplayOrder = 1,
             IsFeatured = true
@@ -56,7 +56,7 @@ public class DeleteProjectTests : IntegrationTest
         var project = new Project
         {
             Title = new ProjectTitle("Portfolio"),
-            Description = new ProjectDiscription("My portfolio"),
+            Description = new ProjectDescription("My portfolio"),
             RepositoryUrl = new Url("https://github.com/example/portfolio"),
             DisplayOrder = 1,
             IsFeatured = true

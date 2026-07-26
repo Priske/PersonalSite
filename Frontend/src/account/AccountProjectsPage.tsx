@@ -2,22 +2,22 @@ import { useProjects } from "../projects/useProjects";
 import type { ProjectSummary } from "../projects/types";
 import { useEffect, useState } from "react";
 import { useUpdateProjectsOrder } from "../projects/useUpdateProjectsOrder";
-import { ProjectsSection } from "../home/ProjectsSection";
 import { ProjectManagementItem } from "../projects/ProjectManagementitem";
+import { Link } from "react-router-dom";
 
 export function AccountProjectsPage()
 {
-    const projectQuerry = useProjects();
+    const projectQuery = useProjects();
     const updateOrderMutation = useUpdateProjectsOrder();
     const [projets, setProjects] = useState<ProjectSummary[]>([]);
 
     useEffect(() => {
-        if(!projectQuerry.data) return;
+        if(!projectQuery.data) return;
 
-        setProjects([...projectQuerry.data.items].sort(
+        setProjects([...projectQuery.data.items].sort(
             (a,b) => a.displayOrder - b.displayOrder,
         ));
-    }, [projectQuerry.data]);
+    }, [projectQuery.data]);
 
     async function moveProject(currentIndex: number, direction: -1|1){
         const targetIndex = currentIndex + direction;
@@ -54,19 +54,19 @@ export function AccountProjectsPage()
                     </p>
                 </div>
 
-                <button className="button" type="button">
+                <Link className="button" to="/account/projects/new">
                     Add project
-                </button>
+                </Link>
             </header>
 
             <div className="account-management__body">
                 <div className="account-management__empty">
-                    {projectQuerry.isPending && (
+                    {projectQuery.isPending && (
                         <p className="account-management__status">
                             Loading projects...
                         </p>
                     )}
-                    {projectQuerry.isError && (
+                    {projectQuery.isError && (
                         <p className="form-message form-message--error">
                             Could not load projects.
                         </p>
@@ -76,30 +76,30 @@ export function AccountProjectsPage()
                             Could not save the project order.
                         </p>
                     )}
-                    {projectQuerry.isSuccess && projets.length === 0 && (
+                    {projectQuery.isSuccess && projets.length === 0 && (
                         <div className="account-management__empty">
                             <p className="account-management__empty-title">
-                                 No skill groups yet
+                                No projects yet
                             </p>
                             <p>
-                                Add a skill group before adding individual skills.
+                            Add a project to display it on your homepage.
                             </p>
                         </div>
                     )}
 
-                    {projectQuerry.isSuccess && ProjectsSection.length >0 &&(
-                        <div className="skill-managementrr-list">
-                            {projets.map((project,index) =>(
-                                <ProjectManagementItem
-                                key={project.id}
-                                project={project}
-                                index={index}
-                                projectCount={ProjectsSection.length}
-                                isSaving={updateOrderMutation.isPending}
-                                onMove={moveProject}
-                                />
-                            ))}
-                        </div>
+                    {projectQuery.isSuccess && projets.length > 0 && (
+                    <div className="project-management-list">
+                        {projets.map((project, index) => (
+                        <ProjectManagementItem
+                            key={project.id}
+                            project={project}
+                            index={index}
+                            projectCount={projets.length}
+                            isSaving={updateOrderMutation.isPending}
+                            onMove={moveProject}
+                        />
+                        ))}
+                    </div>
                     )}
                 </div>
             </div>

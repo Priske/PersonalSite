@@ -35,8 +35,12 @@ export function DeleteSkillGroupButton({
         });
 
         queryClient.removeQueries({
-            queryKey: ["skills", skillGroupId],
-            exact: true,
+        queryKey: [
+            "skill-groups",
+            skillGroupId,
+            "skills",
+        ],
+        exact: true,
         });
 
         navigate("/account/skills", {

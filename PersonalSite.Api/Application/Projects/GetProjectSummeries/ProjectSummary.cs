@@ -4,7 +4,7 @@ public class ProjectSummary
 {
     public int Id { get; set; }
     public required string Title { get; set; }
-    public required string Discription { get; set; }
+    public required string Description { get; set; }
 
     public required string RepositoryUrl { get; set; }
 

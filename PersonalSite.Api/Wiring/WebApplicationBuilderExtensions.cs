@@ -14,6 +14,7 @@ using PersonalSite.Api.Infrastructure.Security.Password;
 using PersonalSite.Api.Application;
 using PersonalSite.Api.Storage.Skills;
 using PersonalSite.Api.Storage.Projects;
+using PersonalSite.Api.Storage.Tags;
 
 namespace PersonalSite.Api.Wiring;
 
@@ -39,11 +40,14 @@ public static class WebApplicationBuilderExtensions
         builder.Services.AddScoped<ISkillGroupRepository, EfSkillGroupRepository>();
         builder.Services.AddScoped<IProjectRepository, EfProjectRepository>();
         builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+        builder.Services.AddScoped<ITagRepository, EfTagRepository>();
 
         builder.Services.AddScoped<ICompromisedPasswordChecker, DatabaseCompromisedPasswordChecker>();
         builder.Services.AddScoped<IPasswordPolicy, PassphrasePasswordPolicy>();
         builder.Services.AddScoped<ISeedPasswordProvider, PassphraseSeedPasswordProvider>();
         builder.Services.AddScoped<UserFuzzr>();
+        builder.Services.AddScoped<ProjectFuzzr>();
+        builder.Services.AddScoped<TagFuzzr>();
     }
 
     private static void RegisterHandlers(IServiceCollection services)

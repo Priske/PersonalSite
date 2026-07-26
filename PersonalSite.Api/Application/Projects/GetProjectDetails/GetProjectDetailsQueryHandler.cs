@@ -18,7 +18,7 @@ public class GetProjectDetailsQueryHandler(
                 {
                     Id = project.Id,
                     Title = project.Title.Value,
-                    Discription = project.Description.Value,
+                    Description = project.Description.Value,
                     RepositoryUrl = project.RepositoryUrl.Value,
                     LiveUrl = project.LiveUrl == null
                         ? null

@@ -12,7 +12,7 @@ public sealed class ProjectTests
         {
             Id = 1,
             Title = new ProjectTitle("Personal Site"),
-            Description = new ProjectDiscription(
+            Description = new ProjectDescription(
                 "A full-stack portfolio website."),
             RepositoryUrl = new Url(
                 "https://github.com/johndoe/PersonalSite")

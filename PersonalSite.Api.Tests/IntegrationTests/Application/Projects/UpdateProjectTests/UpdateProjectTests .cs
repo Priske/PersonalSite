@@ -21,7 +21,7 @@ public class UpdateProjectTests : IntegrationTest
         var request = new UpdateProjectRequest
         {
             Title = "Updated project",
-            Discription = "Updated description",
+            Description = "Updated description",
             RepositoryUrl =
                 "https://github.com/example/updated-project",
             LiveUrl = "https://updated.example.com",
@@ -70,7 +70,7 @@ public class UpdateProjectTests : IntegrationTest
         var request = new UpdateProjectRequest
         {
             Title = "Updated project",
-            Discription = "Updated description",
+            Description = "Updated description",
             RepositoryUrl =
                 "https://github.com/example/updated-project",
             LiveUrl = null,
@@ -106,7 +106,7 @@ public class UpdateProjectTests : IntegrationTest
         var request = new UpdateProjectRequest
         {
             Title = "Updated project",
-            Discription = "Updated description",
+            Description = "Updated description",
             RepositoryUrl =
                 "https://github.com/example/updated-project",
             LiveUrl = "   ",
@@ -239,7 +239,7 @@ public class UpdateProjectTests : IntegrationTest
         {
             Title = new ProjectTitle("Original project"),
             Description =
-                new ProjectDiscription("Original description"),
+                new ProjectDescription("Original description"),
             RepositoryUrl =
                 new Url(
                     "https://github.com/example/original-project"),
@@ -260,7 +260,7 @@ public class UpdateProjectTests : IntegrationTest
         return new UpdateProjectRequest
         {
             Title = "Updated project",
-            Discription = "Updated description",
+            Description = "Updated description",
             RepositoryUrl =
                 "https://github.com/example/updated-project",
             LiveUrl = "https://updated.example.com",

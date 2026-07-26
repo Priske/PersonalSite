@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 
 using PersonalSite.Api.Application.Projects.CreateProject;
 using PersonalSite.Api.Domain.Projects;
+using PersonalSite.Api.Domain.Tags;
 using PersonalSite.Api.Domain.Users;
 using PersonalSite.Api.Tests.IntegrationTests.Helpers;
 
@@ -14,15 +15,16 @@ public sealed class CreateProjectTests : IntegrationTest
     public async Task PostProjectCreatesProject()
     {
         await AuthenticateAsUser(UserRole.Administrator);
-
+        var tagId = SeedTag();
         var request = new CreateProjectRequest
         {
             Title = "Personal Site",
-            Discription = "My personal portfolio website",
+            Description = "My personal portfolio website",
             RepositoryUrl = "https://github.com/example/personal-site",
             LiveUrl = "https://example.com",
             IsFeatured = true,
-            DisplayOrder = 1
+            DisplayOrder = 1,
+            TagIds = [tagId]
         };
 
         var response = await Client.PostAsJsonAsync(
@@ -39,7 +41,7 @@ public sealed class CreateProjectTests : IntegrationTest
         Assert.Equal("Personal Site", created.Title);
         Assert.Equal(
             "My personal portfolio website",
-            created.Discription);
+            created.Description);
 
         Assert.Equal(
             "https://github.com/example/personal-site",
@@ -77,15 +79,16 @@ public sealed class CreateProjectTests : IntegrationTest
     public async Task PostProjectWithoutLiveUrlCreatesProject()
     {
         await AuthenticateAsUser(UserRole.Administrator);
-
+        var tagId = SeedTag();
         var request = new CreateProjectRequest
         {
             Title = "API Project",
-            Discription = "A backend-only API project",
+            Description = "A backend-only API project",
             RepositoryUrl = "https://github.com/example/api-project",
             LiveUrl = null,
             IsFeatured = false,
-            DisplayOrder = 2
+            DisplayOrder = 2,
+            TagIds = [tagId]
         };
 
         var response = await Client.PostAsJsonAsync(
@@ -108,15 +111,17 @@ public sealed class CreateProjectTests : IntegrationTest
     public async Task PostProjectWithWhitespaceLiveUrlStoresNull()
     {
         await AuthenticateAsUser(UserRole.Administrator);
+        var tagId = SeedTag();
 
         var request = new CreateProjectRequest
         {
             Title = "Console Project",
-            Discription = "A console application",
+            Description = "A console application",
             RepositoryUrl = "https://github.com/example/console-project",
             LiveUrl = "   ",
             IsFeatured = false,
-            DisplayOrder = 3
+            DisplayOrder = 3,
+            TagIds = [tagId]
         };
 
         var response = await Client.PostAsJsonAsync(
@@ -139,15 +144,17 @@ public sealed class CreateProjectTests : IntegrationTest
     public async Task PostProjectWithWhitespaceTitleReturnsBadRequest()
     {
         await AuthenticateAsUser(UserRole.Administrator);
+        var tagId = SeedTag();
 
         var request = new CreateProjectRequest
         {
             Title = "   ",
-            Discription = "A valid project description",
+            Description = "A valid project description",
             RepositoryUrl = "https://github.com/example/project",
             LiveUrl = null,
             IsFeatured = false,
-            DisplayOrder = 4
+            DisplayOrder = 4,
+            TagIds = [tagId]
         };
 
         var response = await Client.PostAsJsonAsync(
@@ -163,15 +170,17 @@ public sealed class CreateProjectTests : IntegrationTest
     public async Task PostProjectWithWhitespaceDescriptionReturnsBadRequest()
     {
         await AuthenticateAsUser(UserRole.Administrator);
+        var tagId = SeedTag();
 
         var request = new CreateProjectRequest
         {
             Title = "Valid Project",
-            Discription = "   ",
+            Description = "   ",
             RepositoryUrl = "https://github.com/example/project",
             LiveUrl = null,
             IsFeatured = false,
-            DisplayOrder = 5
+            DisplayOrder = 5,
+            TagIds = [tagId]
         };
 
         var response = await Client.PostAsJsonAsync(
@@ -187,15 +196,17 @@ public sealed class CreateProjectTests : IntegrationTest
     public async Task PostProjectWithInvalidRepositoryUrlReturnsBadRequest()
     {
         await AuthenticateAsUser(UserRole.Administrator);
+        var tagId = SeedTag();
 
         var request = new CreateProjectRequest
         {
             Title = "Valid Project",
-            Discription = "A valid project description",
+            Description = "A valid project description",
             RepositoryUrl = "not-a-url",
             LiveUrl = null,
             IsFeatured = false,
-            DisplayOrder = 6
+            DisplayOrder = 6,
+            TagIds = [tagId]
         };
 
         var response = await Client.PostAsJsonAsync(
@@ -211,15 +222,17 @@ public sealed class CreateProjectTests : IntegrationTest
     public async Task PostProjectWithInvalidLiveUrlReturnsBadRequest()
     {
         await AuthenticateAsUser(UserRole.Administrator);
+        var tagId = SeedTag();
 
         var request = new CreateProjectRequest
         {
             Title = "Valid Project",
-            Discription = "A valid project description",
+            Description = "A valid project description",
             RepositoryUrl = "https://github.com/example/project",
             LiveUrl = "invalid-live-url",
             IsFeatured = false,
-            DisplayOrder = 7
+            DisplayOrder = 7,
+            TagIds = [tagId]
         };
 
         var response = await Client.PostAsJsonAsync(
@@ -229,5 +242,18 @@ public sealed class CreateProjectTests : IntegrationTest
         Assert.Equal(
             HttpStatusCode.BadRequest,
             response.StatusCode);
+    }
+
+    private int SeedTag(string name = "C#")
+    {
+        var tag = new Tag
+        {
+            Name = new TagName(name)
+        };
+
+        Writer.Seed(context =>
+            context.Tags.Add(tag));
+
+        return tag.Id;
     }
 }
