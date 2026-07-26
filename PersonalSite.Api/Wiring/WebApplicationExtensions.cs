@@ -22,6 +22,7 @@ public static class WebApplicationExtensions
             var userFuzzr = scope.ServiceProvider.GetRequiredService<UserFuzzr>();
             var projectFuzzr = scope.ServiceProvider.GetRequiredService<ProjectFuzzr>();
             var tagFuzzr = scope.ServiceProvider.GetRequiredService<TagFuzzr>();
+
             //dbContext.Database.Migrate();
             dbContext.Database.EnsureCreated();
             if (app.Configuration.GetValue<bool>("SeedDatabase"))

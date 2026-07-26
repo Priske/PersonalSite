@@ -40,7 +40,7 @@ export function ProjectsSection() {
           <h3>{project.title}</h3>
         </header>
 
-        <p className="project-card__description">{project.discription}</p>
+        <p className="project-card__description">{project.description}</p>
 
         {project.tags.length > 0 && (
           <ul className="project-card__technologies">

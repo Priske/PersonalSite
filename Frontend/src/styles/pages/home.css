@@ -299,7 +299,6 @@
 
   transform: translateY(-50%);
 }
-
 /* -----------------------------
    Projects
 ----------------------------- */
@@ -312,20 +311,29 @@
 
 .project-card {
   display: grid;
-  grid-template-columns: minmax(12rem, 0.4fr) minmax(0, 1fr);
-  gap: var(--space-5);
-  padding: clamp(1.75rem, 4vw, 3rem);
+  grid-template-columns: minmax(16rem, 0.9fr) minmax(18rem, 1.1fr);
+  grid-template-rows: auto 1fr;
+  column-gap: clamp(2rem, 5vw, 5rem);
+  row-gap: 1.5rem;
+  min-height: 14rem;
+  padding: clamp(2rem, 4vw, 3rem);
   border: 2px solid var(--color-ink);
   box-shadow: var(--shadow-soft);
 }
 
+.project-card:nth-child(even) {
+  background: var(--color-panel);
+}
+
 .project-card__header {
-  display: grid;
-  align-content: start;
+  grid-row: 1 / 3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .project-card__number {
-  margin-bottom: var(--space-3);
+  margin: 0 0 1.25rem;
   color: var(--color-muted);
   font-family: var(--font-display);
   font-size: 0.75rem;
@@ -335,37 +343,94 @@
 
 .project-card h3 {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  max-width: 12ch;
+  font-size: clamp(2.3rem, 3.5vw, 3.4rem);
   line-height: 0.95;
+  letter-spacing: -0.035em;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .project-card__description {
   align-self: start;
-  margin-bottom: var(--space-4);
+  max-width: 38rem;
+  margin: 0;
   color: var(--color-muted);
+  font-size: 1rem;
+  line-height: 1.65;
 }
 
 .project-card__technologies {
   grid-column: 2;
+  align-self: end;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
+  gap: 0.65rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .project-card__technologies li {
-  padding: 0.45rem 0.8rem;
+  padding: 0.5rem 0.85rem;
   border: 1px solid var(--color-ink);
   border-radius: var(--radius-pill);
+  background: var(--color-paper);
   font-family: var(--font-display);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 900;
   letter-spacing: 0.04em;
+  line-height: 1;
   text-transform: uppercase;
 }
 
+@media (max-width: 1050px) {
+  .project-card {
+    grid-template-columns: minmax(13rem, 0.8fr) minmax(16rem, 1.2fr);
+    column-gap: 2.5rem;
+  }
+
+  .project-card h3 {
+    font-size: clamp(2.1rem, 4vw, 3rem);
+  }
+}
+
+@media (max-width: 900px) {
+  .project-card {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 1.5rem;
+    min-height: 0;
+  }
+
+  .project-card__header {
+    grid-row: auto;
+  }
+
+  .project-card__technologies {
+    grid-column: 1;
+  }
+
+  .project-card h3 {
+    max-width: 14ch;
+  }
+}
+
+@media (max-width: 780px) {
+  .project-list {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 520px) {
+  .project-card {
+    padding: 1.5rem;
+  }
+
+  .project-card h3 {
+    font-size: clamp(2rem, 11vw, 2.8rem);
+  }
+}
 /* -----------------------------
    Contact
 ----------------------------- */
