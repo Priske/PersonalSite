@@ -12,4 +12,7 @@ public class ProjectSummary
     public bool IsFeatured { get; set; }
 
     public int DisplayOrder { get; set; }
+
+    public required IReadOnlyList<string> Tags { get; set; }
+
 }

@@ -25,7 +25,8 @@ public class CreateProjectCommandHandler(
             DisplayOrder = request.DisplayOrder,
             RepositoryUrl = new Url(request.RepositoryUrl),
             LiveUrl = liveUrl,
-            IsFeatured = request.IsFeatured
+            IsFeatured = request.IsFeatured,
+            Tags = request.Tags;
         };
 
         var savedProject =
@@ -39,7 +40,9 @@ public class CreateProjectCommandHandler(
             RepositoryUrl = savedProject.RepositoryUrl,
             IsFeatured = savedProject.IsFeatured,
             DisplayOrder = savedProject.DisplayOrder,
-            LiveUrl = savedProject.LiveUrl?.Value
+            LiveUrl = savedProject.LiveUrl?.Value,
+            Tags = savedProject.Tags
+
         };
     }
 }

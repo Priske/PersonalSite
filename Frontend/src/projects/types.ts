@@ -2,10 +2,10 @@
 export type ProjectSummary = {
   id: number;
   title: string;
-  discription: string;
+  description: string;
   repositoryUrl: string;
-  liverUrl?: string;
-  IsFeatured: boolean;
+  liveUrl?: string;
+  isFeatured: boolean;
   displayOrder: number;
 };
 

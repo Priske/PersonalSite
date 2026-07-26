@@ -1,4 +1,3 @@
-
 using PersonalSite.Api.Domain.Common;
 
 namespace PersonalSite.Api.Domain.Projects;

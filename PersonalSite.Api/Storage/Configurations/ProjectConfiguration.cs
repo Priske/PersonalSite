@@ -47,5 +47,8 @@ public sealed class ProjectConfiguration
 
         project.HasIndex(p => p.DisplayOrder)
             .IsUnique();
+
+        project.HasMany(p => p.Tags)
+       .WithMany(t => t.Projects);
     }
 }

@@ -102,15 +102,16 @@ public static class ProjectEndpoints
     }
 
     private static async Task<IResult> UpdateProjectOrder(
-     int groupId,
+     ClaimsPrincipal principal,
      UpdateProjectsOrderRequest request,
      UpdateProjectsGroupOrderHandler handler,
      CancellationToken cancellationToken)
     {
         try
         {
+            var actor = principal.ToActor();
             await handler.Execute(
-                groupId,
+                actor,
                 request,
                 cancellationToken);
 

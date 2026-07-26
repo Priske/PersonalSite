@@ -13,6 +13,7 @@ public class CreateProjectResponse
 
     public int DisplayOrder { get; set; }
 
+    public required IReadOnlyList<string> Tags { get; set; }
 }
 
 

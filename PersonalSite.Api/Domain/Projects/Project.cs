@@ -1,4 +1,5 @@
 using PersonalSite.Api.Domain.Common;
+using PersonalSite.Api.Domain.Tags;
 
 namespace PersonalSite.Api.Domain.Projects;
 
@@ -17,4 +18,7 @@ public sealed class Project
     public bool IsFeatured { get; set; }
 
     public int DisplayOrder { get; set; }
+
+    public ICollection<Tag> Tags { get; set; } = [];
+
 }
