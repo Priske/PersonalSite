@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PersonalSite.Api.Domain.HomePageConfigs;
 using PersonalSite.Api.Domain.Projects;
 using PersonalSite.Api.Domain.Skills;
 using PersonalSite.Api.Domain.Tags;
@@ -18,6 +19,8 @@ public sealed class AppDbContext(
     public DbSet<SkillGroup> SkillGroups => Set<SkillGroup>();
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<Tag> Tags => Set<Tag>();
+
+    public DbSet<HomePageConfig> HomepageConfigs => Set<HomePageConfig>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

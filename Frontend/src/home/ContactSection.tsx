@@ -45,7 +45,7 @@ export function ContactSection() {
           <div className="contact-panel__actions">
             <a
               className="button"
-              href="mailto:your-email@example.com"
+              href="mailto:eeckman_ben@example.com"
             >
               Send an email
             </a>
