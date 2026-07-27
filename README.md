@@ -73,7 +73,38 @@ As I continue learning, this project will evolve alongside my skills.
 ---
 
 ## Running the project
+## Configuration
 
+The API uses **.NET User Secrets** for local development.
+
+Initialize User Secrets:
+
+```bash
+dotnet user-secrets init --project PersonalSite.Api
+```
+
+Set the required secrets:
+
+```bash
+dotnet user-secrets set "Jwt:SigningKey" "your-long-random-signing-key" --project PersonalSite.Api
+
+dotnet user-secrets set "Jwt:Issuer" "PersonalSite.Api" --project PersonalSite.Api
+
+dotnet user-secrets set "Jwt:Audience" "PersonalSite.Client" --project PersonalSite.Api
+
+dotnet user-secrets set "DevelopmentAdmin:Password" "choose-a-secure-password" --project PersonalSite.Api
+```
+
+Required secrets:
+
+| Key | Description |
+|------|-------------|
+| `Jwt:SigningKey` | Secret key used to sign JWT tokens. |
+| `Jwt:Issuer` | JWT issuer. |
+| `Jwt:Audience` | JWT audience. |
+| `DevelopmentAdmin:Password` | Password for the seeded development administrator account. |
+
+> These settings are only intended for local development and should never be committed to source control.
 ### Backend
 
 ```bash
