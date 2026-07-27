@@ -3,7 +3,7 @@ using System.Security.Claims;
 using PersonalSite.Api.Application.HomePageConfigs.UpdateConfig;
 using PersonalSite.Api.Domain.Exceptions;
 
-namespace PersonalSite.Api.Endpoints.Projects;
+namespace PersonalSite.Api.Endpoints.HomePageConfigs;
 
 public static class HomePageConfigEndpoints
 {
