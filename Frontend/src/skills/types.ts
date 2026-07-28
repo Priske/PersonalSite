@@ -1,35 +1,63 @@
-export type ProjectSummary = {
+export type SkillSummary = {
   id: number;
-  title: string;
-  description: string;
-  repositoryUrl: string;
-  liveUrl?: string;
-  isFeatured: boolean;
+  name: string;
   displayOrder: number;
-  tags: string[];
 };
 
-export type ProjectDetails = ProjectSummary;
-
-export type GetProjectSummariesResponse = {
-  items: ProjectSummary[];
+export type SkillGroupSummary = {
+  id: number;
+  name: string;
+  displayOrder: number;
 };
 
-export type CreateProjectRequest = {
-  title: string;
-  description: string;
-  repositoryUrl: string;
-  liveUrl?: string;
-  isFeatured: boolean;
-  displayOrder: number;
-  tagIds: number[];
+export type GetSkillGroupSummariesResponse = {
+  items: SkillGroupSummary[];
 };
 
-export type UpdateProjectRequest = {
-  title: string;
-  description: string;
-  repositoryUrl: string;
-  liveUrl?: string;
-  isFeatured: boolean;
+export type GetSkillSummariesResponse = {
+  items: SkillSummary[];
+};
+
+export type SkillGroupDetails = {
+  id: number;
+  name: string;
   displayOrder: number;
+  skills: SkillSummary[];
+};
+
+export type SkillDetails = {
+  id: number;
+  skillGroupId: number;
+  name: string;
+  displayOrder: number;
+};
+
+export type CreateSkillGroupRequest = {
+  name: string;
+  displayOrder: number;
+};
+
+export type UpdateSkillGroupRequest = {
+  name: string;
+  displayOrder: number;
+};
+
+export type UpdateSkillGroupOrderRequest = {
+  skillGroupIds: number[];
+};
+
+export type CreateSkillRequest = {
+  name: string;
+  skillGroupId: number;
+  displayOrder: number;
+};
+
+export type UpdateSkillRequest = {
+  name: string;
+  skillGroupId: number;
+  displayOrder: number;
+};
+
+export type UpdateSkillOrderRequest = {
+  skillIds: number[];
 };

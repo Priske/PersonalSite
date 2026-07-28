@@ -16,8 +16,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-app.UsePersonalSite();
+app.UseDefaultFiles();
+app.UseStaticFiles();
 app.UseCors();
+app.UsePersonalSite();
+
+app.MapFallbackToFile("index.html");
 app.Run();
 
 public partial class Program;

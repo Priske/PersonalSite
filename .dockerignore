@@ -1,0 +1,16 @@
+.git
+.github
+
+**/bin
+**/obj
+**/node_modules
+**/dist
+
+PersonalSite.Api.Tests
+
+*.db
+*.db-shm
+*.db-wal
+
+.env
+.env.*

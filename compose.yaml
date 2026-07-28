@@ -11,6 +11,42 @@ services:
       - "5433:5432"
     volumes:
       - personal-site-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U personal_site -d personal_site"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: PersonalSite.Api/Dockerfile
+    container_name: personal-site-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+
+      ConnectionStrings__PersonalSite: >
+        Host=postgres;
+        Port=5432;
+        Database=personal_site;
+        Username=personal_site;
+        Password=local-development-password
+
+      Jwt__SigningKey: replace-this-with-a-long-local-development-key
+      Jwt__Issuer: PersonalSite.Api
+      Jwt__Audience: PersonalSite.Client
+
+      DevelopmentAdmin__Password: replace-this-with-a-local-admin-password
+    ports:
+      - "8080:8080"
 
 volumes:
   personal-site-postgres-data:
