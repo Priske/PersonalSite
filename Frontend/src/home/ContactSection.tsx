@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { getAccessToken } from "../auth/tokenStorage";
 import type { GetHomePageConfigDetailsResponse } from "../homePageConfig/types";
 
 type ContactSectionProps = {
@@ -50,6 +51,7 @@ function CvIcon({ className }: IconProps) {
 }
 
 export function ContactSection({ config }: ContactSectionProps) {
+  const isAuthenticated = Boolean(getAccessToken());
   return (
     <section className="home-section home-contact" id="contact">
       <div className="home-section__heading">
@@ -145,8 +147,11 @@ export function ContactSection({ config }: ContactSectionProps) {
             <a className="button" href={`mailto:${config.email}`}>
               {config.contactEmailActionLabel}
             </a>
-            <Link className="button button--secondary" to="/login">
-              {config.contactLoginActionLabel}
+            <Link
+              className="button button--secondary"
+              to={isAuthenticated ? "/account" : "/login"}
+            >
+              {isAuthenticated ? "Account" : config.contactLoginActionLabel}
             </Link>
           </div>
         </div>

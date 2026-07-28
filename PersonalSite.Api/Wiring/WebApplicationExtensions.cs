@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Domain.Users;
 using PersonalSite.Api.Endpoints.Auth;
 using PersonalSite.Api.Endpoints.HomePageConfigs;
@@ -14,37 +15,31 @@ public static class WebApplicationExtensions
 {
     public static WebApplication UsePersonalSite(this WebApplication app)
     {
-        if (app.Environment.IsDevelopment())
-        {
-            using var scope = app.Services.CreateScope();
+        using var scope = app.Services.CreateScope();
 
-            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var logger = scope.ServiceProvider
+            .GetRequiredService<ILoggerFactory>()
+            .CreateLogger("DatabaseStartup");
+        logger.LogInformation("Applying database migrations");
+
+        dbContext.Database.Migrate();
+
+        logger.LogInformation("Database migrations completed");
+
+        if (app.Environment.IsDevelopment() && app.Configuration.GetValue<bool>("SeedDatabase"))
+        {
             var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
             var userFuzzr = scope.ServiceProvider.GetRequiredService<UserFuzzr>();
             var projectFuzzr = scope.ServiceProvider.GetRequiredService<ProjectFuzzr>();
             var tagFuzzr = scope.ServiceProvider.GetRequiredService<TagFuzzr>();
 
-            //dbContext.Database.Migrate();
-            dbContext.Database.EnsureCreated();
-            if (app.Configuration.GetValue<bool>("SeedDatabase"))
-            {
-                DatabaseSeeder.SeedUsers(
-                dbContext,
-                userFuzzr,
-                count: 50);
-
-                DatabaseSeeder.SeedAdministrator(
-                dbContext,
-                app.Configuration,
-                passwordHasher);
-
-                DatabaseSeeder.SeedSkills(dbContext);
-                DatabaseSeeder.SeedProjects(dbContext, projectFuzzr, DatabaseSeeder.SeedTags(dbContext, tagFuzzr));
-                DatabaseSeeder.SeedHomePageConfig(dbContext);
-
-
-            }
-
+            DatabaseSeeder.SeedUsers(dbContext, userFuzzr, count: 50);
+            DatabaseSeeder.SeedAdministrator(dbContext, app.Configuration, passwordHasher);
+            DatabaseSeeder.SeedSkills(dbContext);
+            DatabaseSeeder.SeedProjects(dbContext, projectFuzzr, DatabaseSeeder.SeedTags(dbContext, tagFuzzr));
+            DatabaseSeeder.SeedHomePageConfig(dbContext);
         }
 
         app.UseSwagger();
@@ -52,6 +47,7 @@ public static class WebApplicationExtensions
 
         app.UseAuthentication();
         app.UseAuthorization();
+
         app.MapUserEndpoints();
         app.MapAuthEndpoints();
         app.MapSkillEndpoints();
@@ -59,8 +55,6 @@ public static class WebApplicationExtensions
         app.MapProjectEndpoints();
         app.MapHomePageEndpoints();
 
-
         return app;
     }
-
 }

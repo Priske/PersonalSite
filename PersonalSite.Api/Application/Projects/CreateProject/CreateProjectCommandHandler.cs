@@ -9,7 +9,8 @@ namespace PersonalSite.Api.Application.Projects.CreateProject;
 
 public class CreateProjectCommandHandler(
     IProjectRepository projectRepository,
-    ITagRepository tagRepository) : IHandler
+    ITagRepository tagRepository,
+    ILogger<CreateProjectCommandHandler> logger) : IHandler
 {
     public async Task<CreateProjectResponse> Execute(
         CreateProjectRequest request,
@@ -44,8 +45,8 @@ public class CreateProjectCommandHandler(
             Tags = tags.ToList()
         };
 
-        var savedProject =
-            await projectRepository.AddAsync(project);
+        var savedProject = await projectRepository.AddAsync(project);
+        logger.LogInformation("Project {ProjectId} created by actor {ActorId}", savedProject.Id, actor.UserId);
 
         return new CreateProjectResponse
         {

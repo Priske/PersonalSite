@@ -27,7 +27,7 @@ public class GetTagSummariesQueryHandler(
             var search = $"%{request.Search.Trim()}%";
 
             query = query.Where(tag =>
-                EF.Functions.Like(
+                EF.Functions.ILike(
                     (string)tag.Name,
                     search));
         }

@@ -9,13 +9,15 @@ namespace PersonalSite.Api.Application.Auth.Login;
 public class LoginCommandHandler(
     AppDbContext dbContext,
     IPasswordHasher<User> passwordHasher,
-    JwtTokenGenerator tokenGenerator) : IHandler
+    JwtTokenGenerator tokenGenerator,
+    ILogger<LoginCommandHandler> logger) : IHandler
 {
     public async Task<LoginResponse?> Execute(LoginRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Email) ||
             string.IsNullOrWhiteSpace(request.Password))
         {
+            logger.LogWarning("Login failed because credentials were missing");
             return null;
         }
 
@@ -31,6 +33,7 @@ public class LoginCommandHandler(
 
         if (user is null)
         {
+            logger.LogWarning("Login failed for unknown email {Email}", email);
             return null;
         }
 
@@ -42,8 +45,10 @@ public class LoginCommandHandler(
 
         if (verification == PasswordVerificationResult.Failed)
         {
+            logger.LogWarning("Login failed for user {UserId}", user.Id);
             return null;
         }
+        logger.LogInformation("User {UserId} logged in", user.Id);
 
         return tokenGenerator.Generate(user);
     }

@@ -347,7 +347,7 @@ public static class DatabaseSeeder
             PhoneNumber = new PhoneNumber("+32 485 86 19 15"),
             LinkedInUrl = new Url("https://www.linkedin.com/in/ben-eeckman-11b5a1418/"),
             GitHubUrl = new Url("https://github.com/Priske"),
-            CvUrl = new Url("https://media.licdn.com/dms/image/v2/D4D2DAQFxmFi4ZFKqTQ/profile-treasury-document-images_1280/B4DZ.oA.TgLAAg-/1/1785230256284?e=1785974400&v=beta&t=44k5gW-PATzmzl6C2LCP0HKM2PbM-Cew_lD8t8Sdhlc")
+            CvUrl = new Url("https://media.licdn.com/dms/image/v2/D4D2DAQE-hWDW6A2dxQ/profile-treasury-document-images_1280/B4DZ.ob7WGLAAg-/1/1785237322476?e=1785974400&v=beta&t=ef5BDgiLD4KSDDXdnb7RKmXgKI_O2tONjRe4yoHKq6c")
         };
 
         dbContext.HomepageConfigs.Add(config);

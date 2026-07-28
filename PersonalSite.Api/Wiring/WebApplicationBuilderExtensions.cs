@@ -34,7 +34,7 @@ public static class WebApplicationBuilderExtensions
     private static void RegisterStorage(WebApplicationBuilder builder)
     {
         builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlite(builder.Configuration.GetConnectionString("PersonalSite")));
+            options.UseNpgsql(builder.Configuration.GetConnectionString("PersonalSite")));
 
         builder.Services.AddScoped<IUserRepository, EfUserRepository>();
         builder.Services.AddScoped<ISkillRepository, EfSkillRepository>();

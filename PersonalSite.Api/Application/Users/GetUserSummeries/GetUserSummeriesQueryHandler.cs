@@ -29,8 +29,8 @@ public class GetUserSummeriesQueryHandler(AppDbContext dbContext) : IHandler
             var search = $"%{request.Search.Trim()}%";
 
             query = query.Where(user =>
-                EF.Functions.Like((string)user.Name, search) ||
-                EF.Functions.Like((string)user.Email, search));
+                EF.Functions.ILike((string)user.Name, search) ||
+                EF.Functions.ILike((string)user.Email, search));
         }
 
         var totalItems = await query.CountAsync();

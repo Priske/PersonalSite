@@ -27,9 +27,9 @@ public class GetProjectSummeriesQueryHandler(AppDbContext dbContext) : IHandler
             var search = $"%{request.Search.Trim()}%";
 
             query = query.Where(project =>
-                EF.Functions.Like((string)project.Title, search) ||
-                EF.Functions.Like((string)project.Description, search) ||
-                EF.Functions.Like((string)project.RepositoryUrl, search));
+                EF.Functions.ILike((string)project.Title, search) ||
+                EF.Functions.ILike((string)project.Description, search) ||
+                EF.Functions.ILike((string)project.RepositoryUrl, search));
         }
 
         var totalItems = await query.CountAsync();
