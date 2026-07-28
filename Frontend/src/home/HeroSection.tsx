@@ -1,3 +1,5 @@
+import { useHomePageConfig } from "../homePageConfig/useHomePageConfig";
+
 export function HeroSection() {
   return (
     <section className="home-hero" id="about">

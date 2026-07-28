@@ -1,5 +1,6 @@
 
 using System.Security.Claims;
+using PersonalSite.Api.Application.HomePageConfigs.GetHomePageDetails;
 using PersonalSite.Api.Application.HomePageConfigs.UpdateConfig;
 using PersonalSite.Api.Domain.Exceptions;
 
@@ -10,9 +11,9 @@ public static class HomePageConfigEndpoints
     public static IEndpointRouteBuilder MapHomePageEndpoints(
         this IEndpointRouteBuilder app)
     {
-        // app.MapGet("/home-page-config/", GetHomePageDetails);
+        app.MapGet("/home-page-config", GetHomePagetDetails);
 
-        app.MapPut("/home-page-config/", UpdateHomePageConfig)
+        app.MapPut("/home-page-config", UpdateHomePageConfig)
             .RequireAuthorization();
 
         return app;
@@ -48,5 +49,17 @@ public static class HomePageConfigEndpoints
             return Results.BadRequest(
                 new { error = exception.Message });
         }
+    }
+
+
+    public static async Task<IResult> GetHomePagetDetails(
+    GetHomePageDetailsQueryHandler query,
+    CancellationToken cancellationToken)
+    {
+        var project = await query.Execute(cancellationToken);
+
+        return project is null
+            ? Results.NotFound()
+            : Results.Ok(project);
     }
 }

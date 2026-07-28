@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using PersonalSite.Api.Domain.Actors;
-using PersonalSite.Api.Domain.Projects;
 using PersonalSite.Api.Storage;
 
 namespace PersonalSite.Api.Application.Projects.GetProjectDetails;
