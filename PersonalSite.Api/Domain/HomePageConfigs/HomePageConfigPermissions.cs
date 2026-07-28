@@ -15,7 +15,7 @@ public static class HomePageConfigPermissions
         }
 
         throw new ForbiddenOperationException(
-            "This actor cannot manage projects.");
+            "This actor cannot manage Home page configurations.");
     }
 
     public static void EnsureCanViewDirectory(Actor actor)
@@ -26,6 +26,6 @@ public static class HomePageConfigPermissions
         }
 
         throw new ForbiddenOperationException(
-            "This actor cannot view projects.");
+            "This actor cannot view Home page configurations.");
     }
 }

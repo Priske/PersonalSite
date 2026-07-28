@@ -1,19 +1,33 @@
-namespace PersonalSite.Api.Application.Projects.GetHomePageDetails;
+namespace PersonalSite.Api.Application.HomePageConfigs.GetHomePageDetails;
 
-public class GetHomePageConfigDetailsResponse
+public sealed class GetHomePageConfigDetailsResponse
 {
-    public required string HeroEyebrow { get; set; }
-    public required string HeroHeading { get; set; }
-    public required string HeroSummary { get; set; }
+    public required string HeroBanner { get; init; }
+    public required string HeroFirstName { get; init; }
+    public required string HeroLastName { get; init; }
+    public required string HeroRole { get; init; }
 
-    public required string ContactHeading { get; set; }
-    public required string ContactDescription { get; set; }
+    public required string HeroEyebrow { get; init; }
+    public required string HeroHeading { get; init; }
+    public required string HeroSummary { get; init; }
 
-    public required string Email { get; set; }
-    public string? PhoneNumber { get; set; }
+    public required string HeroPrimaryActionLabel { get; init; }
+    public required string HeroSecondaryActionLabel { get; init; }
 
-    public string? LinkedInUrl { get; set; }
-    public string? GitHubUrl { get; set; }
-    public string? CvUrl { get; set; }
+    public required string ContactSectionNumber { get; init; }
+    public required string ContactSectionEyebrow { get; init; }
+    public required string ContactSectionHeading { get; init; }
 
+    public required string ContactEyebrow { get; init; }
+    public required string ContactHeading { get; init; }
+    public required string ContactDescription { get; init; }
+
+    public required string ContactEmailActionLabel { get; init; }
+    public required string ContactLoginActionLabel { get; init; }
+
+    public required string Email { get; init; }
+    public string? PhoneNumber { get; init; }
+    public string? LinkedInUrl { get; init; }
+    public string? GitHubUrl { get; init; }
+    public string? CvUrl { get; init; }
 }

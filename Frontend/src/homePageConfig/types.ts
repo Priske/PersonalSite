@@ -1,19 +1,33 @@
+export type GetHomePageConfigDetailsResponse = {
+  heroBanner: string;
+  heroFirstName: string;
+  heroLastName: string;
+  heroRole: string;
 
-export type GetHomePageConfigDetailsResponse= {
-    heroEyeBrow : string;
-    heroHeading: string;
-    heroSummary: string;
+  heroEyebrow: string;
+  heroHeading: string;
+  heroSummary: string;
 
-    contactHeading: string;
-    contactDescription:string;
+  heroPrimaryActionLabel: string;
+  heroSecondaryActionLabel: string;
 
-    email:string;
-    phonenumber?: string;
+  contactSectionNumber: string;
+  contactSectionEyebrow: string;
+  contactSectionHeading: string;
 
-    linkedInUrl?: string;
-    gitHubUrl?: string;
-    CvUrl?: string;
+  contactEyebrow: string;
+  contactHeading: string;
+  contactDescription: string;
 
+  contactEmailActionLabel: string;
+  contactLoginActionLabel: string;
 
+  email: string;
+  phoneNumber?: string;
+  linkedInUrl?: string;
+  gitHubUrl?: string;
+  cvUrl?: string;
+};
 
-}
+export type UpdateHomePageConfigRequest =
+  GetHomePageConfigDetailsResponse;

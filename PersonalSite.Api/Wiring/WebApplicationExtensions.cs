@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using PersonalSite.Api.Domain.Users;
 using PersonalSite.Api.Endpoints.Auth;
+using PersonalSite.Api.Endpoints.HomePageConfigs;
 using PersonalSite.Api.Endpoints.Projects;
 using PersonalSite.Api.Endpoints.Skills;
 using PersonalSite.Api.Endpoints.Users;
@@ -39,6 +40,7 @@ public static class WebApplicationExtensions
 
                 DatabaseSeeder.SeedSkills(dbContext);
                 DatabaseSeeder.SeedProjects(dbContext, projectFuzzr, DatabaseSeeder.SeedTags(dbContext, tagFuzzr));
+                DatabaseSeeder.SeedHomePageConfig(dbContext);
 
 
             }
@@ -55,6 +57,7 @@ public static class WebApplicationExtensions
         app.MapSkillEndpoints();
         app.MapSkillGroupEndpoints();
         app.MapProjectEndpoints();
+        app.MapHomePageEndpoints();
 
 
         return app;

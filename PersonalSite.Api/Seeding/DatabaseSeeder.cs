@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Identity;
+using PersonalSite.Api.Domain.Common;
+using PersonalSite.Api.Domain.HomePageConfigs;
 using PersonalSite.Api.Domain.Skills;
 using PersonalSite.Api.Domain.Tags;
 using PersonalSite.Api.Domain.Users;
@@ -268,6 +270,87 @@ public static class DatabaseSeeder
             tags);
 
         dbContext.Projects.AddRange(projects);
+        dbContext.SaveChanges();
+    }
+
+    public static void SeedHomePageConfig(AppDbContext dbContext)
+    {
+        if (dbContext.HomepageConfigs.Any())
+        {
+            return;
+        }
+
+        var config = new HomePageConfig
+        {
+            HeroBanner = new HomePageText(
+                "Software developer",
+                "Hero Banner"),
+
+            HeroFirstName = new HomePageText(
+                "Ben",
+                "Hero First Name"),
+
+            HeroLastName = new HomePageText(
+                "Eeckman",
+                "Hero Last Name"),
+
+            HeroRole = new HomePageText(
+                "Junior software developer",
+                "Hero Role"),
+
+            HeroEyebrow = new HeroEyebrow(
+                "Practical software. Clear structure."),
+
+            HeroHeading = new HeroHeading(
+                "I build maintainable applications for the web."),
+
+            HeroSummary = new HeroSummary(
+                "I work with C#, ASP.NET Core, React, TypeScript and SQL to create software that is understandable, useful and easy to develop further."),
+
+            HeroPrimaryActionLabel = new HomePageText(
+                "View projects",
+                "Hero Primary Action Label"),
+
+            HeroSecondaryActionLabel = new HomePageText(
+                "Contact me",
+                "Hero Secondary Action Label"),
+
+            ContactSectionNumber = new SectionNumber("03"),
+
+            ContactSectionEyebrow = new HomePageText(
+                "Get in touch",
+                "Contact Section Eyebrow"),
+
+            ContactSectionHeading = new HomePageText(
+                "Contact",
+                "Contact Section Heading"),
+
+            ContactEyebrow = new HomePageText(
+                "Have a project or opportunity?",
+                "Contact Eyebrow"),
+
+            ContactHeading = new ContactHeading(
+                "Let's talk."),
+
+            ContactDescription = new ContactDescription(
+                "I am interested in junior software-development roles, practical projects and opportunities to continue developing my skills."),
+
+            ContactEmailActionLabel = new HomePageText(
+                "Send an email",
+                "Contact Email Action Label"),
+
+            ContactLoginActionLabel = new HomePageText(
+                "Account login",
+                "Contact Login Action Label"),
+
+            Email = new EmailAddress("eeckman_ben@hotmail.com"),
+            PhoneNumber = new PhoneNumber("+32 485 86 19 15"),
+            LinkedInUrl = new Url("https://www.linkedin.com/in/ben-eeckman-11b5a1418/"),
+            GitHubUrl = new Url("https://github.com/Priske"),
+            CvUrl = new Url("https://media.licdn.com/dms/image/v2/D4D2DAQFxmFi4ZFKqTQ/profile-treasury-document-images_1280/B4DZ.oA.TgLAAg-/1/1785230256284?e=1785974400&v=beta&t=44k5gW-PATzmzl6C2LCP0HKM2PbM-Cew_lD8t8Sdhlc")
+        };
+
+        dbContext.HomepageConfigs.Add(config);
         dbContext.SaveChanges();
     }
 }

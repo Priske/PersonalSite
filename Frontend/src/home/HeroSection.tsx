@@ -1,50 +1,60 @@
-import { useHomePageConfig } from "../homePageConfig/useHomePageConfig";
+import type {
+  GetHomePageConfigDetailsResponse,
+} from "../homePageConfig/types";
 
-export function HeroSection() {
+type HeroSectionProps = {
+  config: GetHomePageConfigDetailsResponse;
+};
+
+export function HeroSection({ config }: HeroSectionProps) {
   return (
     <section className="home-hero" id="about">
       <div className="home-hero__identity">
-        <p className="section-banner">Software developer</p>
+        <p className="section-banner">
+          {config.heroBanner}
+        </p>
 
         <h1>
-          Ben
+          {config.heroFirstName}
           <br />
-          Eeckman
+          {config.heroLastName}
         </h1>
 
         <p className="home-hero__location">
-          Junior software developer
+          {config.heroRole}
         </p>
       </div>
 
       <div className="home-hero__content">
-        <div className="home-hero__connector" aria-hidden="true">
+        <div
+          className="home-hero__connector"
+          aria-hidden="true"
+        >
           <span className="home-hero__connector-dot" />
           <span className="home-hero__connector-line" />
         </div>
 
         <div className="home-hero__copy">
           <p className="home-hero__eyebrow">
-            Practical software. Clear structure.
+            {config.heroEyebrow}
           </p>
 
-          <h2>
-            I build maintainable applications for the web.
-          </h2>
+          <h2>{config.heroHeading}</h2>
 
           <p className="home-hero__summary">
-            I work with C#, ASP.NET Core, React, TypeScript and SQL to
-            create software that is understandable, useful and easy to
-            develop further.
+            {config.heroSummary}
           </p>
 
           <div className="home-hero__actions">
             <a className="button" href="#projects">
-              View projects
+              {config.heroPrimaryActionLabel}
             </a>
 
-            <a className="button button--secondary" href="#contact">
-              Contact me
+            <a
+              className="button button--secondary"
+              href="#contact"
+            >
+              {config.heroSecondaryActionLabel}
             </a>
           </div>
         </div>

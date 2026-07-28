@@ -442,12 +442,16 @@
 .contact-panel {
   grid-column: 2;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
-  gap: var(--space-5);
-  padding: clamp(2rem, 5vw, 4rem);
+  grid-template-columns: minmax(0, 1fr) 13rem;
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+  padding: clamp(2.5rem, 5vw, 4.5rem);
   color: var(--color-paper);
   background: var(--color-ink);
+}
+
+.contact-panel__content {
+  min-width: 0;
 }
 
 .contact-panel__eyebrow {
@@ -462,23 +466,63 @@
 .contact-panel h3 {
   margin-bottom: var(--space-4);
   color: inherit;
-  font-size: clamp(3rem, 7vw, 6rem);
+  font-size: clamp(3rem, 6vw, 5.5rem);
   line-height: 0.85;
 }
 
-.contact-panel p {
+.contact-panel__description {
   max-width: 38rem;
   color: rgb(255 255 255 / 0.72);
+}
+
+.contact-panel__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: var(--space-5);
+}
+
+.contact-panel__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  color: var(--color-paper);
+  background: transparent;
+  border: 1px solid rgb(255 255 255 / 0.35);
+  border-radius: 50%;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.contact-panel__link:hover {
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border-color: var(--color-paper);
+  transform: translateY(-2px);
+}
+
+.contact-panel__link:focus-visible {
+  outline: 2px solid var(--color-paper);
+  outline-offset: 3px;
+}
+
+.contact-panel__link svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: currentColor;
 }
 
 .contact-panel__actions {
   display: grid;
   gap: var(--space-3);
-  min-width: 12rem;
+  width: 100%;
 }
 
 .contact-panel .button {
+  width: 100%;
   color: var(--color-ink);
+  text-align: center;
   background: var(--color-paper);
   border-color: var(--color-paper);
 }
@@ -493,6 +537,31 @@
   background: transparent;
 }
 
+.contact-panel .button--secondary:hover {
+  color: var(--color-ink);
+  background: var(--color-paper);
+}
+
+@media (max-width: 60rem) {
+  .contact-panel {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .contact-panel__actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 36rem) {
+  .contact-panel {
+    padding: 2rem;
+  }
+
+  .contact-panel__actions {
+    grid-template-columns: 1fr;
+  }
+}
 /* -----------------------------
    Responsive
 ----------------------------- */
