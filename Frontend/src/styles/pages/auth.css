@@ -265,11 +265,12 @@
   justify-content: space-between;
 }
 
+
 /* --------------------------------
-   Mobile
+   Mobile / smaller screens
 -------------------------------- */
-/*
-@media (max-width: 780px) {
+
+@media (max-width: 900px) {
   .login-page,
   .register-page {
     grid-template-columns: 1fr;
@@ -277,19 +278,20 @@
 
   .login-page__intro,
   .register-page__intro {
-    min-height: 24rem;
+    min-height: 22rem;
+    padding: clamp(2rem, 8vw, 4rem);
   }
 
   .login-page__intro h1,
   .register-page__intro h1 {
-    font-size: clamp(3rem, 14vw, 4.25rem);
+    font-size: clamp(3rem, 12vw, 4.5rem);
   }
 
   .login-page__content,
   .register-page__content {
     display: block;
 
-    padding: var(--space-5) var(--space-3);
+    padding: 3.75rem var(--space-3) var(--space-5);
 
     border-top: 3px solid var(--color-ink);
     border-left: 0;
@@ -301,36 +303,66 @@
     top: 0;
     left: var(--space-4);
 
-    width: 1rem;
-    height: 1rem;
+    width: 1.4rem;
+    height: 3.75rem;
 
     margin-top: 0;
   }
 
   .login-page__connector-line,
   .register-page__connector-line {
-    display: none;
+    top: 0;
+    left: 50%;
+
+    width: 1px;
+    height: 100%;
+
+    transform: translateX(-50%);
   }
 
   .login-page__connector-dot,
   .register-page__connector-dot {
+    top: 0;
+    left: 50%;
+
     width: 1rem;
+
+    transform: translate(-50%, -50%);
   }
 
   .login-card,
   .register-card {
     width: 100%;
+    max-width: 36rem;
+    margin-inline: auto;
   }
 
   .login-form__actions,
   .register-form__actions {
-    flex-direction: column;
-    align-items: stretch;
+    width: 100%;
   }
 
-  .login-form__actions .button,
-  .register-form__actions .button {
+  .login-form__submit,
+  .register-form__submit {
     width: 100%;
   }
 }
-  */
+
+@media (max-width: 520px) {
+  .login-page__intro,
+  .register-page__intro {
+    min-height: 19rem;
+  }
+
+  .login-page__content,
+  .register-page__content {
+    padding-inline: 1rem;
+  }
+
+  .login-card__header,
+  .register-card__header,
+  .login-form,
+  .register-form {
+    padding: 1.5rem;
+  }
+}
