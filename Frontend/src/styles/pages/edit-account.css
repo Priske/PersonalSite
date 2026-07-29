@@ -9,18 +9,22 @@
   grid-template-columns:
     minmax(250px, var(--sidebar-width))
     minmax(0, 1fr);
+  min-width: 0;
   min-height: calc(100vh - 5rem);
 }
 
 .edit-account-page__intro {
   display: grid;
   align-content: center;
+  min-width: 0;
   padding: clamp(2rem, 6vw, 6rem);
   background: var(--color-panel);
 }
 
 .edit-account-page__intro h1 {
+  max-width: 100%;
   margin-bottom: var(--space-5);
+  overflow-wrap: anywhere;
 }
 
 .edit-account-page__intro-text {
@@ -31,11 +35,13 @@
 
 .edit-account-page__back-link {
   width: fit-content;
+  max-width: 100%;
   color: var(--color-ink);
   font-family: var(--font-display);
   font-size: 0.78rem;
   font-weight: 900;
   letter-spacing: 0.08em;
+  overflow-wrap: anywhere;
   text-decoration: none;
   text-transform: uppercase;
   border-bottom: 1px solid var(--color-ink);
@@ -49,6 +55,7 @@
     minmax(0, 44rem)
     minmax(3rem, 1fr);
   align-items: center;
+  min-width: 0;
   padding-block: clamp(2rem, 6vw, 6rem);
   border-left: 3px solid var(--color-ink);
 }
@@ -62,6 +69,7 @@
   grid-column: 1;
   align-self: start;
   width: 100%;
+  min-width: 0;
   height: 1.4rem;
   margin-top: clamp(5rem, 8vw, 6.5rem);
   pointer-events: none;
@@ -95,26 +103,34 @@
 .edit-account-card {
   grid-column: 2;
   width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   background: var(--color-paper);
   border: 2px solid var(--color-ink);
   box-shadow: var(--shadow-soft);
 }
 
 .edit-account-card__header {
+  min-width: 0;
   padding: clamp(1.75rem, 4vw, 3rem);
+  box-sizing: border-box;
   border-bottom: var(--border-thin);
 }
 
 .edit-account-card__header h2 {
+  max-width: 100%;
   margin: 0;
   font-size: clamp(2.25rem, 5vw, 4rem);
+  overflow-wrap: anywhere;
 }
 
 .edit-account-card__eyebrow {
   display: inline-flex;
   width: fit-content;
+  max-width: 100%;
   margin-bottom: var(--space-3);
   padding: 0.5rem 1rem;
+  box-sizing: border-box;
   color: var(--color-paper);
   background: var(--color-ink);
   border-radius: var(--radius-pill);
@@ -123,6 +139,7 @@
   font-weight: 900;
   letter-spacing: 0.04em;
   line-height: 1;
+  overflow-wrap: anywhere;
   text-transform: uppercase;
 }
 
@@ -131,27 +148,35 @@
 ----------------------------- */
 
 .edit-account-form {
+  min-width: 0;
   padding: clamp(1.75rem, 4vw, 3rem);
+  box-sizing: border-box;
 }
 
 .edit-account-form__field {
   display: grid;
   gap: var(--space-2);
+  min-width: 0;
   margin-bottom: var(--space-4);
 }
 
 .edit-account-form__field label {
+  min-width: 0;
   font-family: var(--font-display);
   font-size: 0.8rem;
   font-weight: 900;
   letter-spacing: 0.08em;
+  overflow-wrap: anywhere;
   text-transform: uppercase;
 }
 
 .edit-account-form__field input {
+  display: block;
   width: 100%;
+  min-width: 0;
   min-height: 3.5rem;
   padding: 0.8rem 1rem;
+  box-sizing: border-box;
   color: var(--color-ink);
   background: var(--color-paper);
   border: 1px solid var(--color-ink);
@@ -167,6 +192,8 @@
 .edit-account-form__messages {
   display: grid;
   gap: var(--space-2);
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .edit-account-form__messages:empty {
@@ -175,13 +202,16 @@
 
 .edit-account-form__actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
   gap: var(--space-3);
+  min-width: 0;
   margin-top: var(--space-5);
 }
 
 .edit-account-form__actions .button {
   min-width: 9rem;
+  box-sizing: border-box;
 }
 
 /* -----------------------------
@@ -190,47 +220,60 @@
 
 .edit-account-danger {
   display: block;
+  min-width: 0;
   padding: clamp(1.75rem, 4vw, 3rem);
+  box-sizing: border-box;
   border-top: 2px solid var(--color-ink);
 }
 
 .edit-account-danger > div:first-child {
   max-width: 32rem;
+  min-width: 0;
 }
 
 .edit-account-danger h3 {
+  max-width: 100%;
   margin-bottom: var(--space-2);
   font-size: clamp(1.5rem, 3vw, 2rem);
+  overflow-wrap: anywhere;
 }
 
 .edit-account-danger p {
+  max-width: 100%;
   margin-bottom: 0;
   color: var(--color-muted);
+  overflow-wrap: anywhere;
 }
 
 .edit-account-danger__eyebrow {
+  max-width: 100%;
   margin-bottom: var(--space-2) !important;
   color: var(--color-ink) !important;
   font-family: var(--font-display);
   font-size: 0.75rem;
   font-weight: 900;
   letter-spacing: 0.1em;
+  overflow-wrap: anywhere;
   text-transform: uppercase;
 }
 
 .edit-account-danger__action {
+  min-width: 0;
   margin-top: var(--space-4);
 }
 
 .delete-user-trigger {
+  max-width: 100%;
   min-height: 3rem;
   padding-inline: 1.25rem;
+  box-sizing: border-box;
   color: var(--color-paper);
   background: var(--color-ink);
   border: 2px solid var(--color-ink);
   border-radius: var(--radius-pill);
   font-family: var(--font-display);
   font-weight: 900;
+  overflow-wrap: anywhere;
   cursor: pointer;
 }
 
@@ -246,50 +289,62 @@
 .delete-user-confirmation {
   display: grid;
   gap: var(--space-4);
+  min-width: 0;
   margin-top: var(--space-4);
   padding: clamp(1.25rem, 3vw, 2rem);
+  box-sizing: border-box;
   background: var(--color-panel);
   border: 1px solid var(--color-ink);
 }
 
 .delete-user-confirmation__content {
   max-width: 34rem;
+  min-width: 0;
 }
 
 .delete-user-confirmation__eyebrow {
+  max-width: 100%;
   margin-bottom: var(--space-2) !important;
   color: var(--color-ink) !important;
   font-family: var(--font-display);
   font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0.1em;
+  overflow-wrap: anywhere;
   text-transform: uppercase;
 }
 
 .delete-user-confirmation h3 {
+  max-width: 100%;
   margin-bottom: var(--space-2);
   font-size: clamp(1.8rem, 4vw, 3rem);
   line-height: 0.95;
+  overflow-wrap: anywhere;
 }
 
 .delete-user-confirmation__description {
   max-width: 32rem;
   color: var(--color-muted);
+  overflow-wrap: anywhere;
 }
 
 .delete-user-confirmation__actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
+  min-width: 0;
 }
 
 .delete-user-confirmation__actions button {
+  max-width: 100%;
   min-height: 3rem;
   padding-inline: 1.25rem;
+  box-sizing: border-box;
   border: 2px solid var(--color-ink);
   border-radius: var(--radius-pill);
   font-family: var(--font-display);
   font-weight: 900;
+  overflow-wrap: anywhere;
   cursor: pointer;
 }
 
@@ -311,6 +366,8 @@
 .delete-user-confirmation__messages {
   display: grid;
   gap: var(--space-3);
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .delete-user-confirmation__messages:empty {
@@ -321,6 +378,7 @@
   display: grid;
   gap: var(--space-3);
   justify-items: start;
+  min-width: 0;
 }
 
 /* -----------------------------
@@ -329,17 +387,22 @@
 
 .edit-account-status {
   display: grid;
+  min-width: 0;
   min-height: calc(100vh - 5rem);
   place-items: center;
   padding: var(--space-5);
+  box-sizing: border-box;
   background: var(--color-panel);
 }
 
 .edit-account-status__message {
+  max-width: 100%;
   margin: 0;
   font-family: var(--font-display);
   font-size: clamp(1.5rem, 4vw, 2.5rem);
   font-weight: 900;
+  overflow-wrap: anywhere;
+  text-align: center;
   text-transform: uppercase;
 }
 
@@ -349,16 +412,19 @@
 
 @media (max-width: 900px) {
   .edit-account-page {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .edit-account-page__intro {
+    min-width: 0;
     min-height: 24rem;
   }
 
   .edit-account-page__content {
     display: block;
+    min-width: 0;
     padding: 3.75rem var(--space-3) var(--space-5);
+    box-sizing: border-box;
     border-top: 3px solid var(--color-ink);
     border-left: 0;
   }
@@ -367,24 +433,19 @@
     position: absolute;
     top: 0;
     left: var(--space-4);
-
     width: 1.4rem;
     height: 3.75rem;
-
     margin-top: 0;
     pointer-events: none;
   }
 
   .edit-account-page__connector-line {
-    display: block;
-
     position: absolute;
     top: 0;
     left: 50%;
-
+    display: block;
     width: 1px;
     height: 100%;
-
     transform: translateX(-50%);
   }
 
@@ -392,14 +453,14 @@
     position: absolute;
     top: 0;
     left: 50%;
-
     width: 1rem;
-
     transform: translate(-50%, -50%);
   }
 
   .edit-account-card {
     width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .edit-account-form__actions {
@@ -410,9 +471,12 @@
   .delete-user-trigger,
   .delete-user-confirmation__actions button {
     width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .delete-user-confirmation__actions {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
   }
 }

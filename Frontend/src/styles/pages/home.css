@@ -89,6 +89,7 @@
 
 .home-hero__copy {
   grid-column: 2;
+  min-width: 0;
   padding-block: clamp(4rem, 8vw, 8rem);
 }
 
@@ -107,10 +108,14 @@
 }
 
 .home-hero__copy h2 {
+  width: 100%;
   max-width: 11ch;
   margin-bottom: var(--space-5);
-  font-size: clamp(3rem, 7vw, 6.5rem);
+
+  font-size: clamp(3rem, 6vw, 6.5rem);
   line-height: 0.9;
+
+  overflow-wrap: normal;
 }
 
 .home-hero__summary {
@@ -583,6 +588,32 @@
   .contact-panel {
     grid-template-columns: 1fr;
     align-items: start;
+  }
+}
+
+/* --------------------------------
+   Smaller desktop screens
+-------------------------------- */
+
+@media (max-width: 1200px) and (min-width: 901px) {
+  .home-hero__content {
+    grid-template-columns:
+      minmax(3rem, 0.55fr)
+      minmax(0, 1fr)
+      minmax(2rem, 0.35fr);
+  }
+
+  .home-hero__identity {
+    padding: clamp(2rem, 4vw, 4rem);
+  }
+
+  .home-hero__identity h1 {
+    font-size: clamp(3.25rem, 5.4vw, 4.75rem);
+  }
+
+  .home-hero__copy h2 {
+    max-width: 12ch;
+    font-size: clamp(3rem, 5.6vw, 5.25rem);
   }
 }
 /* --------------------------------

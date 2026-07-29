@@ -415,6 +415,33 @@
   text-transform: uppercase;
 }
 /* --------------------------------
+   Smaller desktop screens
+-------------------------------- */
+
+@media (max-width: 1200px) and (min-width: 901px) {
+  .edit-user-page {
+    grid-template-columns:
+      minmax(280px, 36%)
+      minmax(0, 64%);
+  }
+
+  .edit-user-page__intro {
+    padding: clamp(2rem, 4vw, 4rem);
+  }
+
+  .edit-user-page__intro h1 {
+    max-width: 7ch;
+    font-size: clamp(3rem, 4.4vw, 4.25rem);
+  }
+
+  .edit-user-page__content {
+    grid-template-columns:
+      minmax(3rem, 0.5fr)
+      minmax(0, 1fr)
+      minmax(2rem, 0.35fr);
+  }
+}
+/* --------------------------------
    Mobile / smaller screens
 -------------------------------- */
 
@@ -842,7 +869,37 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+/* --------------------------------
+   Smaller desktop screens
+-------------------------------- */
 
+@media (max-width: 1200px) and (min-width: 901px) {
+  .user-list-page {
+    grid-template-columns:
+      minmax(280px, 36%)
+      minmax(0, 64%);
+  }
+
+  .user-list-page__intro {
+    padding: clamp(2rem, 4vw, 4rem);
+  }
+
+  .user-list-page__intro h1 {
+    max-width: 7ch;
+    font-size: clamp(3rem, 4.4vw, 4.25rem);
+  }
+
+  .user-list-page__content {
+    grid-template-columns:
+      minmax(3rem, 0.5fr)
+      minmax(0, 1fr)
+      minmax(2rem, 0.35fr);
+  }
+
+  .user-list-card__header h2 {
+    font-size: clamp(2.4rem, 3.6vw, 3.5rem);
+  }
+}
 /* --------------------------------
    Mobile / smaller screens
 -------------------------------- */

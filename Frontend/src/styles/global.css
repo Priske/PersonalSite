@@ -128,3 +128,17 @@ p {
     animation-iteration-count: 1 !important;
   }
 }
+/* --------------------------------
+   Chromium display font correction
+-------------------------------- */
+
+@supports (-webkit-appearance: none) and (not (-moz-appearance: none)) {
+  h1,
+  h2,
+  h3,
+  .display-text {
+    width: 116%;
+    transform: scaleX(0.86);
+    transform-origin: left center;
+  }
+}
