@@ -30,13 +30,12 @@ public static class WebApplicationExtensions
         var passwordHasher =
             scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
 
-        if (app.Environment.IsProduction())
-        {
-            DatabaseSeeder.SeedInitialAdministrator(
-                dbContext,
-                app.Configuration,
-                passwordHasher);
-        }
+
+        DatabaseSeeder.SeedInitialAdministrator(
+            dbContext,
+            app.Configuration,
+            passwordHasher);
+
         DatabaseSeeder.SeedHomePageConfig(dbContext);
 
         if (app.Environment.IsDevelopment() && app.Configuration.GetValue<bool>("SeedDatabase"))

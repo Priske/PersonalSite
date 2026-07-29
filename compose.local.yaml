@@ -43,7 +43,9 @@ services:
       Jwt__SigningKey: ${JWT_SIGNING_KEY}
       Jwt__Issuer: PersonalSite.Api
       Jwt__Audience: PersonalSite.Client
-      DevelopmentAdmin__Password: ${DEVELOPMENT_ADMIN_PASSWORD}
+      InitialAdmin__Name: ${INITIAL_ADMIN_NAME}
+      InitialAdmin__Email: ${INITIAL_ADMIN_EMAIL}
+      InitialAdmin__Password: ${INITIAL_ADMIN_PASSWORD}
     ports:
       - "8080:8080"
 
