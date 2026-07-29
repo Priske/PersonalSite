@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: personal_site
       POSTGRES_USER: personal_site
-      POSTGRES_PASSWORD: local-development-password
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5433:5432"
     volumes:
@@ -31,22 +31,22 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_ENVIRONMENT: Development
 
       ConnectionStrings__PersonalSite: >
         Host=postgres;
         Port=5432;
         Database=personal_site;
         Username=personal_site;
-        Password=local-development-password
+        Password=${POSTGRES_PASSWORD}
 
-      Jwt__SigningKey: replace-this-with-a-long-local-development-key
+      Jwt__SigningKey: ${JWT_SIGNING_KEY}
       Jwt__Issuer: PersonalSite.Api
       Jwt__Audience: PersonalSite.Client
-
-      DevelopmentAdmin__Password: replace-this-with-a-local-admin-password
+      DevelopmentAdmin__Password: ${DEVELOPMENT_ADMIN_PASSWORD}
     ports:
       - "8080:8080"
 
 volumes:
   personal-site-postgres-data:
+  

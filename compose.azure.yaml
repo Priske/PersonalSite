@@ -1,0 +1,28 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: PersonalSite.Api/Dockerfile
+    container_name: personal-site-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+
+      ConnectionStrings__PersonalSite: >
+        Host=ben-personal-site-db.postgres.database.azure.com;
+        Port=5432;
+        Database=personal_site;
+        Username=personal_site_admin_Ben_Eeckman;
+        Password=${AZURE_DB_PASSWORD};
+        SSL Mode=Require;
+        Trust Server Certificate=false
+
+      Jwt__SigningKey: ${JWT_SIGNING_KEY}
+      Jwt__Issuer: PersonalSite.Api
+      Jwt__Audience: PersonalSite.Client
+
+      InitialAdmin__Name: ${INITIAL_ADMIN_NAME}
+      InitialAdmin__Email: ${INITIAL_ADMIN_EMAIL}
+      InitialAdmin__Password: ${INITIAL_ADMIN_PASSWORD}
+    ports:
+      - "8080:8080"

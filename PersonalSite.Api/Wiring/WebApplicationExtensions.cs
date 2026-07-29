@@ -27,19 +27,27 @@ public static class WebApplicationExtensions
         dbContext.Database.Migrate();
 
         logger.LogInformation("Database migrations completed");
+        var passwordHasher =
+            scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
+
+        if (app.Environment.IsProduction())
+        {
+            DatabaseSeeder.SeedInitialAdministrator(
+                dbContext,
+                app.Configuration,
+                passwordHasher);
+        }
+        DatabaseSeeder.SeedHomePageConfig(dbContext);
 
         if (app.Environment.IsDevelopment() && app.Configuration.GetValue<bool>("SeedDatabase"))
         {
-            var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
             var userFuzzr = scope.ServiceProvider.GetRequiredService<UserFuzzr>();
             var projectFuzzr = scope.ServiceProvider.GetRequiredService<ProjectFuzzr>();
             var tagFuzzr = scope.ServiceProvider.GetRequiredService<TagFuzzr>();
 
             DatabaseSeeder.SeedUsers(dbContext, userFuzzr, count: 50);
-            DatabaseSeeder.SeedAdministrator(dbContext, app.Configuration, passwordHasher);
             DatabaseSeeder.SeedSkills(dbContext);
             DatabaseSeeder.SeedProjects(dbContext, projectFuzzr, DatabaseSeeder.SeedTags(dbContext, tagFuzzr));
-            DatabaseSeeder.SeedHomePageConfig(dbContext);
         }
 
         app.UseSwagger();

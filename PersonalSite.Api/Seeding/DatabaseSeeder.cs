@@ -32,16 +32,16 @@ public static class DatabaseSeeder
         dbContext.SaveChanges();
     }
 
-    public static void SeedAdministrator(
+    public static void SeedInitialAdministrator(
         AppDbContext dbContext,
         IConfiguration configuration,
         IPasswordHasher<User> passwordHasher)
     {
         var settings = configuration
-            .GetRequiredSection(DevelopmentAdminSettings.SectionName)
-            .Get<DevelopmentAdminSettings>()
+            .GetRequiredSection(InitialAdminSettings.SectionName)
+            .Get<InitialAdminSettings>()
             ?? throw new InvalidOperationException(
-                "DevelopmentAdmin settings are missing.");
+                "InitialAdmin settings are missing.");
 
         if (string.IsNullOrWhiteSpace(settings.Password))
         {
@@ -51,13 +51,13 @@ public static class DatabaseSeeder
         if (string.IsNullOrWhiteSpace(settings.Name))
         {
             throw new InvalidOperationException(
-                "DevelopmentAdmin:Name is missing.");
+                "InitialAdmin:Name is missing.");
         }
 
         if (string.IsNullOrWhiteSpace(settings.Email))
         {
             throw new InvalidOperationException(
-                "DevelopmentAdmin:Email is missing.");
+                "InitialAdmin:Email is missing.");
         }
 
         var email = new UserEmail(settings.Email);
@@ -82,9 +82,6 @@ public static class DatabaseSeeder
             passwordHasher.HashPassword(
                 administrator,
                 settings.Password);
-
-        Console.WriteLine(
-            $"Admin email: {settings.Email}");
 
         dbContext.Users.Add(administrator);
         dbContext.SaveChanges();

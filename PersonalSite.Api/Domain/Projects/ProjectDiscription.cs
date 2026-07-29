@@ -5,7 +5,7 @@ namespace PersonalSite.Api.Domain.Projects;
 public sealed record ProjectDescription
 {
     public const int MinLength = 2;
-    public const int MaxLength = 100;
+    public const int MaxLength = 500;
 
     public string Value { get; }
 
