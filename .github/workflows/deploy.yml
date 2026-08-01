@@ -1,0 +1,139 @@
+name: Build and deploy Personal Site
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: production-deployment
+  cancel-in-progress: false
+
+env:
+  REGISTRY: beneeckmanpersonalsite.azurecr.io
+  IMAGE_NAME: personal-site
+  CONTAINER_APP_NAME: ben-personal-site
+  RESOURCE_GROUP: ben-personal-site-rg
+
+jobs:
+  test:
+    name: Test application
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore PersonalSite.sln
+
+      - name: Build backend
+        run: >
+          dotnet build PersonalSite.sln
+          --configuration Release
+          --no-restore
+
+      - name: Run backend tests
+        run: >
+          dotnet test PersonalSite.sln
+          --configuration Release
+          --no-build
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: Frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: Frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: Frontend
+        run: npm run build
+
+  deploy:
+    name: Deploy to Azure
+    runs-on: ubuntu-latest
+    needs: test
+
+    environment:
+      name: production
+      url: https://beneeckman.be
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Log in to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Log in to Azure Container Registry
+        run: az acr login --name beneeckmanpersonalsite
+
+      - name: Build container image
+        run: |
+          docker build \
+            --file PersonalSite.Api/Dockerfile \
+            --tag "${REGISTRY}/${IMAGE_NAME}:${GITHUB_SHA}" \
+            --tag "${REGISTRY}/${IMAGE_NAME}:latest" \
+            .
+
+      - name: Push container image
+        run: |
+          docker push "${REGISTRY}/${IMAGE_NAME}:${GITHUB_SHA}"
+          docker push "${REGISTRY}/${IMAGE_NAME}:latest"
+
+      - name: Deploy container image
+        run: |
+          az containerapp update \
+            --name "${CONTAINER_APP_NAME}" \
+            --resource-group "${RESOURCE_GROUP}" \
+            --image "${REGISTRY}/${IMAGE_NAME}:${GITHUB_SHA}"
+
+      - name: Verify deployed image
+        run: |
+          DEPLOYED_IMAGE=$(az containerapp show \
+            --name "${CONTAINER_APP_NAME}" \
+            --resource-group "${RESOURCE_GROUP}" \
+            --query "properties.template.containers[0].image" \
+            --output tsv)
+
+          EXPECTED_IMAGE="${REGISTRY}/${IMAGE_NAME}:${GITHUB_SHA}"
+
+          echo "Expected: ${EXPECTED_IMAGE}"
+          echo "Deployed: ${DEPLOYED_IMAGE}"
+
+          if [ "${DEPLOYED_IMAGE}" != "${EXPECTED_IMAGE}" ]; then
+            echo "The Container App is not using the expected image."
+            exit 1
+          fi
+
+      - name: Verify website
+        run: |
+          curl \
+            --fail \
+            --show-error \
+            --silent \
+            --retry 10 \
+            --retry-delay 5 \
+            --retry-all-errors \
+            https://beneeckman.be/ \
+            > /dev/null
