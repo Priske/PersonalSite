@@ -12,7 +12,8 @@ public sealed class UpdateTagCommandHandler(
     public async Task<bool> Execute(
         Actor actor,
         int id,
-        UpdateTagRequest request)
+        UpdateTagRequest request,
+        CancellationToken cancellationToken)
     {
         Permissions.EnsureCanManage(actor);
 
@@ -30,6 +31,6 @@ public sealed class UpdateTagCommandHandler(
             Name = name
         };
 
-        return await tagRepository.UpdateAsync(tag);
+        return await tagRepository.UpdateAsync(tag, cancellationToken);
     }
 }

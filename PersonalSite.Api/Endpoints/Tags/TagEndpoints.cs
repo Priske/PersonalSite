@@ -50,12 +50,12 @@ public static class TagEndpoints
 
     private static async Task<IResult> CreateTag(
         CreateTagRequest request,
-        CreateTagCommandHandler handler)
+        CreateTagCommandHandler handler, CancellationToken cancellationToken)
     {
         try
         {
             var created =
-                await handler.Execute(request);
+                await handler.Execute(request, cancellationToken);
 
             return Results.Created(
                 $"/tags/{created.Id}",
@@ -72,7 +72,8 @@ public static class TagEndpoints
         int id,
         UpdateTagRequest request,
         ClaimsPrincipal principal,
-        UpdateTagCommandHandler handler)
+        UpdateTagCommandHandler handler,
+        CancellationToken cancellationToken)
     {
         try
         {
@@ -81,7 +82,8 @@ public static class TagEndpoints
             var updated = await handler.Execute(
                 actor,
                 id,
-                request);
+                request,
+                cancellationToken);
 
             return updated
                 ? Results.NoContent()
@@ -101,7 +103,8 @@ public static class TagEndpoints
     private static async Task<IResult> DeleteTag(
         int id,
         ClaimsPrincipal principal,
-        DeleteTagCommandHandler handler)
+        DeleteTagCommandHandler handler,
+        CancellationToken cancellationToken)
     {
         try
         {
@@ -109,7 +112,8 @@ public static class TagEndpoints
 
             var deleted = await handler.Execute(
                 actor,
-                id);
+                id,
+                cancellationToken);
 
             return deleted
                 ? Results.NoContent()

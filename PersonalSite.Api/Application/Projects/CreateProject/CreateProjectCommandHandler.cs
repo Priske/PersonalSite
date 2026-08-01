@@ -14,7 +14,8 @@ public class CreateProjectCommandHandler(
 {
     public async Task<CreateProjectResponse> Execute(
         CreateProjectRequest request,
-        Actor actor)
+        Actor actor,
+        CancellationToken cancellationToken)
     {
         ProjectPermissions.EnsureCanManage(actor);
 
@@ -26,7 +27,7 @@ public class CreateProjectCommandHandler(
             .Distinct()
             .ToList();
 
-        var tags = await tagRepository.GetByIdsAsync(tagIds);
+        var tags = await tagRepository.GetByIdsAsync(tagIds, cancellationToken);
 
         if (tags.Count != tagIds.Count)
         {

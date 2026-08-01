@@ -1,3 +1,5 @@
+using PersonalSite.Api.Application.Tags.GetTagSummaries;
+
 namespace PersonalSite.Api.Application.Projects.GetProjectDetails;
 
 public class GetProjectDetailsResponse
@@ -12,5 +14,7 @@ public class GetProjectDetailsResponse
     public bool IsFeatured { get; set; }
 
     public int DisplayOrder { get; set; }
+
+    public required IReadOnlyList<TagSummary> Tags { get; set; }
 
 }

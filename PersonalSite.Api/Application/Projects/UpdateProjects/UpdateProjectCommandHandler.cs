@@ -1,12 +1,15 @@
 using PersonalSite.Api.Domain.Actors;
 using PersonalSite.Api.Domain.Common;
+using PersonalSite.Api.Domain.Exceptions;
 using PersonalSite.Api.Domain.Projects;
 using PersonalSite.Api.Storage.Projects;
+using PersonalSite.Api.Storage.Tags;
 
 namespace PersonalSite.Api.Application.Projects.UpdateProjects;
 
 public class UpdateProjectCommandHandler(
-    IProjectRepository projectRepository) : IHandler
+    IProjectRepository projectRepository,
+    ITagRepository tagRepository) : IHandler
 {
     public async Task<bool> Execute(
         Actor actor,
@@ -15,6 +18,18 @@ public class UpdateProjectCommandHandler(
         CancellationToken cancellationToken)
     {
         ProjectPermissions.EnsureCanManage(actor);
+
+        var requestedTagIds = request.TagIds
+            .Distinct()
+            .ToArray();
+
+        var tags = await tagRepository.GetByIdsAsync(requestedTagIds, cancellationToken);
+
+        if (tags.Count != requestedTagIds.Length)
+        {
+            throw new DomainException(
+                "One or more selected tags do not exist.");
+        }
 
         var project = new Project
         {
@@ -29,9 +44,11 @@ public class UpdateProjectCommandHandler(
                     ? null
                     : new Url(request.LiveUrl),
             IsFeatured = request.IsFeatured,
-            DisplayOrder = request.DisplayOrder
+            Tags = tags.ToList()
         };
 
-        return await projectRepository.UpdateAsync(project, cancellationToken);
+        return await projectRepository.UpdateAsync(
+            project,
+            cancellationToken);
     }
 }

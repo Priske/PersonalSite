@@ -5,19 +5,19 @@ namespace PersonalSite.Api.Storage.Tags;
 
 public sealed class EfTagRepository(AppDbContext dbContext) : ITagRepository
 {
-    public async Task<Tag> AddAsync(Tag tag)
+    public async Task<Tag> AddAsync(Tag tag, CancellationToken cancellationToken)
     {
         dbContext.Tags.Add(tag);
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return tag;
     }
 
-    public async Task<bool> UpdateAsync(Tag tag)
+    public async Task<bool> UpdateAsync(Tag tag, CancellationToken cancellationToken)
     {
         var existingTag = await dbContext.Tags
-            .SingleOrDefaultAsync(current => current.Id == tag.Id);
+            .SingleOrDefaultAsync(current => current.Id == tag.Id, cancellationToken);
 
         if (existingTag is null)
         {
@@ -31,14 +31,14 @@ public sealed class EfTagRepository(AppDbContext dbContext) : ITagRepository
         return true;
     }
     public async Task<IReadOnlyList<Tag>> GetByIdsAsync(
-    IReadOnlyCollection<int> ids)
+    IReadOnlyCollection<int> ids, CancellationToken cancellationToken)
     {
         return await dbContext.Tags
             .Where(tag => ids.Contains(tag.Id))
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
     {
         var tag = await dbContext.Tags
             .SingleOrDefaultAsync(current => current.Id == id);
@@ -50,7 +50,7 @@ public sealed class EfTagRepository(AppDbContext dbContext) : ITagRepository
 
         dbContext.Tags.Remove(tag);
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return true;
     }
@@ -60,6 +60,6 @@ public sealed class EfTagRepository(AppDbContext dbContext) : ITagRepository
             current.Name == name &&
             (!tagIdToIgnore.HasValue || current.Id != tagIdToIgnore.Value));
 
-    public Task<Tag?> GetByIdAsync(int id)
-        => dbContext.Tags.SingleOrDefaultAsync(current => current.Id == id);
+    public Task<Tag?> GetByIdAsync(int id, CancellationToken cancellationToken)
+        => dbContext.Tags.SingleOrDefaultAsync(current => current.Id == id, cancellationToken);
 }

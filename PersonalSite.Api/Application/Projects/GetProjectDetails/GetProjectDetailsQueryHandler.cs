@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PersonalSite.Api.Application.Tags.GetTagSummaries;
 using PersonalSite.Api.Storage;
 
 namespace PersonalSite.Api.Application.Projects.GetProjectDetails;
@@ -8,22 +9,33 @@ public class GetProjectDetailsQueryHandler(
 {
     public async Task<GetProjectDetailsResponse?> Execute(int id)
     {
-        return await dbContext.Projects
+        var project = await dbContext.Projects
             .AsNoTracking()
-            .Where(project => project.Id == id)
-            .Select(project =>
-                new GetProjectDetailsResponse
+            .Include(project => project.Tags)
+            .FirstOrDefaultAsync(project => project.Id == id);
+
+        if (project is null)
+        {
+            return null;
+        }
+
+        return new GetProjectDetailsResponse
+        {
+            Id = project.Id,
+            Title = project.Title.Value,
+            Description = project.Description.Value,
+            RepositoryUrl = project.RepositoryUrl.Value,
+            LiveUrl = project.LiveUrl?.Value,
+            IsFeatured = project.IsFeatured,
+            DisplayOrder = project.DisplayOrder,
+            Tags = project.Tags
+                .OrderBy(tag => tag.Name.Value)
+                .Select(tag => new TagSummary
                 {
-                    Id = project.Id,
-                    Title = project.Title.Value,
-                    Description = project.Description.Value,
-                    RepositoryUrl = project.RepositoryUrl.Value,
-                    LiveUrl = project.LiveUrl == null
-                        ? null
-                        : project.LiveUrl.Value,
-                    IsFeatured = project.IsFeatured,
-                    DisplayOrder = project.DisplayOrder
+                    Id = tag.Id,
+                    Name = tag.Name.Value
                 })
-            .FirstOrDefaultAsync();
+                .ToList()
+        };
     }
 }

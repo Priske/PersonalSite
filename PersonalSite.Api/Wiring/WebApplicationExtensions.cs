@@ -5,6 +5,7 @@ using PersonalSite.Api.Endpoints.Auth;
 using PersonalSite.Api.Endpoints.HomePageConfigs;
 using PersonalSite.Api.Endpoints.Projects;
 using PersonalSite.Api.Endpoints.Skills;
+using PersonalSite.Api.Endpoints.Tags;
 using PersonalSite.Api.Endpoints.Users;
 using PersonalSite.Api.Seeding;
 using PersonalSite.Api.Storage;
@@ -61,6 +62,7 @@ public static class WebApplicationExtensions
         app.MapSkillGroupEndpoints();
         app.MapProjectEndpoints();
         app.MapHomePageEndpoints();
+        app.MapTagEndpoints();
 
         return app;
     }
