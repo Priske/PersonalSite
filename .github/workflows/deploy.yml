@@ -72,7 +72,6 @@ jobs:
 
     environment:
       name: production
-      url: https://beneeckman.be
 
     steps:
       - name: Check out repository
