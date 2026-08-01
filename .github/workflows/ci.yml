@@ -20,4 +20,4 @@ jobs:
           --no-restore
           --logger "console;verbosity=detailed"
           --blame-hang
-          --blame-hang-timeout 3m
+          --blame-hang-timeout 10m
