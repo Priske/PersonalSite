@@ -33,7 +33,7 @@ function readPage(value: string | null) {
 }
 
 export function ManageProjectPage() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const { projectId: projectIdParameter } = useParams();
 
   const projectId = readProjectId(projectIdParameter);
