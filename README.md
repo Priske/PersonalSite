@@ -209,4 +209,4 @@ Hi, I'm **Ben Eeckman**.
 
 I'm a Junior .NET Developer passionate about backend development, software architecture, automation and building reliable software.
 
-This repository documents my progress as I continue learning and applying modern software engineering practices. 
+This repository documents my progress as I continue learning and applying modern software engineering practices . 
