@@ -8,7 +8,9 @@ export function ProjectsSection() {
       return (
         <div className="project-card">
           <h3>Loading projects...</h3>
-          <p className="project-card__description">Fetching the latest projects.</p>
+          <p className="project-card__description">
+            Fetching the latest projects.
+          </p>
         </div>
       );
     }
@@ -17,18 +19,24 @@ export function ProjectsSection() {
       return (
         <div className="project-card">
           <h3>Projects unavailable</h3>
-          <p className="project-card__description">The projects could not be loaded right now.</p>
+          <p className="project-card__description">
+            The projects could not be loaded right now.
+          </p>
         </div>
       );
     }
 
-    const projects = projectsQuery.data.items.filter(project => project.isFeatured);
+    const projects = projectsQuery.data.items.filter(
+      (project) => project.isFeatured,
+    );
 
     if (projects.length === 0) {
       return (
         <div className="project-card">
           <h3>Projects coming soon</h3>
-          <p className="project-card__description">New projects are currently being prepared for this section.</p>
+          <p className="project-card__description">
+            New projects are currently being prepared for this section.
+          </p>
         </div>
       );
     }
@@ -36,7 +44,9 @@ export function ProjectsSection() {
     return projects.map((project, index) => (
       <article className="project-card" key={project.id}>
         <header className="project-card__header">
-          <p className="project-card__number">{String(index + 1).padStart(2, "0")}</p>
+          <p className="project-card__number">
+            {String(index + 1).padStart(2, "0")}
+          </p>
           <h3>{project.title}</h3>
         </header>
 
@@ -44,7 +54,9 @@ export function ProjectsSection() {
 
         {project.tags.length > 0 && (
           <ul className="project-card__technologies">
-            {project.tags.map(tag => <li key={tag}>{tag}</li>)}
+            {project.tags.map((tag) => (
+              <li key={tag}>{tag}</li>
+            ))}
           </ul>
         )}
       </article>

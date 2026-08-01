@@ -389,6 +389,10 @@
   text-transform: uppercase;
 }
 
+.project-card__technologies li:nth-child(even) {
+  background: var(--color-panel);
+}
+
 @media (max-width: 1050px) {
   .project-card {
     grid-template-columns: minmax(13rem, 0.8fr) minmax(16rem, 1.2fr);
