@@ -48,12 +48,14 @@ public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
     }
 
     public async Task<bool> UpdateAsync(
-        Project project,
-        CancellationToken cancellationToken)
+    Project project,
+    CancellationToken cancellationToken)
     {
-        var existingProject = await dbContext.Projects.FindAsync(
-            [project.Id],
-            cancellationToken);
+        var existingProject = await dbContext.Projects
+            .Include(current => current.Tags)
+            .SingleOrDefaultAsync(
+                current => current.Id == project.Id,
+                cancellationToken);
 
         if (existingProject is null)
         {
@@ -65,7 +67,13 @@ public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
         existingProject.Title = project.Title;
         existingProject.LiveUrl = project.LiveUrl;
         existingProject.RepositoryUrl = project.RepositoryUrl;
-        existingProject.DisplayOrder = project.DisplayOrder;
+
+        existingProject.Tags.Clear();
+
+        foreach (var tag in project.Tags)
+        {
+            existingProject.Tags.Add(tag);
+        }
 
         await dbContext.SaveChangesAsync(cancellationToken);
 

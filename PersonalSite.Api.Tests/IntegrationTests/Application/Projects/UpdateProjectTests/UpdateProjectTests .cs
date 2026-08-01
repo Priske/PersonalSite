@@ -26,7 +26,7 @@ public class UpdateProjectTests : IntegrationTest
                 "https://github.com/example/updated-project",
             LiveUrl = "https://updated.example.com",
             IsFeatured = true,
-            DisplayOrder = 5
+            TagIds = []
         };
 
         var response = await Client.PutAsJsonAsync(
@@ -56,7 +56,7 @@ public class UpdateProjectTests : IntegrationTest
             "https://updated.example.com/",
             updatedProject.LiveUrl?.Value);
         Assert.True(updatedProject.IsFeatured);
-        Assert.Equal(5, updatedProject.DisplayOrder);
+        Assert.Equal(1, updatedProject.DisplayOrder);
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public class UpdateProjectTests : IntegrationTest
                 "https://github.com/example/updated-project",
             LiveUrl = null,
             IsFeatured = false,
-            DisplayOrder = 2
+            TagIds = []
         };
 
         var response = await Client.PutAsJsonAsync(
@@ -111,7 +111,7 @@ public class UpdateProjectTests : IntegrationTest
                 "https://github.com/example/updated-project",
             LiveUrl = "   ",
             IsFeatured = false,
-            DisplayOrder = 2
+            TagIds = []
         };
 
         var response = await Client.PutAsJsonAsync(
@@ -265,7 +265,7 @@ public class UpdateProjectTests : IntegrationTest
                 "https://github.com/example/updated-project",
             LiveUrl = "https://updated.example.com",
             IsFeatured = true,
-            DisplayOrder = 2
+            TagIds = []
         };
     }
 }

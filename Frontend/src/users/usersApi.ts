@@ -46,7 +46,6 @@ export function getUsers(request: GetUsersRequest) {
   return apiRequest<PagedResult<UserSummary>>(
     `/users?${parameters.toString()}`,
   );
-
 }
 
 export function deleteUser(userId: number) {
@@ -54,4 +53,3 @@ export function deleteUser(userId: number) {
     method: "DELETE",
   });
 }
-  

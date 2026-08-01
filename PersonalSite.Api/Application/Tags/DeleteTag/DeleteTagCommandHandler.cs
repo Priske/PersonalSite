@@ -9,10 +9,11 @@ public sealed class DeleteTagCommandHandler(
 {
     public async Task<bool> Execute(
         Actor actor,
-        int id)
+        int id,
+    CancellationToken cancellationToken)
     {
         Permissions.EnsureCanManage(actor);
 
-        return await tagRepository.DeleteAsync(id);
+        return await tagRepository.DeleteAsync(id, cancellationToken);
     }
 }

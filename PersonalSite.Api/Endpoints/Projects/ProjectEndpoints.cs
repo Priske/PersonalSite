@@ -43,12 +43,13 @@ public static class ProjectEndpoints
     public static async Task<IResult> CreateProject(
         CreateProjectRequest request,
         ClaimsPrincipal principal,
-        CreateProjectCommandHandler handler)
+        CreateProjectCommandHandler handler,
+        CancellationToken cancellationToken)
     {
         try
         {
             var actor = principal.ToActor();
-            var created = await handler.Execute(request, actor);
+            var created = await handler.Execute(request, actor, cancellationToken);
 
             return Results.Created(
                 $"/projects/{created.Id}",
