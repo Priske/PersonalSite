@@ -23,12 +23,12 @@ public class GetUserDetails : IntegrationTest
                 });
         });
 
-        var response = await Client.GetAsync("/users/2");
+        var response = await Client.GetAsync("/users/3");
         var user = await response.ReadJsonAs<GetUserDetailsResponse>(HttpStatusCode.OK);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.NotNull(user);
-        Assert.Equal(2, user.Id);
+        Assert.Equal(3, user.Id);
         Assert.Equal("Dune", user.Name);
         Assert.Equal("frank@herbert.com", user.Email);
     }

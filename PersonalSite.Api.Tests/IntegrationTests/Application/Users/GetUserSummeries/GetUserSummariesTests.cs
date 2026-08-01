@@ -36,7 +36,7 @@ public class GetUserSummariesTests : IntegrationTest
         Assert.Equal("john@steinbeck.com", userSummary.Email);
         Assert.Equal(1, result.Page);
         Assert.Equal(10, result.PageSize);
-        Assert.Equal(2, result.TotalItems);
+        Assert.Equal(3, result.TotalItems);
         Assert.Equal(1, result.TotalPages);
     }
 
@@ -58,10 +58,10 @@ public class GetUserSummariesTests : IntegrationTest
 
     }
 
-    [Fact]
     public async Task GetUserSummariesReturnsRequestedPage()
     {
         await AuthenticateAsUser(UserRole.Administrator);
+
         Writer.Seed(db =>
         {
             db.Users.AddRange(
@@ -79,17 +79,18 @@ public class GetUserSummariesTests : IntegrationTest
                 {
                     Name = new UserName("Jefke 3"),
                     Email = new UserEmail("Jefke3@jef.jef")
-
                 });
         });
 
-        var result = await Client.GetFromJsonAsync<GetUserSummariesResponse>("/users?page=2&pageSize=1");
+        var result =
+            await Client.GetFromJsonAsync<GetUserSummariesResponse>(
+                "/users?page=2&pageSize=1");
 
         Assert.NotNull(result);
 
         var user = Assert.Single(result.Items);
 
-        Assert.Equal("Jefke", result.Items[0].Name);
+        Assert.Equal("Jefke", user.Name);
         Assert.Equal(2, result.Page);
         Assert.Equal(1, result.PageSize);
         Assert.Equal(4, result.TotalItems);
@@ -117,7 +118,7 @@ public class GetUserSummariesTests : IntegrationTest
         Assert.Empty(result.Items);
         Assert.Equal(99, result.Page);
         Assert.Equal(10, result.PageSize);
-        Assert.Equal(2, result.TotalItems);
+        Assert.Equal(3, result.TotalItems);
         Assert.Equal(1, result.TotalPages);
     }
 

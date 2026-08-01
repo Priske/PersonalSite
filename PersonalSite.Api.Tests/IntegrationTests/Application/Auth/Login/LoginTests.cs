@@ -71,7 +71,7 @@ public class LoginTestTests : IntegrationTest
         var id = jwtToken.Claims.Single(
             claim => claim.Type == ClaimTypes.NameIdentifier).Value;
 
-        Assert.Equal("1", id);
+        Assert.Equal("2", id);
 
         var role = jwtToken.Claims.Single(
             claim => claim.Type == ClaimTypes.Role).Value;

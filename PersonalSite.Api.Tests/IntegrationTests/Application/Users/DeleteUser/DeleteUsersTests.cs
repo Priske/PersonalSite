@@ -16,7 +16,7 @@ public class DeleteUserTests : IntegrationTest
         await response.ShouldHaveStatusCode(HttpStatusCode.NoContent);
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
-        var user = Reader.Query(db => db.Users.Find(1));
+        var user = Reader.Query(db => db.Users.Find(2));
 
         Assert.Null(user);
     }

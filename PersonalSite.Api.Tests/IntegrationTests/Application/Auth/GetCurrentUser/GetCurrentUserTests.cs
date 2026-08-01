@@ -68,7 +68,7 @@ public class GetCurrentUserTests : IntegrationTest
             await response.ReadJsonAs<CurrentUserResponse>(
                 HttpStatusCode.OK);
 
-        Assert.Equal(1, user.Id);
+        Assert.Equal(2, user.Id);
         Assert.Equal("Ada Lovelace", user.Name);
         Assert.Equal("ada@example.com", user.Email);
     }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 using PersonalSite.Api.Storage;
 using Testcontainers.PostgreSql;
@@ -27,12 +28,16 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     private static readonly KeyValuePair<string, string?>[] TestSettings =
     [
         new("SeedDatabase", "false"),
-        new("Jwt:Issuer", "PersonalSite.Tests"),
-        new("Jwt:Audience", "PersonalSite.Tests"),
-        new("Jwt:SigningKey", "personal-site-test-signing-key-with-32-characters"),
-        new("Jwt:ExpirationMinutes", "10")
-    ];
 
+    new("Jwt:Issuer", "PersonalSite.Tests"),
+    new("Jwt:Audience", "PersonalSite.Tests"),
+    new("Jwt:SigningKey", "personal-site-test-signing-key-with-32-characters"),
+    new("Jwt:ExpirationMinutes", "10"),
+
+    new("InitialAdmin:Name", "Integration Test Admin"),
+    new("InitialAdmin:Email", "admin@integration.test"),
+    new("InitialAdmin:Password", "Integration-Test-Password-123!")
+    ];
     public CustomWebApplicationFactory()
     {
         ContainerStartup.Value.GetAwaiter().GetResult();
@@ -56,6 +61,12 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
+
+        builder.ConfigureLogging(logging =>
+        {
+            logging.ClearProviders();
+            logging.SetMinimumLevel(LogLevel.Warning);
+        });
 
         builder.ConfigureAppConfiguration((context, configuration) =>
             configuration.AddInMemoryCollection(TestSettings));

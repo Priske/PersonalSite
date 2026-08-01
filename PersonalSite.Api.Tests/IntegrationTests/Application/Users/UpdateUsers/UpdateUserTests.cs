@@ -28,7 +28,7 @@ public class UpdateUserTests : IntegrationTest
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
 
-        var user = Reader.Query(db => db.Users.Find(1));
+        var user = Reader.Query(db => db.Users.Find(2));
 
         Assert.NotNull(user);
         Assert.Equal("Friedrich", user.Name);
