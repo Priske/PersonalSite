@@ -7,7 +7,7 @@ public sealed class GetTagDetailsQueryHandler(
     AppDbContext dbContext) : IHandler
 {
     public async Task<GetTagDetailsResponse?> Execute(
-        int id)
+        int id, CancellationToken cancellationToken)
     {
         return await dbContext.Tags
             .AsNoTracking()
@@ -15,8 +15,15 @@ public sealed class GetTagDetailsQueryHandler(
             .Select(tag => new GetTagDetailsResponse
             {
                 Id = tag.Id,
-                Name = tag.Name.Value
+                Name = tag.Name.Value,
+                Projects = tag.Projects
+                .OrderBy(project => project.Title)
+                .Select(project => new TagProjectResponse(
+                    project.Id,
+                    project.Title))
+                .ToList()
+
             })
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
     }
 }

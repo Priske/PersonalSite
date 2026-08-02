@@ -39,9 +39,10 @@ public static class TagEndpoints
     }
     private static async Task<IResult> GetTagDetails(
         int id,
-        GetTagDetailsQueryHandler handler)
+        GetTagDetailsQueryHandler handler,
+        CancellationToken cancellationToken)
     {
-        var tag = await handler.Execute(id);
+        var tag = await handler.Execute(id, cancellationToken);
 
         return tag is null
             ? Results.NotFound()
@@ -101,10 +102,10 @@ public static class TagEndpoints
     }
 
     private static async Task<IResult> DeleteTag(
-        int id,
-        ClaimsPrincipal principal,
-        DeleteTagCommandHandler handler,
-        CancellationToken cancellationToken)
+    int id,
+    ClaimsPrincipal principal,
+    DeleteTagCommandHandler handler,
+    CancellationToken cancellationToken)
     {
         try
         {
@@ -122,6 +123,13 @@ public static class TagEndpoints
         catch (ForbiddenOperationException)
         {
             return Results.Forbid();
+        }
+        catch (TagInUseException)
+        {
+            return Results.Conflict(new
+            {
+                message = "This tag cannot be deleted because it is used by a project."
+            });
         }
     }
 }

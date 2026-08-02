@@ -4,9 +4,14 @@ export type GetTagsRequest = {
   search?: string;
 };
 
+export type TagProject = {
+  id: number;
+  title: string;
+};
 export type TagDetails = {
   id: number;
   name: string;
+  projects: TagProject[];
 };
 
 export type TagSummary = {
@@ -18,5 +23,9 @@ export type CreateTagRequest = { name: string };
 
 export type CreateTagResponse = {
   id: number;
+  name: string;
+};
+
+export type UpdateTagRequest = {
   name: string;
 };

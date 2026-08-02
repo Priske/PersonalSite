@@ -5,11 +5,8 @@ type AccountNavigationProps = {
   user: CurrentUser;
 };
 
-export function AccountNavigation({
-  user,
-}: AccountNavigationProps) {
-  const isAdministrator =
-    user.role === "Administrator";
+export function AccountNavigation({ user }: AccountNavigationProps) {
+  const isAdministrator = user.role === "Administrator";
 
   return (
     <aside className="account-navigation">
@@ -23,8 +20,8 @@ export function AccountNavigation({
         </h1>
 
         <p className="account-navigation__intro">
-          Manage your profile and the content displayed on your
-          personal website.
+          Manage your profile and the content displayed on your personal
+          website.
         </p>
       </div>
 
@@ -69,6 +66,17 @@ export function AccountNavigation({
             >
               <span className="account-navigation__number">03</span>
               <span>Projects</span>
+            </NavLink>
+            <NavLink
+              className={({ isActive }) =>
+                isActive
+                  ? "account-navigation__link account-navigation__link--active"
+                  : "account-navigation__link"
+              }
+              to="/account/tags"
+            >
+              <span className="account-navigation__number">04</span>
+              <span>Tags</span>
             </NavLink>
           </>
         )}
