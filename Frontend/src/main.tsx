@@ -6,7 +6,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import App from "./App";
 import "./styles/index.css";
 
-
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
@@ -18,4 +17,4 @@ createRoot(document.getElementById("root")!).render(
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </StrictMode>,
-  );
+);

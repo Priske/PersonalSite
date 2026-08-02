@@ -33,8 +33,7 @@ export function RegisterPage() {
     const name = formData.get("name")?.toString().trim() ?? "";
     const email = formData.get("email")?.toString().trim() ?? "";
     const password = formData.get("password")?.toString() ?? "";
-    const confirmPassword =
-      formData.get("confirmPassword")?.toString() ?? "";
+    const confirmPassword = formData.get("confirmPassword")?.toString() ?? "";
 
     if (!name || !email || !password) {
       setFormError("Name, email and password are required.");
@@ -84,37 +83,27 @@ export function RegisterPage() {
         </h1>
 
         <p className="register-page__intro-text">
-          Create an account using a long passphrase that is easy for you
-          to remember and difficult for others to guess.
+          Create an account using a long passphrase that is easy for you to
+          remember and difficult for others to guess.
         </p>
       </section>
 
       <section className="register-page__content">
-        <span
-          className="register-page__connector"
-          aria-hidden="true"
-        >
+        <span className="register-page__connector" aria-hidden="true">
           <span className="register-page__connector-line" />
           <span className="register-page__connector-dot" />
         </span>
 
         <article className="register-card">
           <header className="register-card__header">
-            <p className="register-card__eyebrow">
-              New account
-            </p>
+            <p className="register-card__eyebrow">New account</p>
 
             <h2>Register</h2>
           </header>
 
-          <form
-            className="register-form"
-            onSubmit={handleSubmit}
-          >
+          <form className="register-form" onSubmit={handleSubmit}>
             <div className="register-form__field">
-              <label htmlFor="register-name">
-                Name
-              </label>
+              <label htmlFor="register-name">Name</label>
 
               <input
                 id="register-name"
@@ -126,9 +115,7 @@ export function RegisterPage() {
             </div>
 
             <div className="register-form__field">
-              <label htmlFor="register-email">
-                Email
-              </label>
+              <label htmlFor="register-email">Email</label>
 
               <input
                 id="register-email"
@@ -141,9 +128,7 @@ export function RegisterPage() {
             </div>
 
             <div className="register-form__field">
-              <label htmlFor="register-password">
-                Passphrase
-              </label>
+              <label htmlFor="register-password">Passphrase</label>
 
               <input
                 id="register-password"
@@ -156,13 +141,9 @@ export function RegisterPage() {
                 required
               />
 
-              <p
-                className="register-form__help"
-                id="register-password-help"
-              >
-                Use between {PASSWORD_MIN_LENGTH} and{" "}
-                {PASSWORD_MAX_LENGTH} characters. Common or compromised
-                passwords will be rejected.
+              <p className="register-form__help" id="register-password-help">
+                Use between {PASSWORD_MIN_LENGTH} and {PASSWORD_MAX_LENGTH}{" "}
+                characters. Common or compromised passwords will be rejected.
               </p>
             </div>
 
@@ -182,21 +163,16 @@ export function RegisterPage() {
               />
             </div>
 
-            <div
-              className="register-form__messages"
-              aria-live="polite"
-            >
+            <div className="register-form__messages" aria-live="polite">
               {formError && (
-                <p className="form-message form-message--error">
-                  {formError}
-                </p>
+                <p className="form-message form-message--error">{formError}</p>
               )}
 
               {mutationStatus === 400 && (
                 <p className="form-message form-message--error">
-                  The registration data was rejected. Check that your
-                  passphrase is between 15 and 128 characters and has not
-                  appeared in a known data breach.
+                  The registration data was rejected. Check that your passphrase
+                  is between 15 and 128 characters and has not appeared in a
+                  known data breach.
                 </p>
               )}
 
@@ -210,17 +186,13 @@ export function RegisterPage() {
                 mutationStatus !== 400 &&
                 mutationStatus !== 409 && (
                   <p className="form-message form-message--error">
-                    Could not create the account. The server may be
-                    unavailable.
+                    Could not create the account. The server may be unavailable.
                   </p>
                 )}
             </div>
 
             <div className="register-form__actions">
-              <Link
-                className="button button--secondary"
-                to="/login"
-              >
+              <Link className="button button--secondary" to="/login">
                 Log in
               </Link>
 

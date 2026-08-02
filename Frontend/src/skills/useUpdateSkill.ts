@@ -7,35 +7,22 @@ type UpdateSkillRequest = {
   displayOrder: number;
 };
 
-export function useUpdateSkill(
-  groupId: number,
-) {
+export function useUpdateSkill(groupId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
-      skillId,
-      name,
-      displayOrder,
-    }: UpdateSkillRequest) =>
-      apiRequestWithoutResponse(
-        `/skill-groups/${groupId}/skills/${skillId}`,
-        {
-          method: "PUT",
-          body: JSON.stringify({
-            name,
-            displayOrder,
-          }),
-        },
-      ),
+    mutationFn: ({ skillId, name, displayOrder }: UpdateSkillRequest) =>
+      apiRequestWithoutResponse(`/skill-groups/${groupId}/skills/${skillId}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          name,
+          displayOrder,
+        }),
+      }),
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: [
-          "skill-groups",
-          groupId,
-          "skills",
-        ],
+        queryKey: ["skill-groups", groupId, "skills"],
       });
     },
   });

@@ -18,37 +18,45 @@ import { ManageSkillGroupPage } from "./skills/ManageSkillGroupPage";
 import { AddSkillGroupPage } from "./skills/AddSkillGroupPage";
 import { ManageProjectPage } from "./projects/ManageProjectPage";
 import { AddProjectPage } from "./projects/AddProjectPage";
+import { TagsPage } from "./tags/TagsPage";
 
 function App() {
-    return (
-        <>
-            <Navigation />
+  return (
+    <>
+      <Navigation />
 
-            <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
-                <Route element={<RequireAccountAccess />}>
-                    <Route path="/account" element={<AccountLayout />}>
-                        <Route index element={<AccountPage />} />
-                        <Route path="edit" element={<EditAccountPage />} />
-                        <Route path="skills/:groupId/edit" element={<ManageSkillGroupPage />} />
-                        <Route path="/account/skills/new" element={<AddSkillGroupPage />} />
-                        <Route path="projects/:projectId/edit" element={<ManageProjectPage />} />
-                        <Route path="projects/new" element={<AddProjectPage />}/>
-                        <Route path="skills" element={<AccountSkillsPage />} />
-                        <Route path="projects" element={<AccountProjectsPage />} />
-                    </Route>
-                </Route>
+        <Route element={<RequireAccountAccess />}>
+          <Route path="/account" element={<AccountLayout />}>
+            <Route index element={<AccountPage />} />
+            <Route path="edit" element={<EditAccountPage />} />
+            <Route
+              path="skills/:groupId/edit"
+              element={<ManageSkillGroupPage />}
+            />
+            <Route path="/account/skills/new" element={<AddSkillGroupPage />} />
+            <Route
+              path="projects/:projectId/edit"
+              element={<ManageProjectPage />}
+            />
+            <Route path="projects/new" element={<AddProjectPage />} />
+            <Route path="skills" element={<AccountSkillsPage />} />
+            <Route path="projects" element={<AccountProjectsPage />} />
+            <Route path="tags" element={<TagsPage />} />
+          </Route>
+        </Route>
 
-                <Route element={<RequireAdministrator />}>
-                    <Route path="/users/:userId/edit" element={<EditUserPage />} />
-                    <Route path="/users" element={<UserListPage />} />
-                </Route>
-            </Routes>
-        </>
-    );
+        <Route element={<RequireAdministrator />}>
+          <Route path="/users/:userId/edit" element={<EditUserPage />} />
+          <Route path="/users" element={<UserListPage />} />
+        </Route>
+      </Routes>
+    </>
+  );
 }
 
 export default App;

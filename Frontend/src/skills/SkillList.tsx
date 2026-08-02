@@ -4,9 +4,7 @@ type SkillListProps = {
   groupId: number;
 };
 
-export function SkillList({
-  groupId,
-}: SkillListProps) {
+export function SkillList({ groupId }: SkillListProps) {
   const skillsQuery = useSkills(groupId);
 
   if (skillsQuery.isPending) {
@@ -31,9 +29,7 @@ export function SkillList({
   return (
     <ul>
       {skills.map((skill) => (
-        <li key={skill.id}>
-          {skill.name}
-        </li>
+        <li key={skill.id}>{skill.name}</li>
       ))}
     </ul>
   );

@@ -22,47 +22,42 @@ export function AccountSkillsPage() {
   }, [groupsQuery.data]);
 
   async function moveGroup(currentIndex: number, direction: -1 | 1) {
-  const targetIndex = currentIndex + direction;
+    const targetIndex = currentIndex + direction;
 
-  if (targetIndex < 0 || targetIndex >= groups.length) return;
+    if (targetIndex < 0 || targetIndex >= groups.length) return;
 
-  const previousGroups = groups;
-  const reorderedGroups = [...groups];
+    const previousGroups = groups;
+    const reorderedGroups = [...groups];
 
-  [reorderedGroups[currentIndex], reorderedGroups[targetIndex]] = [
-    reorderedGroups[targetIndex],
-    reorderedGroups[currentIndex],
-  ];
+    [reorderedGroups[currentIndex], reorderedGroups[targetIndex]] = [
+      reorderedGroups[targetIndex],
+      reorderedGroups[currentIndex],
+    ];
 
-  setGroups(reorderedGroups);
+    setGroups(reorderedGroups);
 
-  try {
-    await updateOrderMutation.mutateAsync({
-      skillGroupIds: reorderedGroups.map((group) => group.id),
-    });
-  } catch {
-    setGroups(previousGroups);
+    try {
+      await updateOrderMutation.mutateAsync({
+        skillGroupIds: reorderedGroups.map((group) => group.id),
+      });
+    } catch {
+      setGroups(previousGroups);
+    }
   }
-}
   return (
     <article className="account-card">
       <header className="account-card__header account-management__header">
         <div>
-          <p className="account-card__eyebrow">
-            Website content
-          </p>
+          <p className="account-card__eyebrow">Website content</p>
 
           <h2>Skills</h2>
 
           <p className="account-management__description">
-            Manage the skill groups and skills displayed on your
-            homepage.
+            Manage the skill groups and skills displayed on your homepage.
           </p>
         </div>
 
         <div className="account-management__header-actions">
-
-
           <Link className="button" to="/account/skills/new">
             Add group
           </Link>
@@ -71,9 +66,7 @@ export function AccountSkillsPage() {
 
       <div className="account-management__body">
         {groupsQuery.isPending && (
-          <p className="account-management__status">
-            Loading skill groups...
-          </p>
+          <p className="account-management__status">Loading skill groups...</p>
         )}
 
         {groupsQuery.isError && (
@@ -94,9 +87,7 @@ export function AccountSkillsPage() {
               No skill groups yet
             </p>
 
-            <p>
-              Add a skill group before adding individual skills.
-            </p>
+            <p>Add a skill group before adding individual skills.</p>
           </div>
         )}
 

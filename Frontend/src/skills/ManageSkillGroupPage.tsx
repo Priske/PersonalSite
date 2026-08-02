@@ -1,5 +1,5 @@
-import { type FormEvent, useEffect, useState, } from "react";
-import { Link, Navigate, useNavigate, useParams, } from "react-router-dom";
+import { type FormEvent, useEffect, useState } from "react";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { ApiError } from "../api";
 import { useCreateSkill } from "./useCreateSkill";
 import { useDeleteSkill } from "./useDeleteSkill";
@@ -9,7 +9,6 @@ import { useUpdateSkill } from "./useUpdateSkill";
 import { useUpdateSkillGroup } from "./useUpdateSkillGroup";
 import { useUpdateSkillOrder } from "./useUpdateSkillOrder";
 import { DeleteSkillGroupButton } from "./DeleteSkillGroupButton";
-
 
 type EditableSkill = {
   key: string;
@@ -23,19 +22,11 @@ export function ManageSkillGroupPage() {
 
   const parsedGroupId = Number(groupId);
 
-  const hasValidGroupId =
-    Number.isInteger(parsedGroupId) &&
-    parsedGroupId > 0;
+  const hasValidGroupId = Number.isInteger(parsedGroupId) && parsedGroupId > 0;
 
-  const skillGroupQuery = useSkillGroup(
-    parsedGroupId,
-    hasValidGroupId,
-  );
+  const skillGroupQuery = useSkillGroup(parsedGroupId, hasValidGroupId);
 
-  const skillsQuery = useSkills(
-    parsedGroupId,
-    hasValidGroupId,
-  );
+  const skillsQuery = useSkills(parsedGroupId, hasValidGroupId);
 
   const updateSkillGroupMutation = useUpdateSkillGroup(parsedGroupId);
   const createSkillMutation = useCreateSkill(parsedGroupId);
@@ -45,24 +36,18 @@ export function ManageSkillGroupPage() {
 
   const [name, setName] = useState("");
 
-  const [skills, setSkills] =
-    useState<EditableSkill[]>([]);
+  const [skills, setSkills] = useState<EditableSkill[]>([]);
 
-  const [removedSkillIds, setRemovedSkillIds] =
-    useState<number[]>([]);
+  const [removedSkillIds, setRemovedSkillIds] = useState<number[]>([]);
 
-  const [isInitialized, setIsInitialized] =
-    useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  const [validationMessage, setValidationMessage] =
-    useState<string | null>(null);
+  const [validationMessage, setValidationMessage] = useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
-    if (
-      isInitialized ||
-      !skillGroupQuery.data ||
-      !skillsQuery.data
-    ) {
+    if (isInitialized || !skillGroupQuery.data || !skillsQuery.data) {
       return;
     }
 
@@ -70,11 +55,7 @@ export function ManageSkillGroupPage() {
 
     setSkills(
       [...skillsQuery.data.items]
-        .sort(
-          (left, right) =>
-            left.displayOrder -
-            right.displayOrder,
-        )
+        .sort((left, right) => left.displayOrder - right.displayOrder)
         .map((skill) => ({
           key: `existing-${skill.id}`,
           id: skill.id,
@@ -83,19 +64,10 @@ export function ManageSkillGroupPage() {
     );
 
     setIsInitialized(true);
-  }, [
-    isInitialized,
-    skillGroupQuery.data,
-    skillsQuery.data,
-  ]);
+  }, [isInitialized, skillGroupQuery.data, skillsQuery.data]);
 
   if (!hasValidGroupId) {
-    return (
-      <Navigate
-        to="/account/skills"
-        replace
-      />
-    );
+    return <Navigate to="/account/skills" replace />;
   }
 
   const groupWasNotFound =
@@ -110,10 +82,7 @@ export function ManageSkillGroupPage() {
             This skill group does not exist.
           </p>
 
-          <Link
-            className="button button--secondary"
-            to="/account/skills"
-          >
+          <Link className="button button--secondary" to="/account/skills">
             Back to skills
           </Link>
         </div>
@@ -121,24 +90,15 @@ export function ManageSkillGroupPage() {
     );
   }
 
-  if (
-    skillGroupQuery.isPending ||
-    skillsQuery.isPending ||
-    !isInitialized
-  ) {
+  if (skillGroupQuery.isPending || skillsQuery.isPending || !isInitialized) {
     return (
       <section className="manage-skill-group-page">
-        <p className="account-management__status">
-          Loading skill group...
-        </p>
+        <p className="account-management__status">Loading skill group...</p>
       </section>
     );
   }
 
-  if (
-    skillGroupQuery.isError ||
-    skillsQuery.isError
-  ) {
+  if (skillGroupQuery.isError || skillsQuery.isError) {
     return (
       <section className="manage-skill-group-page">
         <div className="manage-skill-group-page__message">
@@ -146,10 +106,7 @@ export function ManageSkillGroupPage() {
             Could not load the skill group.
           </p>
 
-          <Link
-            className="button button--secondary"
-            to="/account/skills"
-          >
+          <Link className="button button--secondary" to="/account/skills">
             Back to skills
           </Link>
         </div>
@@ -171,49 +128,34 @@ export function ManageSkillGroupPage() {
     deleteSkillMutation.isError ||
     updateSkillOrderMutation.isError;
 
-  const updateSkillName = (
-    skillKey: string,
-    newName: string,
-  ) => {
+  const updateSkillName = (skillKey: string, newName: string) => {
     setSkills((currentSkills) =>
       currentSkills.map((skill) =>
         skill.key === skillKey
           ? {
-            ...skill,
-            name: newName,
-          }
+              ...skill,
+              name: newName,
+            }
           : skill,
       ),
     );
   };
 
-  const moveSkill = (
-    currentIndex: number,
-    direction: -1 | 1,
-  ) => {
+  const moveSkill = (currentIndex: number, direction: -1 | 1) => {
     setSkills((currentSkills) => {
-      const targetIndex =
-        currentIndex + direction;
+      const targetIndex = currentIndex + direction;
 
-      if (
-        targetIndex < 0 ||
-        targetIndex >= currentSkills.length
-      ) {
+      if (targetIndex < 0 || targetIndex >= currentSkills.length) {
         return currentSkills;
       }
 
-      const reorderedSkills = [
-        ...currentSkills,
-      ];
+      const reorderedSkills = [...currentSkills];
 
-      const currentSkill =
-        reorderedSkills[currentIndex];
+      const currentSkill = reorderedSkills[currentIndex];
 
-      reorderedSkills[currentIndex] =
-        reorderedSkills[targetIndex];
+      reorderedSkills[currentIndex] = reorderedSkills[targetIndex];
 
-      reorderedSkills[targetIndex] =
-        currentSkill;
+      reorderedSkills[targetIndex] = currentSkill;
 
       return reorderedSkills;
     });
@@ -230,23 +172,15 @@ export function ManageSkillGroupPage() {
     ]);
   };
 
-  const removeSkill = (
-    skillToRemove: EditableSkill,
-  ) => {
+  const removeSkill = (skillToRemove: EditableSkill) => {
     setSkills((currentSkills) =>
-      currentSkills.filter(
-        (skill) =>
-          skill.key !== skillToRemove.key,
-      ),
+      currentSkills.filter((skill) => skill.key !== skillToRemove.key),
     );
 
     if (skillToRemove.id !== null) {
       const removedId = skillToRemove.id;
 
-      setRemovedSkillIds((currentIds) => [
-        ...currentIds,
-        removedId,
-      ]);
+      setRemovedSkillIds((currentIds) => [...currentIds, removedId]);
     }
   };
 
@@ -261,24 +195,18 @@ export function ManageSkillGroupPage() {
       }
     }
 
-    const normalizedNames = skills.map(
-      (skill) =>
-        skill.name.trim().toLowerCase(),
+    const normalizedNames = skills.map((skill) =>
+      skill.name.trim().toLowerCase(),
     );
 
-    if (
-      new Set(normalizedNames).size !==
-      normalizedNames.length
-    ) {
+    if (new Set(normalizedNames).size !== normalizedNames.length) {
       return "Skill names must be unique within the group.";
     }
 
     return null;
   };
 
-  const handleSubmit = async (
-    event: FormEvent<HTMLFormElement>,
-  ) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setValidationMessage(null);
 
@@ -292,62 +220,44 @@ export function ManageSkillGroupPage() {
     try {
       await updateSkillGroupMutation.mutateAsync({
         name: name.trim(),
-        displayOrder:
-          skillGroupQuery.data.displayOrder,
+        displayOrder: skillGroupQuery.data.displayOrder,
       });
 
       for (const removedSkillId of removedSkillIds) {
-        await deleteSkillMutation.mutateAsync(
-          removedSkillId,
-        );
+        await deleteSkillMutation.mutateAsync(removedSkillId);
       }
 
-      const createdSkillIds =
-        new Map<string, number>();
+      const createdSkillIds = new Map<string, number>();
 
       for (const skill of skills) {
         if (skill.id !== null) {
           continue;
         }
 
-        const createdSkill =
-          await createSkillMutation.mutateAsync({
-            name: skill.name.trim(),
-            displayOrder:
-              10_000 +
-              createdSkillIds.size,
-          });
+        const createdSkill = await createSkillMutation.mutateAsync({
+          name: skill.name.trim(),
+          displayOrder: 10_000 + createdSkillIds.size,
+        });
 
-        createdSkillIds.set(
-          skill.key,
-          createdSkill.id,
-        );
+        createdSkillIds.set(skill.key, createdSkill.id);
       }
 
-      const orderedSkills = skills.map(
-        (skill, index) => {
-          const id =
-            skill.id ??
-            createdSkillIds.get(skill.key);
+      const orderedSkills = skills.map((skill, index) => {
+        const id = skill.id ?? createdSkillIds.get(skill.key);
 
-          if (id === undefined) {
-            throw new Error(
-              `Could not determine the ID for "${skill.name}".`,
-            );
-          }
+        if (id === undefined) {
+          throw new Error(`Could not determine the ID for "${skill.name}".`);
+        }
 
-          return {
-            id,
-            name: skill.name.trim(),
-            displayOrder: index + 1,
-          };
-        },
-      );
+        return {
+          id,
+          name: skill.name.trim(),
+          displayOrder: index + 1,
+        };
+      });
 
       await updateSkillOrderMutation.mutateAsync({
-        skillIds: orderedSkills.map(
-          (skill) => skill.id,
-        ),
+        skillIds: orderedSkills.map((skill) => skill.id),
       });
 
       for (const skill of orderedSkills) {
@@ -368,59 +278,39 @@ export function ManageSkillGroupPage() {
     <section className="manage-skill-group-page">
       <header className="manage-skill-group-page__header">
         <div>
-          <p className="manage-skill-group-page__eyebrow">
-            Manage skill group
-          </p>
+          <p className="manage-skill-group-page__eyebrow">Manage skill group</p>
 
           <h2>{name}</h2>
 
-          <p>
-            Edit the group and reorder all
-            attached skills on this page.
-          </p>
+          <p>Edit the group and reorder all attached skills on this page.</p>
         </div>
 
-        <Link
-          className="button button--secondary"
-          to="/account/skills"
-        >
+        <Link className="button button--secondary" to="/account/skills">
           Back to skills
         </Link>
-
       </header>
 
-      <form
-        className="manage-skill-group-form"
-        onSubmit={handleSubmit}
-      >
-
+      <form className="manage-skill-group-form" onSubmit={handleSubmit}>
         <section className="manage-skill-group-section">
           <header className="manage-skill-group-section__header">
             <div>
-              <p className="manage-skill-group-page__eyebrow">
-                Group
-              </p>
+              <p className="manage-skill-group-page__eyebrow">Group</p>
 
               <h3>Group details</h3>
               <></>
             </div>
-
           </header>
 
           <div className="manage-skill-group-form__fields">
             <div className="form-field">
-              <label htmlFor="skill-group-name">
-                Group name
-              </label>
+              <label htmlFor="skill-group-name">Group name</label>
 
               <input
                 id="skill-group-name"
                 name="name"
                 type="text"
                 value={name}
-                onChange={(event) =>
-                  setName(event.target.value)
-                }
+                onChange={(event) => setName(event.target.value)}
                 disabled={isSaving}
               />
             </div>
@@ -430,9 +320,7 @@ export function ManageSkillGroupPage() {
         <section className="manage-skill-group-section">
           <header className="manage-skill-group-section__header">
             <div>
-              <p className="manage-skill-group-page__eyebrow">
-                Skills
-              </p>
+              <p className="manage-skill-group-page__eyebrow">Skills</p>
 
               <h3>Attached skills</h3>
             </div>
@@ -449,8 +337,7 @@ export function ManageSkillGroupPage() {
 
           {skills.length === 0 && (
             <p className="manage-skill-group-skills__empty">
-              No skills are attached to this
-              group yet.
+              No skills are attached to this group yet.
             </p>
           )}
 
@@ -462,10 +349,7 @@ export function ManageSkillGroupPage() {
                   key={skill.key}
                 >
                   <span className="manage-skill-group-skill-editor__number">
-                    {String(index + 1).padStart(
-                      2,
-                      "0",
-                    )}
+                    {String(index + 1).padStart(2, "0")}
                   </span>
 
                   <div className="form-field">
@@ -481,10 +365,7 @@ export function ManageSkillGroupPage() {
                       type="text"
                       value={skill.name}
                       onChange={(event) =>
-                        updateSkillName(
-                          skill.key,
-                          event.target.value,
-                        )
+                        updateSkillName(skill.key, event.target.value)
                       }
                       disabled={isSaving}
                     />
@@ -496,13 +377,8 @@ export function ManageSkillGroupPage() {
                       type="button"
                       aria-label={`Move ${skill.name || "skill"} up`}
                       title="Move up"
-                      onClick={() =>
-                        moveSkill(index, -1)
-                      }
-                      disabled={
-                        isSaving ||
-                        index === 0
-                      }
+                      onClick={() => moveSkill(index, -1)}
+                      disabled={isSaving || index === 0}
                     >
                       ↑
                     </button>
@@ -512,14 +388,8 @@ export function ManageSkillGroupPage() {
                       type="button"
                       aria-label={`Move ${skill.name || "skill"} down`}
                       title="Move down"
-                      onClick={() =>
-                        moveSkill(index, 1)
-                      }
-                      disabled={
-                        isSaving ||
-                        index ===
-                        skills.length - 1
-                      }
+                      onClick={() => moveSkill(index, 1)}
+                      disabled={isSaving || index === skills.length - 1}
                     >
                       ↓
                     </button>
@@ -528,9 +398,7 @@ export function ManageSkillGroupPage() {
                   <button
                     className="button button--secondary"
                     type="button"
-                    onClick={() =>
-                      removeSkill(skill)
-                    }
+                    onClick={() => removeSkill(skill)}
                     disabled={isSaving}
                   >
                     Remove
@@ -540,7 +408,6 @@ export function ManageSkillGroupPage() {
             </div>
           )}
         </section>
-
 
         {validationMessage && (
           <p className="form-message form-message--error">
@@ -560,29 +427,22 @@ export function ManageSkillGroupPage() {
             type="submit"
             disabled={isSaving}
           >
-            {isSaving
-              ? "Saving..."
-              : "Save all changes"}
+            {isSaving ? "Saving..." : "Save all changes"}
           </button>
 
-          <Link
-            className="button button--secondary"
-            to="/account/skills"
-          >
+          <Link className="button button--secondary" to="/account/skills">
             Cancel
           </Link>
         </div>
         <section className="manage-skill-group-danger">
           <header className="manage-skill-group-danger__header">
-            <p className="manage-skill-group-page__eyebrow">
-              Danger zone
-            </p>
+            <p className="manage-skill-group-page__eyebrow">Danger zone</p>
 
             <h3>Delete skill group</h3>
 
             <p>
-              Permanently delete this skill group and all of its
-              attached skills. This action cannot be undone.
+              Permanently delete this skill group and all of its attached
+              skills. This action cannot be undone.
             </p>
           </header>
 

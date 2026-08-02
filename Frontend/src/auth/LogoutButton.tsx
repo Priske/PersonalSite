@@ -6,9 +6,7 @@ type LogoutButtonProps = {
   className?: string;
 };
 
-export function LogoutButton({
-  className,
-}: LogoutButtonProps) {
+export function LogoutButton({ className }: LogoutButtonProps) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -28,11 +26,7 @@ export function LogoutButton({
   }
 
   return (
-    <button
-      className={className}
-      type="button"
-      onClick={handleLogout}
-    >
+    <button className={className} type="button" onClick={handleLogout}>
       Log out
     </button>
   );

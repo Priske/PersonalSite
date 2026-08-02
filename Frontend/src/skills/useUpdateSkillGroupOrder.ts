@@ -11,10 +11,9 @@ export function useUpdateSkillGroupOrder() {
   return useMutation({
     mutationFn: (request: UpdateSkillGroupOrderRequest) =>
       apiRequestWithoutResponse("/skill-groups/order", {
-          method: "PUT",
-          body: JSON.stringify(request),
-        },
-      ),
+        method: "PUT",
+        body: JSON.stringify(request),
+      }),
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({

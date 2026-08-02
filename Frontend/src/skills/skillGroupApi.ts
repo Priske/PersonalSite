@@ -1,10 +1,11 @@
 import { apiRequest, apiRequestWithoutResponse } from "../api";
-import type { GetSkillGroupSummariesResponse, GetSkillSummariesResponse } from "./types";
+import type {
+  GetSkillGroupSummariesResponse,
+  GetSkillSummariesResponse,
+} from "./types";
 
 export function getSkillGroups() {
-  return apiRequest<GetSkillGroupSummariesResponse>(
-    "/skill-groups",
-  );
+  return apiRequest<GetSkillGroupSummariesResponse>("/skill-groups");
 }
 
 export function getSkills(groupId: number) {
@@ -14,7 +15,7 @@ export function getSkills(groupId: number) {
 }
 
 export function deleteSkillGroup(skillGroupId: number) {
-  return apiRequestWithoutResponse(`/skill-groups/${skillGroupId}`, { method: "DELETE" });
+  return apiRequestWithoutResponse(`/skill-groups/${skillGroupId}`, {
+    method: "DELETE",
+  });
 }
-
-

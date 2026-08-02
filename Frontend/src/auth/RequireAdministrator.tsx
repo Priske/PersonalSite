@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { getAccessToken } from "./tokenStorage";
-import { useCurrentUser } from "./useCurrentUser"; 
+import { useCurrentUser } from "./useCurrentUser";
 
 export function RequireAdministrator() {
   const currentUserQuery = useCurrentUser();

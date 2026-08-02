@@ -26,7 +26,7 @@ public sealed class EfTagRepository(AppDbContext dbContext) : ITagRepository
 
         existingTag.Name = tag.Name;
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return true;
     }
@@ -41,13 +41,19 @@ public sealed class EfTagRepository(AppDbContext dbContext) : ITagRepository
     public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
     {
         var tag = await dbContext.Tags
-            .SingleOrDefaultAsync(current => current.Id == id);
+            .SingleOrDefaultAsync(current => current.Id == id, cancellationToken);
 
         if (tag is null)
         {
             return false;
         }
+        var isUsed = await dbContext.Projects
+            .AnyAsync(project => project.Tags.Any(tag => tag.Id == id));
 
+        if (isUsed)
+        {
+            return false;
+        }
         dbContext.Tags.Remove(tag);
 
         await dbContext.SaveChangesAsync(cancellationToken);
