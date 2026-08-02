@@ -10,16 +10,13 @@ type DeleteUserButtonProps = {
   userId: number;
 };
 
-export function DeleteUserButton({
-  userId,
-}: DeleteUserButtonProps) {
+export function DeleteUserButton({ userId }: DeleteUserButtonProps) {
   const [confirming, setConfirming] = useState(false);
   const currentUserQuery = useCurrentUser();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const deletingCurrentUser =
-    currentUserQuery.data?.id === userId;
+  const deletingCurrentUser = currentUserQuery.data?.id === userId;
 
   function clearDeletedUserQueries() {
     queryClient.invalidateQueries({
@@ -99,14 +96,12 @@ export function DeleteUserButton({
         </p>
 
         <h3 id="delete-user-heading">
-          {deletingCurrentUser
-            ? "Delete your account?"
-            : "Delete this user?"}
+          {deletingCurrentUser ? "Delete your account?" : "Delete this user?"}
         </h3>
 
         <p className="delete-user-confirmation__description">
-          This action cannot be undone. The account and its associated
-          data will be permanently removed.
+          This action cannot be undone. The account and its associated data will
+          be permanently removed.
         </p>
       </div>
 
@@ -137,10 +132,7 @@ export function DeleteUserButton({
         </button>
       </div>
 
-      <div
-        className="delete-user-confirmation__messages"
-        aria-live="polite"
-      >
+      <div className="delete-user-confirmation__messages" aria-live="polite">
         {mutationStatus === 401 && (
           <p className="form-message form-message--error">
             Your login is missing or expired.
@@ -156,18 +148,11 @@ export function DeleteUserButton({
         {mutationStatus === 404 && (
           <div className="delete-user-confirmation__missing">
             <p className="form-message form-message--error">
-              This user no longer exists. It may already have been
-              deleted.
+              This user no longer exists. It may already have been deleted.
             </p>
 
-            <button
-              className="button"
-              type="button"
-              onClick={leaveDeletedUser}
-            >
-              {deletingCurrentUser
-                ? "Return to login"
-                : "Back to users"}
+            <button className="button" type="button" onClick={leaveDeletedUser}>
+              {deletingCurrentUser ? "Return to login" : "Back to users"}
             </button>
           </div>
         )}

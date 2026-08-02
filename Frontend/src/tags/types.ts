@@ -27,5 +27,6 @@ export type CreateTagResponse = {
 };
 
 export type UpdateTagRequest = {
+  id: number;
   name: string;
 };

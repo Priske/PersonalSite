@@ -7,13 +7,11 @@ import { useHomePageConfig } from "./homePageConfig/useHomePageConfig";
 export function HomePage() {
   const configQuery = useHomePageConfig();
 
-  if (configQuery.isPending)
-  {
+  if (configQuery.isPending) {
     return null;
   }
 
-  if (configQuery.isError)
-  {
+  if (configQuery.isError) {
     return null;
   }
 

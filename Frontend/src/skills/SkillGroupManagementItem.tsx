@@ -19,8 +19,10 @@ export function SkillGroupManagementItem({
 }: SkillGroupManagementItemProps) {
   const skillsQuery = useSkills(group.id);
   const skills = skillsQuery.data
-  ? [...skillsQuery.data.items].sort((a, b) => a.displayOrder - b.displayOrder)
-  : [];
+    ? [...skillsQuery.data.items].sort(
+        (a, b) => a.displayOrder - b.displayOrder,
+      )
+    : [];
 
   return (
     <section className="skill-management-group">
@@ -67,9 +69,7 @@ export function SkillGroupManagementItem({
 
       <div className="skill-management-group__content">
         {skillsQuery.isPending && (
-          <p className="account-management__status">
-            Loading skills...
-          </p>
+          <p className="account-management__status">Loading skills...</p>
         )}
 
         {skillsQuery.isError && (

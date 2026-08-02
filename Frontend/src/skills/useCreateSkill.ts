@@ -1,7 +1,4 @@
-import {
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "../api";
 
 export type CreateSkillRequest = {
@@ -15,30 +12,19 @@ export type CreatedSkill = {
   displayOrder: number;
 };
 
-export function useCreateSkill(
-  groupId: number,
-) {
+export function useCreateSkill(groupId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (
-      request: CreateSkillRequest,
-    ) =>
-      apiRequest<CreatedSkill>(
-        `/skill-groups/${groupId}/skills`,
-        {
-          method: "POST",
-          body: JSON.stringify(request),
-        },
-      ),
+    mutationFn: (request: CreateSkillRequest) =>
+      apiRequest<CreatedSkill>(`/skill-groups/${groupId}/skills`, {
+        method: "POST",
+        body: JSON.stringify(request),
+      }),
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: [
-          "skill-groups",
-          groupId,
-          "skills",
-        ],
+        queryKey: ["skill-groups", groupId, "skills"],
       });
     },
   });

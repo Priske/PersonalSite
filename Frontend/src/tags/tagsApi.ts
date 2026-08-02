@@ -1,4 +1,4 @@
-import { apiRequest } from "../api";
+import { apiRequest, apiRequestWithoutResponse } from "../api";
 import type { PagedResult } from "../types";
 import {
   type CreateTagRequest,
@@ -33,15 +33,15 @@ export function getTag(id: number) {
   return apiRequest<TagDetails>(`/tags/${id}`);
 }
 
-export function updateTag(id: number, request: UpdateTagRequest) {
-  return apiRequest<void>(`/tags/${id}`, {
+export function updateTag(tagId: number, request: UpdateTagRequest) {
+  return apiRequestWithoutResponse(`/tags/${tagId}`, {
     method: "PUT",
     body: JSON.stringify(request),
   });
 }
 
-export function deleteTag(id: number) {
-  return apiRequest<void>(`/tags/${id}`, {
+export function deleteTag(tagId: number) {
+  return apiRequestWithoutResponse(`/tags/${tagId}`, {
     method: "DELETE",
   });
 }

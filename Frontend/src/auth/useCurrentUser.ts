@@ -2,10 +2,7 @@ import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ApiError } from "../api";
 import { getCurrentUser } from "./authApi";
-import {
-  removeAccessToken,
-  useAccessToken,
-} from "./tokenStorage";
+import { removeAccessToken, useAccessToken } from "./tokenStorage";
 
 export function useCurrentUser() {
   const accessToken = useAccessToken();
@@ -19,8 +16,7 @@ export function useCurrentUser() {
   });
 
   const unauthorized =
-    query.error instanceof ApiError &&
-    query.error.status === 401;
+    query.error instanceof ApiError && query.error.status === 401;
 
   useEffect(() => {
     if (!unauthorized) {

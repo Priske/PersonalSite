@@ -1,5 +1,10 @@
 import { apiRequest, apiRequestWithoutResponse } from "../api";
-import type {CreateProjectRequest,GetProjectSummariesResponse,ProjectDetails, UpdateProjectRequest } from "./types";
+import type {
+  CreateProjectRequest,
+  GetProjectSummariesResponse,
+  ProjectDetails,
+  UpdateProjectRequest,
+} from "./types";
 
 export function getProjects() {
   return apiRequest<GetProjectSummariesResponse>("/projects");
@@ -16,7 +21,10 @@ export function createProject(request: CreateProjectRequest) {
   });
 }
 
-export function updateProject(projectId: number, request: UpdateProjectRequest) {
+export function updateProject(
+  projectId: number,
+  request: UpdateProjectRequest,
+) {
   return apiRequestWithoutResponse(`/projects/${projectId}`, {
     method: "PUT",
     body: JSON.stringify(request),

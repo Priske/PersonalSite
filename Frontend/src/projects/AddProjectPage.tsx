@@ -25,7 +25,8 @@ export function AddProjectPage() {
     const formData = new FormData(event.currentTarget);
     const title = formData.get("title")?.toString().trim() ?? "";
     const description = formData.get("description")?.toString().trim() ?? "";
-    const repositoryUrl = formData.get("repositoryUrl")?.toString().trim() ?? "";
+    const repositoryUrl =
+      formData.get("repositoryUrl")?.toString().trim() ?? "";
     const liveUrl = formData.get("liveUrl")?.toString().trim() ?? "";
     const displayOrder = Number(formData.get("displayOrder"));
     const isFeatured = formData.get("isFeatured") === "on";
@@ -77,43 +78,86 @@ export function AddProjectPage() {
           <div className="manage-skill-group-form__fields">
             <div className="form-field">
               <label htmlFor="project-title">Title</label>
-              <input id="project-title" name="title" disabled={createMutation.isPending} required />
+              <input
+                id="project-title"
+                name="title"
+                disabled={createMutation.isPending}
+                required
+              />
             </div>
 
             <div className="form-field">
               <label htmlFor="project-description">Description</label>
-              <textarea id="project-description" name="description" disabled={createMutation.isPending} required />
+              <textarea
+                id="project-description"
+                name="description"
+                disabled={createMutation.isPending}
+                required
+              />
             </div>
 
             <div className="form-field">
               <label htmlFor="project-repository-url">Repository URL</label>
-              <input id="project-repository-url" name="repositoryUrl" type="url" disabled={createMutation.isPending} required />
+              <input
+                id="project-repository-url"
+                name="repositoryUrl"
+                type="url"
+                disabled={createMutation.isPending}
+                required
+              />
             </div>
 
             <div className="form-field">
               <label htmlFor="project-live-url">Live URL</label>
-              <input id="project-live-url" name="liveUrl" type="url" disabled={createMutation.isPending} />
+              <input
+                id="project-live-url"
+                name="liveUrl"
+                type="url"
+                disabled={createMutation.isPending}
+              />
             </div>
 
             <div className="form-field">
               <label htmlFor="project-display-order">Display order</label>
-              <input id="project-display-order" name="displayOrder" type="number" min="0" defaultValue={0} disabled={createMutation.isPending} required />
+              <input
+                id="project-display-order"
+                name="displayOrder"
+                type="number"
+                min="0"
+                defaultValue={0}
+                disabled={createMutation.isPending}
+                required
+              />
             </div>
 
             <div className="form-field">
               <label>
-                <input name="isFeatured" type="checkbox" disabled={createMutation.isPending} />
+                <input
+                  name="isFeatured"
+                  type="checkbox"
+                  disabled={createMutation.isPending}
+                />
                 Featured project
               </label>
             </div>
           </div>
         </section>
 
-        {formError && <p className="form-message form-message--error">{formError}</p>}
-        {createMutation.isError && <p className="form-message form-message--error">Could not create the project.</p>}
+        {formError && (
+          <p className="form-message form-message--error">{formError}</p>
+        )}
+        {createMutation.isError && (
+          <p className="form-message form-message--error">
+            Could not create the project.
+          </p>
+        )}
 
         <div className="manage-skill-group-form__actions">
-          <button className="button" type="submit" disabled={createMutation.isPending}>
+          <button
+            className="button"
+            type="submit"
+            disabled={createMutation.isPending}
+          >
             {createMutation.isPending ? "Creating..." : "Create project"}
           </button>
 

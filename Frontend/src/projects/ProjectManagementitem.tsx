@@ -94,11 +94,7 @@ export function ProjectManagementItem({
             <dt>Live site</dt>
             <dd>
               {project.liveUrl ? (
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <a href={project.liveUrl} target="_blank" rel="noreferrer">
                   View project
                 </a>
               ) : (
@@ -106,7 +102,7 @@ export function ProjectManagementItem({
               )}
             </dd>
           </div>
-           <div>
+          <div>
             <dt>Tags</dt>
             <dd>
               {project.tags.length > 0 && (

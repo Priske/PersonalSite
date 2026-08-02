@@ -15,9 +15,7 @@ export function AccountLayout() {
   if (currentUserQuery.isPending) {
     return (
       <main className="account-status-page">
-        <p className="account-status-page__message">
-          Loading account...
-        </p>
+        <p className="account-status-page__message">Loading account...</p>
       </main>
     );
   }
@@ -45,10 +43,7 @@ export function AccountLayout() {
       <AccountNavigation user={currentUserQuery.data} />
 
       <section className="account-page__content">
-        <span
-          className="account-page__connector"
-          aria-hidden="true"
-        >
+        <span className="account-page__connector" aria-hidden="true">
           <span className="account-page__connector-line" />
           <span className="account-page__connector-dot" />
         </span>

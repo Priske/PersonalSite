@@ -1,8 +1,7 @@
-import { useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {  getHomePageConfig, updateHomePageConfig} from "./homePageConfigApi";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getHomePageConfig, updateHomePageConfig } from "./homePageConfigApi";
 
-export const homePageConfigQueryKey =
-  ["home-page-config"] as const;
+export const homePageConfigQueryKey = ["home-page-config"] as const;
 
 export function useHomePageConfig() {
   return useQuery({

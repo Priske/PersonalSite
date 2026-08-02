@@ -29,11 +29,9 @@ export function RequireAccountAccess() {
     );
   }
 
-  const isAdministrator =
-    currentUser.role === "Administrator";
+  const isAdministrator = currentUser.role === "Administrator";
 
-  const isOwnAccount =
-    currentUser.id === requestedUserId;
+  const isOwnAccount = currentUser.id === requestedUserId;
 
   if (!isAdministrator && !isOwnAccount) {
     return (

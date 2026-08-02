@@ -13,9 +13,7 @@ export function AccountPage() {
   return (
     <article className="account-card">
       <header className="account-card__header">
-        <p className="account-card__eyebrow">
-          Profile information
-        </p>
+        <p className="account-card__eyebrow">Profile information</p>
 
         <h2>{user.name}</h2>
 

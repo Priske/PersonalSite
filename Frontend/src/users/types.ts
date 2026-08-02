@@ -17,7 +17,6 @@ export type UserDetails = {
   role: string;
 };
 
-
 export type UpdateUserRequest = {
   name: string;
   email: string;

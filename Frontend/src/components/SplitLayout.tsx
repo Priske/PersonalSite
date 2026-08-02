@@ -1,25 +1,21 @@
 import type { ReactNode } from "react";
 
 type SplitLayoutProps = {
-    aside: ReactNode;
-    children: ReactNode;
-    className?: string;
+  aside: ReactNode;
+  children: ReactNode;
+  className?: string;
 };
 
 export function SplitLayout({
-    aside,
-    children,
-    className = "",
+  aside,
+  children,
+  className = "",
 }: SplitLayoutProps) {
-    return (
-        <main className={`split-layout ${className}`.trim()}>
-            <aside className="split-layout__aside">
-                {aside}
-            </aside>
+  return (
+    <main className={`split-layout ${className}`.trim()}>
+      <aside className="split-layout__aside">{aside}</aside>
 
-            <div className="split-layout__main">
-                {children}
-            </div>
-        </main>
-    );
+      <div className="split-layout__main">{children}</div>
+    </main>
+  );
 }

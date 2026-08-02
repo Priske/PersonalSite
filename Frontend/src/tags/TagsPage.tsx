@@ -6,7 +6,8 @@ import {
 } from "@tanstack/react-query";
 import { useState, type FormEvent } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { deleteTag, getTag, getTags, updateTag } from "./tagsApi";
+import { getTag, getTags, updateTag } from "./tagsApi";
+import { DeleteTagButton } from "./DeleteTagButton";
 
 const pageSize = 25;
 
@@ -20,9 +21,11 @@ export function TagsPage() {
   const queryClient = useQueryClient();
 
   const [searchParams, setSearchParams] = useSearchParams();
+
   const [selectedTagId, setSelectedTagId] = useState<number | null>(null);
 
   const page = readPage(searchParams.get("page"));
+
   const search = searchParams.get("search")?.trim() ?? "";
 
   const tagsQuery = useQuery({
@@ -34,24 +37,36 @@ export function TagsPage() {
         search,
       },
     ],
+
     queryFn: () =>
       getTags({
         page,
         pageSize,
         search,
       }),
+
     placeholderData: keepPreviousData,
   });
 
   const selectedTagQuery = useQuery({
     queryKey: ["tags", "detail", selectedTagId],
-    queryFn: () => getTag(selectedTagId!),
+
+    queryFn: () => {
+      if (selectedTagId === null) {
+        throw new Error("No tag selected");
+      }
+
+      return getTag(selectedTagId);
+    },
+
     enabled: selectedTagId !== null,
+    retry: false,
   });
 
   const updateTagMutation = useMutation({
     mutationFn: ({ id, name }: { id: number; name: string }) =>
       updateTag(id, {
+        id,
         name,
       }),
 
@@ -64,18 +79,6 @@ export function TagsPage() {
           queryKey: ["tags", "detail", variables.id],
         }),
       ]);
-    },
-  });
-
-  const deleteTagMutation = useMutation({
-    mutationFn: deleteTag,
-
-    onSuccess: async () => {
-      setSelectedTagId(null);
-
-      await queryClient.invalidateQueries({
-        queryKey: ["tags"],
-      });
     },
   });
 
@@ -96,6 +99,7 @@ export function TagsPage() {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
+
     const value = formData.get("search")?.toString().trim() ?? "";
 
     const next = new URLSearchParams();
@@ -112,13 +116,13 @@ export function TagsPage() {
     setSelectedTagId((currentTagId) => (currentTagId === tagId ? null : tagId));
 
     updateTagMutation.reset();
-    deleteTagMutation.reset();
   }
 
   function handleRename(event: FormEvent<HTMLFormElement>, tagId: number) {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
+
     const name = formData.get("name")?.toString().trim() ?? "";
 
     if (!name) {
@@ -131,16 +135,8 @@ export function TagsPage() {
     });
   }
 
-  function handleDelete(tagId: number, tagName: string) {
-    const confirmed = window.confirm(
-      `Are you sure you want to delete the tag "${tagName}"?`,
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    deleteTagMutation.mutate(tagId);
+  function handleTagDeleted() {
+    setSelectedTagId(null);
   }
 
   return (
@@ -149,6 +145,7 @@ export function TagsPage() {
         <header className="tag-list-card__header">
           <div>
             <p className="tag-list-card__eyebrow">Tags</p>
+
             <h1>Tag List</h1>
           </div>
 
@@ -215,6 +212,7 @@ export function TagsPage() {
               {tagsQuery.data.items.length === 0 ? (
                 <div className="tag-list-empty">
                   <h2>No tags found</h2>
+
                   <p>Try another name.</p>
                 </div>
               ) : (
@@ -305,6 +303,8 @@ export function TagsPage() {
                                         name="name"
                                         type="text"
                                         defaultValue={details.name}
+                                        maxLength={100}
+                                        required
                                         disabled={updateTagMutation.isPending}
                                       />
                                     </div>
@@ -385,7 +385,8 @@ export function TagsPage() {
 
                                   {canDelete ? (
                                     <p className="tag-details__description">
-                                      This tag is unused and can be deleted.
+                                      Permanently delete this tag. This action
+                                      cannot be undone.
                                     </p>
                                   ) : (
                                     <p className="tag-details__description">
@@ -394,29 +395,12 @@ export function TagsPage() {
                                     </p>
                                   )}
 
-                                  <button
-                                    className="button button--danger"
-                                    type="button"
-                                    disabled={
-                                      !canDelete || deleteTagMutation.isPending
-                                    }
-                                    onClick={() =>
-                                      handleDelete(details.id, details.name)
-                                    }
-                                  >
-                                    {deleteTagMutation.isPending
-                                      ? "Deleting..."
-                                      : "Delete tag"}
-                                  </button>
-
-                                  {deleteTagMutation.isError && (
-                                    <p
-                                      className="form-message form-message--error"
-                                      role="alert"
-                                    >
-                                      The tag could not be deleted.
-                                    </p>
-                                  )}
+                                  <DeleteTagButton
+                                    tagId={details.id}
+                                    tagName={details.name}
+                                    disabled={!canDelete}
+                                    onDeleted={handleTagDeleted}
+                                  />
                                 </section>
                               </>
                             )}
