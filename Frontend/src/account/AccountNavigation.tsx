@@ -78,6 +78,17 @@ export function AccountNavigation({ user }: AccountNavigationProps) {
               <span className="account-navigation__number">04</span>
               <span>Tags</span>
             </NavLink>
+            <NavLink
+              className={({ isActive }) =>
+                isActive
+                  ? "account-navigation__link account-navigation__link--active"
+                  : "account-navigation__link"
+              }
+              to="/account/homePage"
+            >
+              <span className="account-navigation__number">05</span>
+              <span>Home Page</span>
+            </NavLink>
           </>
         )}
       </nav>
