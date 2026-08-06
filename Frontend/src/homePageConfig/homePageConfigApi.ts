@@ -1,4 +1,4 @@
-import { apiRequest } from "../api";
+import { apiRequest, apiRequestWithoutResponse } from "../api";
 import type {
   GetHomePageConfigDetailsResponse,
   UpdateHomePageConfigRequest,
@@ -9,7 +9,7 @@ export function getHomePageConfig() {
 }
 
 export function updateHomePageConfig(request: UpdateHomePageConfigRequest) {
-  return apiRequest<void>("/home-page-config", {
+  return apiRequestWithoutResponse("/home-page-config", {
     method: "PUT",
     body: JSON.stringify(request),
   });

@@ -2,7 +2,7 @@
 @import "./global.css";
 @import "./components.css";
 @import "./layout.css";
-
+@import "./pages/edit-home-page.css";
 @import "./pages/auth.css";
 @import "./pages/account.css";
 @import "./pages/cv.css";

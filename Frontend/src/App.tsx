@@ -19,6 +19,7 @@ import { AddSkillGroupPage } from "./skills/AddSkillGroupPage";
 import { ManageProjectPage } from "./projects/ManageProjectPage";
 import { AddProjectPage } from "./projects/AddProjectPage";
 import { TagsPage } from "./tags/TagsPage";
+import { EditHomePage } from "./homePageConfig/EditHomePage";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
             <Route path="skills" element={<AccountSkillsPage />} />
             <Route path="projects" element={<AccountProjectsPage />} />
             <Route path="tags" element={<TagsPage />} />
+            <Route path="homePage" element={<EditHomePage />} />
           </Route>
         </Route>
 
