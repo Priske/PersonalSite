@@ -93,6 +93,18 @@ export function EditHomePage() {
         className="home-editor__form"
         onSubmit={handleSubmit}
       >
+        <div>
+          {updateHomePageMutation.isError && (
+            <p className="form-message form-message--error">
+              Could not save the homepage.
+            </p>
+          )}
+          {updateHomePageMutation.isSuccess && (
+            <p className="form-message form-message--success">
+              Homepage saved.
+            </p>
+          )}
+        </div>
         <div className="home-editor__field-group">
           <h3>Identity</h3>
 
@@ -103,6 +115,7 @@ export function EditHomePage() {
               onChange={(event) =>
                 updateField("heroBanner", event.target.value)
               }
+              required
             />
           </label>
 
@@ -114,6 +127,7 @@ export function EditHomePage() {
                 onChange={(event) =>
                   updateField("heroFirstName", event.target.value)
                 }
+                required
               />
             </label>
 
@@ -124,6 +138,7 @@ export function EditHomePage() {
                 onChange={(event) =>
                   updateField("heroLastName", event.target.value)
                 }
+                required
               />
             </label>
           </div>
@@ -133,6 +148,7 @@ export function EditHomePage() {
             <input
               value={form.heroRole}
               onChange={(event) => updateField("heroRole", event.target.value)}
+              required
             />
           </label>
         </div>
@@ -147,6 +163,7 @@ export function EditHomePage() {
               onChange={(event) =>
                 updateField("heroEyebrow", event.target.value)
               }
+              required
             />
           </label>
 
@@ -158,6 +175,7 @@ export function EditHomePage() {
               onChange={(event) =>
                 updateField("heroHeading", event.target.value)
               }
+              required
             />
           </label>
 
@@ -169,6 +187,7 @@ export function EditHomePage() {
               onChange={(event) =>
                 updateField("heroSummary", event.target.value)
               }
+              required
             />
           </label>
         </div>
@@ -183,6 +202,7 @@ export function EditHomePage() {
               onChange={(event) =>
                 updateField("heroPrimaryActionLabel", event.target.value)
               }
+              required
             />
           </label>
 
@@ -193,19 +213,11 @@ export function EditHomePage() {
               onChange={(event) =>
                 updateField("heroSecondaryActionLabel", event.target.value)
               }
+              required
             />
           </label>
         </div>
 
-        {updateHomePageMutation.isSuccess && (
-          <p className="form-message form-message--success">Homepage saved.</p>
-        )}
-
-        {updateHomePageMutation.isError && (
-          <p className="form-message form-message--error">
-            Could not save the homepage.
-          </p>
-        )}
         <div className="home-editor__section-heading">
           <div>
             <p className="home-editor__eyebrow">Contact content</p>
@@ -223,6 +235,7 @@ export function EditHomePage() {
               onChange={(event) =>
                 updateField("contactSectionNumber", event.target.value)
               }
+              disabled
             />
           </label>
 
@@ -233,6 +246,7 @@ export function EditHomePage() {
               onChange={(event) =>
                 updateField("contactSectionEyebrow", event.target.value)
               }
+              required
             />
           </label>
 
@@ -243,6 +257,7 @@ export function EditHomePage() {
               onChange={(event) =>
                 updateField("contactSectionHeading", event.target.value)
               }
+              required
             />
           </label>
         </div>
@@ -257,6 +272,7 @@ export function EditHomePage() {
               onChange={(event) =>
                 updateField("contactEyebrow", event.target.value)
               }
+              required
             />
           </label>
 
@@ -267,6 +283,7 @@ export function EditHomePage() {
               onChange={(event) =>
                 updateField("contactHeading", event.target.value)
               }
+              required
             />
           </label>
 
@@ -278,6 +295,7 @@ export function EditHomePage() {
               onChange={(event) =>
                 updateField("contactDescription", event.target.value)
               }
+              required
             />
           </label>
         </div>
@@ -292,6 +310,7 @@ export function EditHomePage() {
               onChange={(event) =>
                 updateField("contactEmailActionLabel", event.target.value)
               }
+              required
             />
           </label>
 
@@ -302,6 +321,7 @@ export function EditHomePage() {
               onChange={(event) =>
                 updateField("contactLoginActionLabel", event.target.value)
               }
+              required
             />
           </label>
         </div>
@@ -316,6 +336,7 @@ export function EditHomePage() {
               value={form.email}
               onChange={(event) => updateField("email", event.target.value)}
             />
+            required
           </label>
 
           <label className="form-field">
@@ -326,6 +347,7 @@ export function EditHomePage() {
               onChange={(event) =>
                 updateField("phoneNumber", event.target.value)
               }
+              required
             />
           </label>
 
