@@ -81,6 +81,7 @@ Rather than being a simple portfolio, the goal is to build and maintain a produc
 - Image management
 - Project search
 - Rich Markdown support
+- Home Page Editing
 
 ---
 
