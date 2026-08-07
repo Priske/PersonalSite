@@ -16,14 +16,13 @@ public sealed class GetDemoHomePageDetailsQueryHandler(AppDbContext dbContext) :
            .SingleOrDefaultAsync(
                x =>
                    x.Source == ContentSource.Demo &&
-                   x.CreatedByUserId == actor.UserId,
+                   x.Created.UserId == actor.UserId,
                cancellationToken);
 
         if (config is null)
         {
             return null;
         }
-
         return new GetHomePageConfigDetailsResponse
         {
             HeroBanner = config.HeroBanner,
@@ -56,9 +55,12 @@ public sealed class GetDemoHomePageDetailsQueryHandler(AppDbContext dbContext) :
             CvUrl = config.CvUrl?.Value,
 
             Source = config.Source.ToString(),
-            CreatedAt = config.CreatedAt,
-            LastEditedAt = config.LastEditedAt,
-            CreatedByUserId = config.CreatedByUserId
+
+            CreatedByUserId = config.Created.UserId,
+            CreatedAt = config.Created.At,
+
+            LastEditedByUserId = config.Edited.UserId,
+            LastEditedAt = config.Edited.At
         };
     }
 }

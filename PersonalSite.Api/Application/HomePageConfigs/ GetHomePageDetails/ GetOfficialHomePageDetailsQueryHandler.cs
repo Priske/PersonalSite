@@ -52,9 +52,12 @@ public sealed class GetOfficialHomePageDetailsQueryHandler(AppDbContext dbContex
             CvUrl = config.CvUrl?.Value,
 
             Source = config.Source.ToString(),
-            CreatedAt = config.CreatedAt,
-            LastEditedAt = config.LastEditedAt,
-            CreatedByUserId = config.CreatedByUserId
+
+            CreatedByUserId = config.Created.UserId,
+            CreatedAt = config.Created.At,
+
+            LastEditedByUserId = config.Edited.UserId,
+            LastEditedAt = config.Edited.At
         };
     }
 }

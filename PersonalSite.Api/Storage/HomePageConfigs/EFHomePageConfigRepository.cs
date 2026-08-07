@@ -6,17 +6,17 @@ namespace PersonalSite.Api.Storage.HomePageConfigs;
 
 public class EfHomePageRepository(AppDbContext dbContext) : IHomePageConfigRepository
 {
-    public async Task<HomePageConfig?> GetDemoAsync(int userId,
-    CancellationToken cancellationToken = default)
+    public Task<HomePageConfig?> GetDemoAsync(
+        int userId,
+        CancellationToken cancellationToken = default)
     {
-        return await dbContext.HomepageConfigs
+        return dbContext.HomepageConfigs
             .SingleOrDefaultAsync(
                 x =>
                     x.Source == ContentSource.Demo &&
-                    x.CreatedByUserId == userId,
+                    x.Created.UserId == userId,
                 cancellationToken);
     }
-
 
     public Task<HomePageConfig?> GetOfficialAsync(
         CancellationToken cancellationToken)

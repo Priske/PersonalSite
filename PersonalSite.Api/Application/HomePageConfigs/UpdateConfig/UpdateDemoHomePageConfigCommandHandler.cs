@@ -1,3 +1,4 @@
+using PersonalSite.Api.Domain;
 using PersonalSite.Api.Domain.Actors;
 using PersonalSite.Api.Domain.Common;
 using PersonalSite.Api.Domain.HomePageConfigs;
@@ -64,13 +65,12 @@ public sealed class UpdateDemoHomePageConfigCommandHandler(
             : new Url(request.GitHubUrl);
 
         config.CvUrl = string.IsNullOrWhiteSpace(request.CvUrl)
-            ? null
-            : new Url(request.CvUrl);
+      ? null
+      : new Url(request.CvUrl);
 
-        await configRepository.SaveChangesAsync(cancellationToken);
-
-        config.LastEditedByUserId = actor.UserId;
-        config.LastEditedAt = DateTimeOffset.UtcNow;
+        config.Edited = new Change(
+            actor.UserId,
+            DateTimeOffset.UtcNow);
 
         await configRepository.SaveChangesAsync(cancellationToken);
 
