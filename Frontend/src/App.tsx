@@ -32,6 +32,8 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
 
         <Route element={<RequireAccountAccess />}>
+          <Route path="/users" element={<UserListPage />} />
+          <Route path="/users/:userId/edit" element={<EditUserPage />} />
           <Route path="/account" element={<AccountLayout />}>
             <Route index element={<AccountPage />} />
             <Route path="edit" element={<EditAccountPage />} />
@@ -52,10 +54,7 @@ function App() {
           </Route>
         </Route>
 
-        <Route element={<RequireAdministrator />}>
-          <Route path="/users/:userId/edit" element={<EditUserPage />} />
-          <Route path="/users" element={<UserListPage />} />
-        </Route>
+        <Route element={<RequireAdministrator />}></Route>
       </Routes>
     </>
   );

@@ -15,6 +15,11 @@ export function registerUser(request: RegisterUserRequest) {
     body: JSON.stringify(request),
   });
 }
+export function seedFakeUsers() {
+  return apiRequestWithoutResponse(`/users/fake/replenish`, {
+    method: "POST",
+  });
+}
 
 export function getUser(userId: number) {
   return apiRequest<UserDetails>(`/users/${userId}`);

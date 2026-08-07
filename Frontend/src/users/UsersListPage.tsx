@@ -1,7 +1,12 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import type { FormEvent } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { getUsers } from "./usersApi";
+import { getUsers, seedFakeUsers } from "./usersApi";
 
 const pageSize = 10;
 
@@ -46,6 +51,16 @@ export function UserListPage() {
 
     setSearchParams(next);
   }
+  const queryClient = useQueryClient();
+
+  const seedFakeUsersMutation = useMutation({
+    mutationFn: seedFakeUsers,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["users"],
+      });
+    },
+  });
 
   function handleSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -151,9 +166,28 @@ export function UserListPage() {
               <>
                 {usersQuery.data.items.length === 0 ? (
                   <div className="user-list-empty">
+                    {!search && (
+                      <button
+                        className="button"
+                        type="button"
+                        onClick={() => seedFakeUsersMutation.mutate()}
+                        disabled={seedFakeUsersMutation.isPending}
+                      >
+                        {seedFakeUsersMutation.isPending
+                          ? "Creating demo users..."
+                          : "Create demo users"}
+                      </button>
+                    )}
+                    {seedFakeUsersMutation.isError && (
+                      <p
+                        className="form-message form-message--error"
+                        role="alert"
+                      >
+                        Could not create demo users.
+                      </p>
+                    )}
                     <h3>No users found</h3>
-
-                    <p>Try another name or email address.</p>
+                    {search && <p>Try another name or email address.</p>}
                   </div>
                 ) : (
                   <ul className="user-list">
@@ -168,7 +202,6 @@ export function UserListPage() {
                         >
                           <span className="user-list__identity">
                             <strong>{user.name}</strong>
-
                             <span>{user.email}</span>
                           </span>
 

@@ -65,9 +65,10 @@ export function EditUserPage() {
     const name = formData.get("name")?.toString().trim() ?? "";
 
     const email = formData.get("email")?.toString().trim() ?? "";
+    const role = userQuery.data?.role;
 
-    if (!name || !email) {
-      setFormError("Enter a valid name and email address.");
+    if (!name || !email || !role) {
+      setFormError("Enter a valid name, role  and email address.");
 
       return;
     }
@@ -75,6 +76,7 @@ export function EditUserPage() {
     updateMutation.mutate({
       name,
       email,
+      role,
     });
   }
 
@@ -128,6 +130,47 @@ export function EditUserPage() {
   }
 
   if (userQuery.isError) {
+    const status =
+      userQuery.error instanceof Error && "status" in userQuery.error
+        ? (userQuery.error as Error & { status: number }).status
+        : undefined;
+
+    if (status === 403) {
+      return (
+        <main className="admin-message-page">
+          <section className="admin-message-card">
+            <p className="admin-message-card__eyebrow">Forbidden</p>
+
+            <h1>Access denied</h1>
+
+            <p>You do not have permission to manage this user.</p>
+
+            <Link className="button" to="/users">
+              Back to users
+            </Link>
+          </section>
+        </main>
+      );
+    }
+
+    if (status === 404) {
+      return (
+        <main className="admin-message-page">
+          <section className="admin-message-card">
+            <p className="admin-message-card__eyebrow">Not found</p>
+
+            <h1>User not found</h1>
+
+            <p>This user no longer exists.</p>
+
+            <Link className="button" to="/users">
+              Back to users
+            </Link>
+          </section>
+        </main>
+      );
+    }
+
     return (
       <main className="admin-message-page">
         <section className="admin-message-card">
@@ -209,7 +252,6 @@ export function EditUserPage() {
 
               <div className="edit-user-form__field">
                 <label htmlFor="edit-user-email">Email</label>
-
                 <input
                   id="edit-user-email"
                   name="email"
@@ -286,7 +328,7 @@ export function EditUserPage() {
                 </p>
               </header>
 
-              <DeleteUserButton userId={user.id} />
+              <DeleteUserButton userId={user.id} targetRole={user.role} />
             </section>
           </div>
         </article>

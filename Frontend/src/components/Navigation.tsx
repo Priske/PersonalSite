@@ -25,6 +25,7 @@ export function Navigation() {
 
   const loggedIn = hasAccessToken && currentUserQuery.data !== undefined;
   const isAdministrator = currentUserQuery.data?.role === "Administrator";
+  const isUser = currentUserQuery.data?.role === "User";
   return (
     <header className="site-header">
       <nav className="site-nav container" aria-label="Main navigation">
@@ -63,7 +64,7 @@ export function Navigation() {
 
           {loggedIn ? (
             <>
-              {isAdministrator && (
+              {(isAdministrator || isUser) && (
                 <li>
                   <NavLink className={navLinkClass} to="/users">
                     Users

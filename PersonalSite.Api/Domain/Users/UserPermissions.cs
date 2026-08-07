@@ -15,7 +15,7 @@ public static class UserPermissions
         }
 
         throw new ForbiddenOperationException(
-            "This actor cannot view the member directory.");
+            "This actor cannot view the user directory.");
     }
 
     public static void EnsureCanManage(
@@ -34,5 +34,20 @@ public static class UserPermissions
 
         throw new ForbiddenOperationException(
             "This actor cannot manage this user.");
+    }
+
+    public static void EnsureCanDelete(Actor actor, User targetUser)
+    {
+        if (actor.Role == UserRole.Administrator)
+        {
+            return;
+        }
+
+        if (targetUser.Role == UserRole.FakeUser)
+        {
+            return;
+        }
+
+        throw new ForbiddenOperationException("Forbidden to Delete this user");
     }
 }

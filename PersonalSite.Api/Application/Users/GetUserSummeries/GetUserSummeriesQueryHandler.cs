@@ -18,7 +18,6 @@ public class GetUserSummeriesQueryHandler(AppDbContext dbContext) : IHandler
         Actor actor,
         GetUserSummariesRequest request)
     {
-        UserPermissions.EnsureCanViewDirectory(actor);
         var page = Math.Max(1, request.Page ?? DefaultPage);
         var pageSize = Math.Clamp(request.PageSize ?? DefaultPageSize, MinPage, MaxPageSize);
 
@@ -34,18 +33,27 @@ public class GetUserSummeriesQueryHandler(AppDbContext dbContext) : IHandler
         }
 
         var totalItems = await query.CountAsync();
+        switch (actor.Role)
+        {
+            case UserRole.Administrator:
+                break;
+            case UserRole.User:
+                query = query.Where(user => user.Role == UserRole.FakeUser);
+                break;
+            default:
+                throw new UnauthorizedAccessException();
+        }
 
         var users = await query
             .OrderBy(user => user.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(user =>
-                new UserSummary
-                {
-                    Id = user.Id,
-                    Name = user.Name,
-                    Email = user.Email
-                })
+            .Select(user => new UserSummary
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email
+            })
             .ToListAsync();
 
         return

@@ -13,8 +13,6 @@ export function RequireAccountAccess() {
     return <Navigate to="/login" replace />;
   }
 
-  const currentUser = currentUserQuery.data;
-
   if (userId === undefined) {
     return <Outlet />;
   }
@@ -25,19 +23,6 @@ export function RequireAccountAccess() {
     return (
       <main>
         <h1>Invalid user id</h1>
-      </main>
-    );
-  }
-
-  const isAdministrator = currentUser.role === "Administrator";
-
-  const isOwnAccount = currentUser.id === requestedUserId;
-
-  if (!isAdministrator && !isOwnAccount) {
-    return (
-      <main>
-        <h1>Forbidden</h1>
-        <p>You cannot view this account.</p>
       </main>
     );
   }
