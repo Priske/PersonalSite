@@ -40,13 +40,14 @@ export function EditAccountPage() {
     const formData = new FormData(event.currentTarget);
     const name = formData.get("name")?.toString().trim() ?? "";
     const email = formData.get("email")?.toString().trim() ?? "";
+    const role = user.role;
 
-    if (!name || !email) {
-      setFormError("Enter a valid name and email.");
+    if (!name || !email || !role) {
+      setFormError("Enter a valid name,role and email.");
       return;
     }
 
-    updateMutation.mutate({ name, email });
+    updateMutation.mutate({ name, email, role });
   }
 
   if (currentUserQuery.isPending) {
@@ -189,7 +190,7 @@ export function EditAccountPage() {
         </div>
 
         <div className="edit-account-danger__action">
-          <DeleteUserButton userId={user.id} />
+          <DeleteUserButton userId={user.id} targetRole={user.role} />
         </div>
       </section>
     </article>

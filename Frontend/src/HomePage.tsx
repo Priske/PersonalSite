@@ -2,10 +2,10 @@ import { ContactSection } from "./home/ContactSection";
 import { HeroSection } from "./home/HeroSection";
 import { ProjectsSection } from "./home/ProjectsSection";
 import { SkillsSection } from "./home/SkillsSection";
-import { useHomePageConfig } from "./homePageConfig/useHomePageConfig";
+import { useOfficialHomePageConfig } from "./homePageConfig/useHomePageConfig";
 
 export function HomePage() {
-  const configQuery = useHomePageConfig();
+  const configQuery = useOfficialHomePageConfig();
 
   if (configQuery.isPending) {
     return null;

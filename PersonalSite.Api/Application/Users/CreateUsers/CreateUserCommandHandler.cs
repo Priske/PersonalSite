@@ -10,11 +10,11 @@ public class CreateUserCommandHandler(
     IPasswordHasher<User> passwordHasher) : IHandler
 {
 
-    public async Task<CreateUserResponse> Execute(CreateUserRequest request)
+    public async Task<CreateUserResponse> Execute(CreateUserRequest request, CancellationToken cancellationToken)
     {
 
         var mail = new UserEmail(request.Email);
-        if (await userRepository.EmailExistsAsync(mail))
+        if (await userRepository.EmailExistsAsync(mail, cancellationToken))
         {
             throw new UserEmailAlreadyExistsException();
         }
@@ -37,7 +37,7 @@ public class CreateUserCommandHandler(
         }
         user.PasswordHash = passwordHasher.HashPassword(user, request.Password);
 
-        var savedUser = await userRepository.AddAsync(user);
+        var savedUser = await userRepository.AddAsync(user, cancellationToken);
         return
             new CreateUserResponse
             {

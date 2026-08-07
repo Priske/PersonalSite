@@ -1,16 +1,23 @@
 using Microsoft.EntityFrameworkCore;
+using PersonalSite.Api.Domain;
+using PersonalSite.Api.Domain.Actors;
 using PersonalSite.Api.Storage;
 
 namespace PersonalSite.Api.Application.HomePageConfigs.GetHomePageDetails;
 
-public sealed class GetHomePageDetailsQueryHandler(AppDbContext dbContext) : IHandler
+public sealed class GetDemoHomePageDetailsQueryHandler(AppDbContext dbContext) : IHandler
 {
     public async Task<GetHomePageConfigDetailsResponse?> Execute(
+         Actor actor,
         CancellationToken cancellationToken)
     {
         var config = await dbContext.HomepageConfigs
-            .AsNoTracking()
-            .SingleOrDefaultAsync(cancellationToken);
+           .AsNoTracking()
+           .SingleOrDefaultAsync(
+               x =>
+                   x.Source == ContentSource.Demo &&
+                   x.CreatedByUserId == actor.UserId,
+               cancellationToken);
 
         if (config is null)
         {
@@ -46,7 +53,12 @@ public sealed class GetHomePageDetailsQueryHandler(AppDbContext dbContext) : IHa
             PhoneNumber = config.PhoneNumber?.Value,
             LinkedInUrl = config.LinkedInUrl?.Value,
             GitHubUrl = config.GitHubUrl?.Value,
-            CvUrl = config.CvUrl?.Value
+            CvUrl = config.CvUrl?.Value,
+
+            Source = config.Source.ToString(),
+            CreatedAt = config.CreatedAt,
+            LastEditedAt = config.LastEditedAt,
+            CreatedByUserId = config.CreatedByUserId
         };
     }
 }

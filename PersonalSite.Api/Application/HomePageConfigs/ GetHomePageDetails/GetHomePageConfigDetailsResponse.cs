@@ -30,4 +30,11 @@ public sealed class GetHomePageConfigDetailsResponse
     public string? LinkedInUrl { get; init; }
     public string? GitHubUrl { get; init; }
     public string? CvUrl { get; init; }
+
+    public required string Source { get; init; }
+    public int? CreatedByUserId { get; init; }
+    public int? LastEditedByUserId { get; init; }
+    public required DateTimeOffset CreatedAt { get; init; }
+    public required DateTimeOffset LastEditedAt { get; init; }
+
 }

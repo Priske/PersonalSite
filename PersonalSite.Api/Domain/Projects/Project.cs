@@ -3,7 +3,7 @@ using PersonalSite.Api.Domain.Tags;
 
 namespace PersonalSite.Api.Domain.Projects;
 
-public sealed class Project
+public sealed class Project : SiteContent
 {
     public int Id { get; init; }
 

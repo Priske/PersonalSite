@@ -2,7 +2,7 @@ using PersonalSite.Api.Domain.Common;
 
 namespace PersonalSite.Api.Domain.HomePageConfigs;
 
-public sealed class HomePageConfig
+public sealed class HomePageConfig : SiteContent
 {
     public int Id { get; private set; }
 

@@ -27,7 +27,19 @@ export type GetHomePageConfigDetailsResponse = {
   linkedInUrl?: string;
   gitHubUrl?: string;
   cvUrl?: string;
+
+  source: string;
+  createdByUserId: number | null;
+  lastEditedByUserId: number | null;
+  createdAt: string;
+  lastEditedAt: string;
 };
 
-export type UpdateHomePageConfigRequest =
-  GetHomePageConfigDetailsResponse;
+export type UpdateHomePageConfigRequest = Omit<
+  GetHomePageConfigDetailsResponse,
+  | "source"
+  | "createdByUserId"
+  | "lastEditedByUserId"
+  | "createdAt"
+  | "lastEditedAt"
+>;

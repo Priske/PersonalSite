@@ -10,16 +10,18 @@ public static class HomePageConfigEndpoints
     public static IEndpointRouteBuilder MapHomePageEndpoints(
         this IEndpointRouteBuilder app)
     {
-        app.MapGet("/home-page-config", GetHomePageDetails);
-
-        app.MapPut("/home-page-config", UpdateHomePageConfig)
+        app.MapGet("/home-official-page-config", GetOfficalHomePageDetails);
+        app.MapGet("/home-demo-page-config", GetDemoHomePageDetails)
             .RequireAuthorization();
+        app.MapPut("/home-official-page-config", UpdateOfficialHomePageConfig)
+            .RequireAuthorization();
+        app.MapPut("/home-demo-page-config", UpdateDemoHomePageConfig);
 
         return app;
     }
 
-    private static async Task<IResult> GetHomePageDetails(
-        GetHomePageDetailsQueryHandler queryHandler,
+    private static async Task<IResult> GetOfficalHomePageDetails(
+        GetOfficialHomePageDetailsQueryHandler queryHandler,
         CancellationToken cancellationToken)
     {
         var config = await queryHandler.Execute(cancellationToken);
@@ -29,11 +31,58 @@ public static class HomePageConfigEndpoints
             : Results.Ok(config);
     }
 
-    private static async Task<IResult> UpdateHomePageConfig(
+    private static async Task<IResult> GetDemoHomePageDetails(
+       ClaimsPrincipal principal,
+       GetDemoHomePageDetailsQueryHandler queryHandler,
+       CancellationToken cancellationToken)
+    {
+        var actor = principal.ToActor();
+
+        var config = await queryHandler.Execute(
+            actor,
+            cancellationToken);
+
+        return config is null
+            ? Results.NotFound()
+            : Results.Ok(config);
+    }
+    private static async Task<IResult> UpdateOfficialHomePageConfig(
         ClaimsPrincipal principal,
         UpdateHomePageConfigRequest request,
-        UpdateHomePageConfigCommandHandler commandHandler,
+        UpdateOfficialHomePageConfigCommandHandler commandHandler,
         CancellationToken cancellationToken)
+    {
+        try
+        {
+            var actor = principal.ToActor();
+
+            var updated = await commandHandler.Execute(
+                actor,
+                request,
+                cancellationToken);
+
+            return updated
+                ? Results.NoContent()
+                : Results.NotFound();
+        }
+        catch (ForbiddenOperationException)
+        {
+            return Results.Forbid();
+        }
+        catch (DomainException exception)
+        {
+            return Results.BadRequest(new
+            {
+                error = exception.Message
+            });
+        }
+    }
+
+    private static async Task<IResult> UpdateDemoHomePageConfig(
+    ClaimsPrincipal principal,
+    UpdateHomePageConfigRequest request,
+    UpdateDemoHomePageConfigCommandHandler commandHandler,
+    CancellationToken cancellationToken)
     {
         try
         {

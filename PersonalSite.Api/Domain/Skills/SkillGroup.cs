@@ -1,6 +1,6 @@
 namespace PersonalSite.Api.Domain.Skills;
 
-public sealed class SkillGroup
+public sealed class SkillGroup : SiteContent
 {
     public int Id { get; init; }
 

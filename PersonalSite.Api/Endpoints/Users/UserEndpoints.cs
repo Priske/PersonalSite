@@ -52,11 +52,12 @@ public static class UserEndpoints
 
     public static async Task<IResult> CreateUser(
             CreateUserRequest request,
-            CreateUserCommandHandler handler)
+            CreateUserCommandHandler handler,
+            CancellationToken cancellationToken)
     {
         try
         {
-            var response = await handler.Execute(request);
+            var response = await handler.Execute(request, cancellationToken);
             return Results.Created($"/users/{response.Id}", response);
         }
         catch (UserEmailAlreadyExistsException exception)

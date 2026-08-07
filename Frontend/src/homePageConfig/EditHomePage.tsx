@@ -3,13 +3,13 @@ import { ContactSection } from "../home/ContactSection";
 import { HeroSection } from "../home/HeroSection";
 import type { GetHomePageConfigDetailsResponse } from "./types";
 import {
-  useHomePageConfig,
-  useUpdateHomePageConfig,
+  useOfficialHomePageConfig,
+  useUpdateOfficialHomePageConfig,
 } from "./useHomePageConfig";
 
 export function EditHomePage() {
-  const homePageQuery = useHomePageConfig();
-  const updateHomePageMutation = useUpdateHomePageConfig();
+  const homePageQuery = useOfficialHomePageConfig();
+  const updateHomePageMutation = useUpdateOfficialHomePageConfig();
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const [form, setForm] = useState<GetHomePageConfigDetailsResponse | null>(

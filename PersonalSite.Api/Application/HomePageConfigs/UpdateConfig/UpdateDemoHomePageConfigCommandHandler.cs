@@ -5,7 +5,7 @@ using PersonalSite.Api.Storage.HomePageConfigs;
 
 namespace PersonalSite.Api.Application.HomePageConfigs.UpdateConfig;
 
-public sealed class UpdateHomePageConfigCommandHandler(
+public sealed class UpdateDemoHomePageConfigCommandHandler(
     IHomePageConfigRepository configRepository) : IHandler
 {
     public async Task<bool> Execute(
@@ -13,9 +13,10 @@ public sealed class UpdateHomePageConfigCommandHandler(
         UpdateHomePageConfigRequest request,
         CancellationToken cancellationToken)
     {
-        HomePageConfigPermissions.EnsureCanManage(actor);
-
-        var config = await configRepository.GetAsync(cancellationToken);
+        var config =
+            await configRepository.GetDemoAsync(
+                actor.UserId,
+                cancellationToken);
 
         if (config is null)
         {
@@ -65,6 +66,11 @@ public sealed class UpdateHomePageConfigCommandHandler(
         config.CvUrl = string.IsNullOrWhiteSpace(request.CvUrl)
             ? null
             : new Url(request.CvUrl);
+
+        await configRepository.SaveChangesAsync(cancellationToken);
+
+        config.LastEditedByUserId = actor.UserId;
+        config.LastEditedAt = DateTimeOffset.UtcNow;
 
         await configRepository.SaveChangesAsync(cancellationToken);
 
