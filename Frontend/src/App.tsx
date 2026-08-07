@@ -20,6 +20,8 @@ import { ManageProjectPage } from "./projects/ManageProjectPage";
 import { AddProjectPage } from "./projects/AddProjectPage";
 import { TagsPage } from "./tags/TagsPage";
 import { EditHomePage } from "./homePageConfig/EditHomePage";
+import { EditDemoHomePage } from "./homePageConfig/EditDemoHomePage";
+import { DemoHomePage } from "./DemoHomePage";
 
 function App() {
   return (
@@ -34,9 +36,11 @@ function App() {
         <Route element={<RequireAccountAccess />}>
           <Route path="/users" element={<UserListPage />} />
           <Route path="/users/:userId/edit" element={<EditUserPage />} />
+          <Route path="/demo-home-page" element={<DemoHomePage />} />
           <Route path="/account" element={<AccountLayout />}>
             <Route index element={<AccountPage />} />
             <Route path="edit" element={<EditAccountPage />} />
+            <Route path="demo-home-page-edit" element={<EditDemoHomePage />} />
             <Route
               path="skills/:groupId/edit"
               element={<ManageSkillGroupPage />}

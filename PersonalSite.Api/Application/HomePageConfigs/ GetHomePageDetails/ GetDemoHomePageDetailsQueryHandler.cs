@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Domain;
 using PersonalSite.Api.Domain.Actors;
+using PersonalSite.Api.Domain.HomePageConfigs;
 using PersonalSite.Api.Storage;
 
 namespace PersonalSite.Api.Application.HomePageConfigs.GetHomePageDetails;
@@ -21,7 +22,9 @@ public sealed class GetDemoHomePageDetailsQueryHandler(AppDbContext dbContext) :
 
         if (config is null)
         {
-            return null;
+            config = HomePageConfig.CreateDemo(actor.UserId);
+            dbContext.HomepageConfigs.Add(config);
+            await dbContext.SaveChangesAsync(cancellationToken);
         }
         return new GetHomePageConfigDetailsResponse
         {

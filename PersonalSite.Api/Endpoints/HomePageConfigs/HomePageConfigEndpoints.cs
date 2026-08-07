@@ -15,7 +15,8 @@ public static class HomePageConfigEndpoints
             .RequireAuthorization();
         app.MapPut("/home-official-page-config", UpdateOfficialHomePageConfig)
             .RequireAuthorization();
-        app.MapPut("/home-demo-page-config", UpdateDemoHomePageConfig);
+        app.MapPut("/home-demo-page-config", UpdateDemoHomePageConfig)
+           .RequireAuthorization();
 
         return app;
     }

@@ -34,4 +34,75 @@ public sealed class HomePageConfig : SiteContent
     public Url? LinkedInUrl { get; set; }
     public Url? GitHubUrl { get; set; }
     public Url? CvUrl { get; set; }
+    public static HomePageConfig CreateDemo(int userId)
+    {
+        var now = DateTimeOffset.UtcNow;
+
+        return new HomePageConfig
+        {
+            HeroBanner = new HomePageText(
+                "Welcome to my portfolio",
+                "Hero Banner"),
+
+            HeroFirstName = new HomePageText(
+                "First",
+                "Hero First Name"),
+
+            HeroLastName = new HomePageText(
+                "Last",
+                "Hero Last Name"),
+
+            HeroRole = new HomePageText(
+                "Software Developer",
+                "Hero Role"),
+
+            HeroEyebrow = new HeroEyebrow("Hello"),
+            HeroHeading = new HeroHeading("I build reliable software"),
+            HeroSummary = new HeroSummary(
+                "This is your demo homepage. Edit the content to preview your own version."),
+
+            HeroPrimaryActionLabel = new HomePageText(
+                "View projects",
+                "Hero Primary Action Label"),
+
+            HeroSecondaryActionLabel = new HomePageText(
+                "Contact me",
+                "Hero Secondary Action Label"),
+
+            ContactSectionNumber = new SectionNumber("02"),
+
+            ContactSectionEyebrow = new HomePageText(
+                "Contact",
+                "Contact Section Eyebrow"),
+
+            ContactSectionHeading = new HomePageText(
+                "Let's talk",
+                "Contact Section Heading"),
+
+            ContactEyebrow = new HomePageText(
+                "Get in touch",
+                "Contact Eyebrow"),
+
+            ContactHeading = new ContactHeading(
+                "Interested in working together?"),
+
+            ContactDescription = new ContactDescription(
+                "Feel free to get in touch."),
+
+            ContactEmailActionLabel = new HomePageText(
+                "Send email",
+                "Contact Email Action Label"),
+
+            ContactLoginActionLabel = new HomePageText(
+                "Login",
+                "Contact Login Action Label"),
+
+            Email = new EmailAddress("demo@example.com"),
+
+            Source = ContentSource.Demo,
+
+            Created = new Change(userId, now),
+            Edited = new Change(userId, now)
+        };
+    }
 }

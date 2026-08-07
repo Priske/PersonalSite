@@ -1,12 +1,12 @@
 import { HomePageEditor } from "./HomePageEditor";
 import {
-  useOfficialHomePageConfig,
-  useUpdateOfficialHomePageConfig,
+  useDemoHomePageConfig,
+  useUpdateDemoHomePageConfig,
 } from "./useHomePageConfig";
 
-export function EditHomePage() {
-  const query = useOfficialHomePageConfig();
-  const mutation = useUpdateOfficialHomePageConfig();
+export function EditDemoHomePage() {
+  const query = useDemoHomePageConfig();
+  const mutation = useUpdateDemoHomePageConfig();
 
   return (
     <HomePageEditor
