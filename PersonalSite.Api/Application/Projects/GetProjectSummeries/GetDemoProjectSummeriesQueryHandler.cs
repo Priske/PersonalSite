@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Domain;
+using PersonalSite.Api.Domain.Actors;
 using PersonalSite.Api.Storage;
 
 namespace PersonalSite.Api.Application.Projects.GetProjectSummeries;
 
-public class GetProjectSummeriesQueryHandler(
+public class GetDemoProjectSummeriesQueryHandler(
     AppDbContext dbContext) : IHandler
 {
     private const int DefaultPage = 1;
@@ -13,6 +14,7 @@ public class GetProjectSummeriesQueryHandler(
     private const int MaxPageSize = 50;
 
     public async Task<GetProjectSummariesResponse> Execute(
+        Actor actor,
         GetProjectSummariesRequest request,
         CancellationToken cancellationToken)
     {
@@ -28,7 +30,8 @@ public class GetProjectSummeriesQueryHandler(
         var query = dbContext.Projects
             .AsNoTracking()
             .Where(project =>
-                project.Source == ContentSource.Official);
+                project.Source == ContentSource.Demo &&
+                project.Created.UserId == actor.UserId);
 
         if (!string.IsNullOrWhiteSpace(request.Search))
         {

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Application.Tags.GetTagSummaries;
+using PersonalSite.Api.Domain.Actors;
+using PersonalSite.Api.Domain.Projects;
 using PersonalSite.Api.Storage;
 
 namespace PersonalSite.Api.Application.Projects.GetProjectDetails;
@@ -7,17 +9,26 @@ namespace PersonalSite.Api.Application.Projects.GetProjectDetails;
 public class GetProjectDetailsQueryHandler(
     AppDbContext dbContext) : IHandler
 {
-    public async Task<GetProjectDetailsResponse?> Execute(int id)
+    public async Task<GetProjectDetailsResponse?> Execute(
+        int id,
+        Actor actor,
+        CancellationToken cancellationToken)
     {
         var project = await dbContext.Projects
             .AsNoTracking()
             .Include(project => project.Tags)
-            .FirstOrDefaultAsync(project => project.Id == id);
+            .FirstOrDefaultAsync(
+                project => project.Id == id,
+                cancellationToken);
 
         if (project is null)
         {
             return null;
         }
+
+        ProjectPermissions.EnsureCanManage(
+            actor,
+            project);
 
         return new GetProjectDetailsResponse
         {
@@ -28,6 +39,7 @@ public class GetProjectDetailsQueryHandler(
             LiveUrl = project.LiveUrl?.Value,
             IsFeatured = project.IsFeatured,
             DisplayOrder = project.DisplayOrder,
+
             Tags = project.Tags
                 .OrderBy(tag => tag.Name.Value)
                 .Select(tag => new TagSummary

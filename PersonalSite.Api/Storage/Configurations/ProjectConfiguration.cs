@@ -12,6 +12,8 @@ public sealed class ProjectConfiguration
     {
         project.HasKey(p => p.Id);
 
+        project.ConfigureSiteContent();
+
         project.Property(p => p.Title)
             .HasConversion(
                 title => title.Value,
@@ -46,9 +48,18 @@ public sealed class ProjectConfiguration
             .IsRequired();
 
         project.HasIndex(p => p.DisplayOrder)
+            .HasFilter("\"Source\" = 0")
+            .IsUnique();
+
+        project.HasIndex(p => new
+        {
+            p.Created.UserId,
+            p.DisplayOrder
+        })
+            .HasFilter("\"Source\" = 1")
             .IsUnique();
 
         project.HasMany(p => p.Tags)
-       .WithMany(t => t.Projects);
+            .WithMany(t => t.Projects);
     }
 }

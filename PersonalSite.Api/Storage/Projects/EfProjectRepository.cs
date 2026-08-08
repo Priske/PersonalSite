@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using PersonalSite.Api.Domain;
+using PersonalSite.Api.Domain.Actors;
 using PersonalSite.Api.Domain.Exceptions;
 using PersonalSite.Api.Domain.Projects;
 
@@ -6,34 +8,28 @@ namespace PersonalSite.Api.Storage.Projects;
 
 public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
 {
-    public async Task<Project> AddAsync(Project project)
+    public async Task<Project> AddAsync(Project project, CancellationToken cancellationToken)
     {
         dbContext.Projects.Add(project);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return project;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task DeleteAsync(
+        Project project,
+        CancellationToken cancellationToken)
     {
-        var project = await dbContext.Projects.FindAsync(id);
-
-        if (project is null)
-        {
-            return false;
-        }
-
         dbContext.Projects.Remove(project);
-        await dbContext.SaveChangesAsync();
 
-        return true;
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<Project?> GetByIdAsync(int id)
+    public async Task<Project?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         return await dbContext.Projects
             .AsNoTracking()
-            .SingleOrDefaultAsync(project => project.Id == id);
+            .SingleOrDefaultAsync(project => project.Id == id, cancellationToken);
     }
 
     public async Task<bool> ProjectExistsAsync(
@@ -81,8 +77,9 @@ public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
     }
 
     public async Task<bool> UpdateOrderAsync(
-        IReadOnlyList<int> projectIds,
-        CancellationToken cancellationToken)
+    Actor actor,
+    IReadOnlyList<int> projectIds,
+    CancellationToken cancellationToken)
     {
         if (projectIds.Count == 0)
         {
@@ -105,6 +102,19 @@ public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
                 "One or more projects do not exist.");
         }
 
+        if (!actor.IsAdministrator)
+        {
+            var containsUnauthorizedProject = projects.Any(project =>
+                project.Source != ContentSource.Demo ||
+                project.Created.UserId != actor.UserId);
+
+            if (containsUnauthorizedProject)
+            {
+                throw new ForbiddenOperationException(
+                    "You cannot reorder one or more of these projects.");
+            }
+        }
+
         var projectsById = projects.ToDictionary(
             project => project.Id);
 
@@ -124,9 +134,15 @@ public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
         {
             projectsById[projectIds[index]].DisplayOrder =
                 index + 1;
+
+            projectsById[projectIds[index]].Edited =
+                new Change(
+                    actor.UserId,
+                    DateTimeOffset.UtcNow);
         }
 
         await dbContext.SaveChangesAsync(cancellationToken);
+
         await transaction.CommitAsync(cancellationToken);
 
         return true;
