@@ -187,7 +187,7 @@ export function TagsPage() {
 
               <Link
                 className="tag-list-card__clear"
-                to="/tags"
+                to="/account/tags"
                 onClick={() => setSelectedTagId(null)}
               >
                 Clear search

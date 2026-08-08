@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using PersonalSite.Api.Domain;
 using PersonalSite.Api.Domain.Common;
 using PersonalSite.Api.Domain.HomePageConfigs;
 using PersonalSite.Api.Domain.Skills;
@@ -32,10 +33,10 @@ public static class DatabaseSeeder
         dbContext.SaveChanges();
     }
 
-    public static void SeedInitialAdministrator(
-        AppDbContext dbContext,
-        IConfiguration configuration,
-        IPasswordHasher<User> passwordHasher)
+    public static User? SeedInitialAdministrator(
+       AppDbContext dbContext,
+       IConfiguration configuration,
+       IPasswordHasher<User> passwordHasher)
     {
         var settings = configuration
             .GetRequiredSection(InitialAdminSettings.SectionName)
@@ -45,7 +46,7 @@ public static class DatabaseSeeder
 
         if (string.IsNullOrWhiteSpace(settings.Password))
         {
-            return;
+            return null;
         }
 
         if (string.IsNullOrWhiteSpace(settings.Name))
@@ -62,12 +63,13 @@ public static class DatabaseSeeder
 
         var email = new UserEmail(settings.Email);
 
-        var exists = dbContext.Users.Any(user =>
-            (string)user.Email == email.Value);
+        var existingAdministrator = dbContext.Users
+            .SingleOrDefault(user =>
+                (string)user.Email == email.Value);
 
-        if (exists)
+        if (existingAdministrator is not null)
         {
-            return;
+            return existingAdministrator;
         }
 
         var administrator = new User
@@ -85,6 +87,8 @@ public static class DatabaseSeeder
 
         dbContext.Users.Add(administrator);
         dbContext.SaveChanges();
+
+        return administrator;
     }
 
     public static void SeedSkills(
@@ -230,9 +234,10 @@ public static class DatabaseSeeder
 
 
     public static IReadOnlyList<Tag> SeedTags(
-    AppDbContext dbContext,
-    TagFuzzr tagFuzzr,
-    int count = 10)
+        AppDbContext dbContext,
+        TagFuzzr tagFuzzr,
+        int adminUserId,
+        int count = 10)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(count);
 
@@ -241,7 +246,9 @@ public static class DatabaseSeeder
             return dbContext.Tags.ToList();
         }
 
-        var tags = tagFuzzr.Many(count);
+        var tags = tagFuzzr.Many(
+            count,
+            adminUserId);
 
         dbContext.Tags.AddRange(tags);
         dbContext.SaveChanges();
@@ -270,14 +277,18 @@ public static class DatabaseSeeder
         dbContext.SaveChanges();
     }
 
-    public static void SeedHomePageConfig(AppDbContext dbContext)
+    public static void SeedHomePageConfig(
+    AppDbContext dbContext,
+    int administratorId)
     {
         if (dbContext.HomepageConfigs.Any())
         {
             return;
         }
 
-        var config = new HomePageConfig
+        var config = new HomePageConfig(
+            ContentSource.Official,
+            administratorId)
         {
             HeroBanner = new HomePageText(
                 "Software developer",
@@ -312,7 +323,8 @@ public static class DatabaseSeeder
                 "Contact me",
                 "Hero Secondary Action Label"),
 
-            ContactSectionNumber = new SectionNumber("03"),
+            ContactSectionNumber = new SectionNumber(
+                "03"),
 
             ContactSectionEyebrow = new HomePageText(
                 "Get in touch",
@@ -340,11 +352,20 @@ public static class DatabaseSeeder
                 "Account login",
                 "Contact Login Action Label"),
 
-            Email = new EmailAddress("eeckman_ben@hotmail.com"),
-            PhoneNumber = new PhoneNumber("+32 485 86 19 15"),
-            LinkedInUrl = new Url("https://www.linkedin.com/in/ben-eeckman-11b5a1418/"),
-            GitHubUrl = new Url("https://github.com/Priske"),
-            CvUrl = new Url("https://media.licdn.com/dms/image/v2/D4D2DAQE-hWDW6A2dxQ/profile-treasury-document-images_1280/B4DZ.ob7WGLAAg-/1/1785237322476?e=1785974400&v=beta&t=ef5BDgiLD4KSDDXdnb7RKmXgKI_O2tONjRe4yoHKq6c")
+            Email = new EmailAddress(
+                "eeckman_ben@hotmail.com"),
+
+            PhoneNumber = new PhoneNumber(
+                "+32 485 86 19 15"),
+
+            LinkedInUrl = new Url(
+                "https://www.linkedin.com/in/ben-eeckman-11b5a1418/"),
+
+            GitHubUrl = new Url(
+                "https://github.com/Priske"),
+
+            CvUrl = new Url(
+                "https://media.licdn.com/dms/image/v2/D4D2DAQE-hWDW6A2dxQ/profile-treasury-document-images_1280/B4DZ.ob7WGLAAg-/1/1785237322476?e=1785974400&v=beta&t=ef5BDgiLD4KSDDXdnb7RKmXgKI_O2tONjRe4yoHKq6c")
         };
 
         dbContext.HomepageConfigs.Add(config);

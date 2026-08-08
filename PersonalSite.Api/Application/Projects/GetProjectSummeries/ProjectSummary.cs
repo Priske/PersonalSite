@@ -15,4 +15,10 @@ public class ProjectSummary
 
     public required IReadOnlyList<string> Tags { get; set; }
 
+    public required string Source { get; init; }
+    public int? CreatedByUserId { get; init; }
+    public int? LastEditedByUserId { get; init; }
+    public required DateTimeOffset CreatedAt { get; init; }
+    public required DateTimeOffset LastEditedAt { get; init; }
+
 }

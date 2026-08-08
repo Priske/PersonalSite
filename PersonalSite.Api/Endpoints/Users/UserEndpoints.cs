@@ -19,6 +19,8 @@ public static class UserEndpoints
             .RequireAuthorization();
 
         app.MapPost("/users", CreateUser);
+        app.MapPost("/users/fake/replenish", CreateFakeUsers)
+            .RequireAuthorization();
 
         app.MapPut("users", UpdateUser);
         app.MapPut("/users/{id:int}", UpdateUser)
@@ -26,6 +28,7 @@ public static class UserEndpoints
 
         app.MapDelete("/users/{id:int}", DeleteUser)
             .RequireAuthorization();
+
 
         return app;
 
@@ -50,11 +53,12 @@ public static class UserEndpoints
 
     public static async Task<IResult> CreateUser(
             CreateUserRequest request,
-            CreateUserCommandHandler handler)
+            CreateUserCommandHandler handler,
+            CancellationToken cancellationToken)
     {
         try
         {
-            var response = await handler.Execute(request);
+            var response = await handler.Execute(request, cancellationToken);
             return Results.Created($"/users/{response.Id}", response);
         }
         catch (UserEmailAlreadyExistsException exception)
@@ -67,17 +71,35 @@ public static class UserEndpoints
         }
 
     }
+    public static async Task<IResult> CreateFakeUsers(
+        CreateFakeUserCommandHandler handler,
+        ClaimsPrincipal principal,
+        CancellationToken cancellationToken
+    )
+    {
+        try
+        {
+            principal.ToActor();
+            var response = await handler.Execute(cancellationToken);
+            return Results.Created();
+        }
+        catch (DomainException exception)
+        {
+            return Results.BadRequest(new { error = exception.Message });
+        }
+    }
 
     public static async Task<IResult> UpdateUser(
         int id,
         ClaimsPrincipal principal,
         UpdateUserRequest request,
-        UpdateUserCommandHandler handler)
+        UpdateUserCommandHandler handler,
+        CancellationToken cancellationToken)
     {
         try
         {
             var actor = principal.ToActor();
-            var updated = await handler.Execute(actor, id, request);
+            var updated = await handler.Execute(actor, id, request, cancellationToken);
 
             if (!updated)
             {
@@ -102,18 +124,20 @@ public static class UserEndpoints
     public static async Task<IResult> GetUserDetails(
         int id,
         ClaimsPrincipal principal,
-        GetUserDetailsQueryHandler query)
+        GetUserDetailsQueryHandler query,
+        CancellationToken cancellationToken)
     {
         try
         {
             var actor = principal.ToActor();
-            var member = await query.Execute(actor, id);
 
-            if (member is null)
+            var user = await query.Execute(actor, id, cancellationToken);
+
+            if (user is null)
             {
                 return Results.NotFound();
             }
-            return Results.Ok(member);
+            return Results.Ok(user);
         }
         catch (ForbiddenOperationException)
         {
@@ -128,12 +152,13 @@ public static class UserEndpoints
     public static async Task<IResult> DeleteUser(
        int id,
        ClaimsPrincipal principal,
-       DeleteUserCommandHandler handler)
+       DeleteUserCommandHandler handler,
+       CancellationToken cancellationToken)
     {
         try
         {
             var actor = principal.ToActor();
-            var deleted = await handler.Execute(actor, id);
+            var deleted = await handler.Execute(actor, id, cancellationToken);
 
             if (!deleted)
             {

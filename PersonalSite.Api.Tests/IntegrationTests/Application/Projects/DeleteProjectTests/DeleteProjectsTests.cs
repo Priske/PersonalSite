@@ -1,5 +1,6 @@
 using System.Net;
 using PersonalSite.Api.Domain.Common;
+using PersonalSite.Api.Domain.Actors;
 using PersonalSite.Api.Domain.Projects;
 using PersonalSite.Api.Domain.Users;
 using PersonalSite.Api.Tests.IntegrationTests.Helpers;
@@ -13,14 +14,15 @@ public class DeleteProjectTests : IntegrationTest
     {
         await AuthenticateAsUser(UserRole.Administrator);
 
-        var project = new Project
-        {
-            Title = new ProjectTitle("Portfolio"),
-            Description = new ProjectDescription("My portfolio"),
-            RepositoryUrl = new Url("https://github.com/example/portfolio"),
-            DisplayOrder = 1,
-            IsFeatured = true
-        };
+        var project = Project.Create(
+            new Actor(1, UserRole.Administrator),
+            new ProjectTitle("Portfolio"),
+            new ProjectDescription("My portfolio"),
+            1,
+            new Url("https://github.com/example/portfolio"),
+            null,
+            true,
+            []);
 
         Writer.Seed(db => db.Projects.Add(project));
 
@@ -53,14 +55,15 @@ public class DeleteProjectTests : IntegrationTest
     {
         await AuthenticateAsUser();
 
-        var project = new Project
-        {
-            Title = new ProjectTitle("Portfolio"),
-            Description = new ProjectDescription("My portfolio"),
-            RepositoryUrl = new Url("https://github.com/example/portfolio"),
-            DisplayOrder = 1,
-            IsFeatured = true
-        };
+        var project = Project.Create(
+            new Actor(1, UserRole.Administrator),
+            new ProjectTitle("Portfolio"),
+            new ProjectDescription("My portfolio"),
+            1,
+            new Url("https://github.com/example/portfolio"),
+            null,
+            true,
+            []);
 
         Writer.Seed(db => db.Projects.Add(project));
 

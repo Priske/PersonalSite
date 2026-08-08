@@ -10,20 +10,28 @@ public sealed class GetTagDetailsQueryHandler(
         int id, CancellationToken cancellationToken)
     {
         return await dbContext.Tags
-            .AsNoTracking()
-            .Where(tag => tag.Id == id)
-            .Select(tag => new GetTagDetailsResponse
-            {
-                Id = tag.Id,
-                Name = tag.Name.Value,
-                Projects = tag.Projects
-                .OrderBy(project => project.Title)
-                .Select(project => new TagProjectResponse(
-                    project.Id,
-                    project.Title))
-                .ToList()
+     .AsNoTracking()
+     .Where(tag => tag.Id == id)
+     .Select(tag => new GetTagDetailsResponse
+     {
+         Id = tag.Id,
+         Name = tag.Name.Value,
 
-            })
-            .FirstOrDefaultAsync(cancellationToken);
+         Projects = tag.Projects
+             .OrderBy(project => project.Title)
+             .Select(project => new TagProjectResponse(
+                 project.Id,
+                 project.Title))
+             .ToList(),
+
+         Source = tag.Source.ToString(),
+
+         CreatedByUserId = tag.Created.UserId,
+         CreatedAt = tag.Created.At,
+
+         LastEditedByUserId = tag.Edited.UserId,
+         LastEditedAt = tag.Edited.At
+     })
+     .FirstOrDefaultAsync(cancellationToken);
     }
 }

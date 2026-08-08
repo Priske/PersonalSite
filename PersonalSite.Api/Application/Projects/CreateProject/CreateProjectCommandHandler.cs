@@ -13,11 +13,11 @@ public class CreateProjectCommandHandler(
     ILogger<CreateProjectCommandHandler> logger) : IHandler
 {
     public async Task<CreateProjectResponse> Execute(
-        CreateProjectRequest request,
-        Actor actor,
-        CancellationToken cancellationToken)
+     CreateProjectRequest request,
+     Actor actor,
+     CancellationToken cancellationToken)
     {
-        ProjectPermissions.EnsureCanManage(actor);
+        ProjectPermissions.EnsureCanCreate(actor);
 
         var liveUrl = string.IsNullOrWhiteSpace(request.LiveUrl)
             ? null
@@ -27,7 +27,9 @@ public class CreateProjectCommandHandler(
             .Distinct()
             .ToList();
 
-        var tags = await tagRepository.GetByIdsAsync(tagIds, cancellationToken);
+        var tags = await tagRepository.GetByIdsAsync(
+            tagIds,
+            cancellationToken);
 
         if (tags.Count != tagIds.Count)
         {
@@ -35,32 +37,51 @@ public class CreateProjectCommandHandler(
                 "One or more selected tags do not exist.");
         }
 
-        var project = new Project
-        {
-            Title = new ProjectTitle(request.Title),
-            Description = new ProjectDescription(request.Description),
-            DisplayOrder = request.DisplayOrder,
-            RepositoryUrl = new Url(request.RepositoryUrl),
-            LiveUrl = liveUrl,
-            IsFeatured = request.IsFeatured,
-            Tags = tags.ToList()
-        };
+        var displayOrder =
+            await projectRepository.GetNextDisplayOrderAsync(
+                actor,
+                cancellationToken);
 
-        var savedProject = await projectRepository.AddAsync(project);
-        logger.LogInformation("Project {ProjectId} created by actor {ActorId}", savedProject.Id, actor.UserId);
+        var project = Project.Create(
+            actor,
+            new ProjectTitle(request.Title),
+            new ProjectDescription(request.Description),
+            displayOrder,
+            new Url(request.RepositoryUrl),
+            liveUrl,
+            request.IsFeatured,
+            tags.ToList());
+
+        var savedProject = await projectRepository.AddAsync(
+            project,
+            cancellationToken);
+
+        logger.LogInformation(
+            "Project {ProjectId} created by actor {ActorId}",
+            savedProject.Id,
+            actor.UserId);
 
         return new CreateProjectResponse
         {
             Id = savedProject.Id,
-            Title = savedProject.Title,
-            Description = savedProject.Description,
-            RepositoryUrl = savedProject.RepositoryUrl,
+            Title = savedProject.Title.Value,
+            Description = savedProject.Description.Value,
+            RepositoryUrl = savedProject.RepositoryUrl.Value,
+            LiveUrl = savedProject.LiveUrl?.Value,
             IsFeatured = savedProject.IsFeatured,
             DisplayOrder = savedProject.DisplayOrder,
-            LiveUrl = savedProject.LiveUrl?.Value,
+
             Tags = savedProject.Tags
                 .Select(tag => tag.Name.Value)
-                .ToList()
+                .ToList(),
+
+            Source = savedProject.Source.ToString(),
+
+            CreatedByUserId = savedProject.Created.UserId,
+            CreatedAt = savedProject.Created.At,
+
+            LastEditedByUserId = savedProject.Edited.UserId,
+            LastEditedAt = savedProject.Edited.At
         };
     }
 }

@@ -1,5 +1,3 @@
-namespace PersonalSite.Api.Application.Projects.CreateProject;
-
 public class CreateProjectRequest
 {
     public required string Title { get; set; }
@@ -11,8 +9,6 @@ public class CreateProjectRequest
     public string? LiveUrl { get; set; }
 
     public bool IsFeatured { get; set; }
-
-    public int DisplayOrder { get; set; }
 
     public required IReadOnlyList<int> TagIds { get; set; }
 }

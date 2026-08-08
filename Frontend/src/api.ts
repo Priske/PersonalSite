@@ -31,10 +31,19 @@ async function sendRequest(path: string, options: RequestInit) {
   });
 
   if (!response.ok) {
-    throw new ApiError(
-      response.status,
-      `Request failed with status ${response.status}`,
-    );
+    let message = `Request failed with status ${response.status}`;
+
+    try {
+      const body = await response.json();
+
+      if (typeof body?.error === "string") {
+        message = body.error;
+      }
+    } catch {
+      // No JSON response body.
+    }
+
+    throw new ApiError(response.status, message);
   }
 
   return response;

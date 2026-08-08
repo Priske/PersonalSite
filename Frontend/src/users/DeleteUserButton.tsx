@@ -8,9 +8,13 @@ import { deleteUser } from "./usersApi";
 
 type DeleteUserButtonProps = {
   userId: number;
+  targetRole: string;
 };
 
-export function DeleteUserButton({ userId }: DeleteUserButtonProps) {
+export function DeleteUserButton({
+  userId,
+  targetRole,
+}: DeleteUserButtonProps) {
   const [confirming, setConfirming] = useState(false);
   const currentUserQuery = useCurrentUser();
   const queryClient = useQueryClient();
@@ -62,7 +66,8 @@ export function DeleteUserButton({ userId }: DeleteUserButtonProps) {
   const canDelete =
     currentUserQuery.isSuccess &&
     (currentUserQuery.data.role === "Administrator" ||
-      currentUserQuery.data.id === userId);
+      currentUserQuery.data.id === userId ||
+      targetRole === "FakeUser");
 
   if (!canDelete) {
     return null;

@@ -4,7 +4,9 @@ using PersonalSite.Api.Application.Projects.DeleteProject;
 using PersonalSite.Api.Application.Projects.GetProjectDetails;
 using PersonalSite.Api.Application.Projects.GetProjectSummeries;
 using PersonalSite.Api.Application.Projects.UpdateProjects;
+using PersonalSite.Api.Domain.Actors;
 using PersonalSite.Api.Domain.Exceptions;
+
 
 namespace PersonalSite.Api.Endpoints.Projects;
 
@@ -13,8 +15,11 @@ public static class ProjectEndpoints
     public static IEndpointRouteBuilder MapProjectEndpoints(
         this IEndpointRouteBuilder app)
     {
-        app.MapGet("/projects", GetProjectList);
-        app.MapGet("/projects/{id:int}", GetProjectDetails);
+        app.MapGet("/projects", GetOfficialProjectList);
+        app.MapGet("/demo-projects/", GetDemoProjectsList)
+            .RequireAuthorization();
+        app.MapGet("/projects/{id:int}", GetProjectDetails)
+            .RequireAuthorization();
 
         app.MapPost("/projects", CreateProject)
             .RequireAuthorization();
@@ -31,12 +36,23 @@ public static class ProjectEndpoints
         return app;
     }
 
-    public static async Task<IResult> GetProjectList(
+    public static async Task<IResult> GetOfficialProjectList(
         [AsParameters] GetProjectSummariesRequest request,
-        GetProjectSummeriesQueryHandler handler)
+        GetProjectSummeriesQueryHandler handler,
+        CancellationToken cancellationToken)
     {
-        var response = await handler.Execute(request);
+        var response = await handler.Execute(request, cancellationToken);
 
+        return Results.Ok(response);
+    }
+    public static async Task<IResult> GetDemoProjectsList(
+        [AsParameters] GetProjectSummariesRequest request,
+        ClaimsPrincipal principal,
+        GetDemoProjectSummeriesQueryHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var actor = principal.ToActor();
+        var response = await handler.Execute(actor, request, cancellationToken);
         return Results.Ok(response);
     }
 
@@ -128,9 +144,12 @@ public static class ProjectEndpoints
 
     public static async Task<IResult> GetProjectDetails(
         int id,
-        GetProjectDetailsQueryHandler query)
+        ClaimsPrincipal principal,
+        GetProjectDetailsQueryHandler query,
+        CancellationToken cancellationToken)
     {
-        var project = await query.Execute(id);
+        var actor = principal.ToActor();
+        var project = await query.Execute(id, actor, cancellationToken);
 
         return project is null
             ? Results.NotFound()
@@ -140,12 +159,13 @@ public static class ProjectEndpoints
     public static async Task<IResult> DeleteProject(
         int id,
         ClaimsPrincipal principal,
-        DeleteProjectCommandHandler handler)
+        DeleteProjectCommandHandler handler,
+        CancellationToken cancellationToken)
     {
         try
         {
             var actor = principal.ToActor();
-            var deleted = await handler.Execute(actor, id);
+            var deleted = await handler.Execute(actor, id, cancellationToken);
 
             return deleted
                 ? Results.NoContent()

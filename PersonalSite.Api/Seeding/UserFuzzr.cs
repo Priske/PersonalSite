@@ -1,14 +1,9 @@
-using Microsoft.AspNetCore.Identity;
 using PersonalSite.Api.Domain.Users;
-using PersonalSite.Api.Security.Password;
 using QuickFuzzr;
 
 namespace PersonalSite.Api.Seeding;
 
-public sealed class UserFuzzr(
-    ISeedPasswordProvider passwordProvider,
-    IPasswordPolicy passwordPolicy,
-    IPasswordHasher<User> passwordHasher)
+public sealed class UserFuzzr()
 {
     private static readonly string[] FirstNames =
     [
@@ -37,10 +32,22 @@ public sealed class UserFuzzr(
         "Heap",
         "Async"
     ];
+    private static readonly string[] Mails =
+    [
+        "@Gmail.com",
+        "@Hotmail.com",
+        "@Yahoo.com",
+        "@telenet.be",
+        "@proximus.be",
+        "@outlook.com",
+        "@icloud.com",
+        "@aol.com",
+        "@proton.me",
+        "@live.com"
+    ];
 
     public async Task<IReadOnlyList<User>> ManyAsync(
-        int count,
-        CancellationToken cancellationToken = default)
+        int count)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(count);
 
@@ -54,42 +61,34 @@ public sealed class UserFuzzr(
         for (var index = 0; index < seeds.Count; index++)
         {
             var seed = seeds[index];
-
-            await passwordPolicy.ValidateAsync(
-                seed.Password,
-                cancellationToken);
-
             var user = new User
             {
                 Name = new UserName(
                     $"{seed.FirstName} {seed.LastName}"),
 
                 Email = new UserEmail(
-                    $"{seed.FirstName}.{seed.LastName}.{index}@example.test"
-                        .ToLowerInvariant())
+                    $"{seed.FirstName}.{seed.LastName}.{index}{seed.Mail}"
+                        .ToLowerInvariant()),
+                Role = UserRole.FakeUser
             };
-
-            user.PasswordHash = passwordHasher.HashPassword(
-                user,
-                seed.Password);
-
             users.Add(user);
         }
-
         return users;
     }
 
     private FuzzrOf<UserSeedData> CreateFuzzr() =>
         from firstName in Fuzzr.OneOf(FirstNames)
         from lastName in Fuzzr.OneOf(LastNames)
-        from password in passwordProvider.Password
+        from mail in Fuzzr.OneOf(Mails)
         select new UserSeedData(
             firstName,
             lastName,
-            password);
+            mail
+            );
 
     private sealed record UserSeedData(
         string FirstName,
         string LastName,
-        string Password);
+        string Mail
+        );
 }

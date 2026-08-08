@@ -10,6 +10,6 @@ public class UpdateProjectRequest
     public string? LiveUrl { get; set; }
     public bool IsFeatured { get; set; }
 
-    public int[] TagIds { get; set; }
+    public int[] TagIds { get; set; } = [];
 
 }

@@ -4,9 +4,9 @@ namespace PersonalSite.Api.Application.Auth.GetCurrentUser;
 
 public class GetCurrentUserQueryHandler(IUserRepository userRepository) : IHandler
 {
-    public async Task<CurrentUserResponse?> Execute(int id)
+    public async Task<CurrentUserResponse?> Execute(int id, CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetByIdAsync(id);
+        var user = await userRepository.GetByIdAsync(id, cancellationToken);
 
         if (user is null)
         {

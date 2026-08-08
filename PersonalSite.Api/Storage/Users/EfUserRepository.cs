@@ -1,21 +1,36 @@
 
 using Microsoft.EntityFrameworkCore;
+using PersonalSite.Api.Domain.Exceptions.user;
 using PersonalSite.Api.Domain.Users;
+using PersonalSite.Api.Seeding;
 
 namespace PersonalSite.Api.Storage.Users;
 
-public class EfUserRepository(AppDbContext dbContext) : IUserRepository
+public class EfUserRepository(AppDbContext dbContext, UserFuzzr userFuzzr) : IUserRepository
 {
-    public async Task<User> AddAsync(User user)
+    public async Task<User> AddAsync(User user, CancellationToken cancellationToken)
     {
         dbContext.Users.Add(user);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         return user;
     }
-
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> AddFakeUsersAsync(CancellationToken cancellationToken)
     {
-        var user = await dbContext.Users.FindAsync(id);
+        var fakeUserCount = dbContext.Users.Where(u => u.Role == UserRole.FakeUser).Count();
+        if (fakeUserCount > 20)
+        {
+            throw new UserOutOfRangeException("Too many Fake users still in the system");
+        }
+        var users = await userFuzzr.ManyAsync(30);
+        dbContext.Users.AddRange(users);
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return true;
+    }
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        var user = await dbContext.Users.FindAsync([id], cancellationToken);
 
         if (user is null)
         {
@@ -23,29 +38,29 @@ public class EfUserRepository(AppDbContext dbContext) : IUserRepository
         }
 
         dbContext.Users.Remove(user);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         return true;
     }
 
-    public async Task<bool> EmailExistsAsync(UserEmail email, int? userIdToIgnore = null)
+    public async Task<bool> EmailExistsAsync(UserEmail email, CancellationToken cancellationToken, int? userIdToIgnore = null)
     {
-        var all = await dbContext.Users.ToListAsync();
+        var all = await dbContext.Users.ToListAsync(cancellationToken);
 
         return all.Any(u =>
             u.Email == email &&
             (!userIdToIgnore.HasValue || u.Id != userIdToIgnore));
     }
 
-    public async Task<User?> GetByIdAsync(int id)
+    public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         return await dbContext.Users
             .AsNoTracking()
-            .SingleOrDefaultAsync(user => user.Id == id);
+            .SingleOrDefaultAsync(user => user.Id == id, cancellationToken);
     }
 
-    public async Task<bool> UpdateAsync(User user)
+    public async Task<bool> UpdateAsync(User user, CancellationToken cancellationToken)
     {
-        var existingUser = await dbContext.Users.FindAsync(user.Id);
+        var existingUser = await dbContext.Users.FindAsync([user.Id], cancellationToken);
 
         if (existingUser is null)
         {
@@ -55,7 +70,7 @@ public class EfUserRepository(AppDbContext dbContext) : IUserRepository
         existingUser.Email = user.Email;
         existingUser.Name = user.Name;
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return true;
     }

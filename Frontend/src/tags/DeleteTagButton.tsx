@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import { ApiError } from "../api";
 import { deleteTag } from "./tagsApi";
 
@@ -103,21 +104,31 @@ export function DeleteTagButton({
 
         {errorStatus === 403 && (
           <p className="form-message form-message--error">
-            Only administrators can delete tags.
+            You can only delete tags you created yourself.
           </p>
         )}
 
         {errorStatus === 404 && (
           <p className="form-message form-message--error">
-            This tag no longer exists or cannot be deleted.
+            This tag no longer exists.
           </p>
         )}
 
-        {deleteMutation.isError && errorStatus === null && (
+        {errorStatus === 409 && (
           <p className="form-message form-message--error">
-            Could not delete the tag.
+            This tag cannot be deleted while it is used by a project.
           </p>
         )}
+
+        {deleteMutation.isError &&
+          errorStatus !== 401 &&
+          errorStatus !== 403 &&
+          errorStatus !== 404 &&
+          errorStatus !== 409 && (
+            <p className="form-message form-message--error">
+              Could not delete the tag.
+            </p>
+          )}
       </div>
     </div>
   );

@@ -20,6 +20,7 @@ export type UserDetails = {
 export type UpdateUserRequest = {
   name: string;
   email: string;
+  role: string;
 };
 
 export type GetUsersRequest = {

@@ -19,9 +19,9 @@ public class UpdateUserTests : IntegrationTest
             new UpdateUserRequest
             {
                 Name = "Friedrich",
-                Email = "friedrich@engels.de"
+                Email = "friedrich@engels.de",
+                Role = UserRole.User.ToString()
             };
-
         var response = await Client.PutAsJsonAsync($"/users/{userId}", request);
 
         await response.ShouldHaveStatusCode(HttpStatusCode.NoContent);
@@ -42,8 +42,9 @@ public class UpdateUserTests : IntegrationTest
         var request =
             new UpdateUserRequest
             {
-                Name = "Unknown User",
-                Email = "Unknown@email.com",
+                Name = "Friedrich",
+                Email = "friedrich@engels.de",
+                Role = UserRole.User.ToString()
             };
 
         var response = await Client.PutAsJsonAsync("/users/9999", request);
@@ -58,8 +59,9 @@ public class UpdateUserTests : IntegrationTest
         var request =
             new UpdateUserRequest
             {
-                Name = "Unknown User",
-                Email = "Unknown@email",
+                Name = "Friedrich",
+                Email = "friedrich@engels.de",
+                Role = UserRole.User.ToString()
             };
 
         var response = await Client.PutAsJsonAsync("/users/9999", request);
@@ -97,7 +99,8 @@ public class UpdateUserTests : IntegrationTest
             new UpdateUserRequest
             {
                 Name = "Friedrich",
-                Email = "friedrich@engels.de"
+                Email = "friedrich@engels.de",
+                Role = UserRole.User.ToString()
             };
 
         var response = await Client.PutAsJsonAsync($"/users/{userId}", request);

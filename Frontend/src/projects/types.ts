@@ -9,6 +9,11 @@ export type ProjectSummary = {
   isFeatured: boolean;
   displayOrder: number;
   tags: string[];
+  source: string;
+  createdByUserId: number | null;
+  createdAt: string;
+  lastEditedByUserId: number | null;
+  lastEditedAt: string;
 };
 
 export type ProjectDetails = {
@@ -20,10 +25,19 @@ export type ProjectDetails = {
   isFeatured: boolean;
   displayOrder: number;
   tags: TagSummary[];
+  source: string;
+  createdByUserId: number | null;
+  createdAt: string;
+  lastEditedByUserId: number | null;
+  lastEditedAt: string;
 };
 
 export type GetProjectSummariesResponse = {
   items: ProjectSummary[];
+  page: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
 };
 
 export type CreateProjectRequest = {
@@ -32,7 +46,6 @@ export type CreateProjectRequest = {
   repositoryUrl: string;
   liveUrl?: string;
   isFeatured: boolean;
-  displayOrder: number;
   tagIds: number[];
 };
 

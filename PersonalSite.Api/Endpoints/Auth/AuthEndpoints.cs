@@ -34,7 +34,8 @@ public static class AuthEndpoints
 
     private static async Task<IResult> GetCurrentUser(
      ClaimsPrincipal principal,
-     GetCurrentUserQueryHandler handler)
+     GetCurrentUserQueryHandler handler,
+      CancellationToken cancellationToken)
     {
         var idValue = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -43,7 +44,7 @@ public static class AuthEndpoints
             return Results.Unauthorized();
         }
 
-        var user = await handler.Execute(id);
+        var user = await handler.Execute(id, cancellationToken);
 
         if (user is null)
         {

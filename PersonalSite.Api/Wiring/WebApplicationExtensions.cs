@@ -18,36 +18,60 @@ public static class WebApplicationExtensions
     {
         using var scope = app.Services.CreateScope();
 
-        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var dbContext = scope.ServiceProvider
+            .GetRequiredService<AppDbContext>();
 
         var logger = scope.ServiceProvider
             .GetRequiredService<ILoggerFactory>()
             .CreateLogger("DatabaseStartup");
+
         logger.LogInformation("Applying database migrations");
 
         dbContext.Database.Migrate();
 
         logger.LogInformation("Database migrations completed");
+
         var passwordHasher =
-            scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
+            scope.ServiceProvider
+                .GetRequiredService<IPasswordHasher<User>>();
 
+        var administrator =
+            DatabaseSeeder.SeedInitialAdministrator(
+                dbContext,
+                app.Configuration,
+                passwordHasher);
 
-        DatabaseSeeder.SeedInitialAdministrator(
-            dbContext,
-            app.Configuration,
-            passwordHasher);
+        DatabaseSeeder.SeedHomePageConfig(dbContext, administrator.Id);
 
-        DatabaseSeeder.SeedHomePageConfig(dbContext);
-
-        if (app.Environment.IsDevelopment() && app.Configuration.GetValue<bool>("SeedDatabase"))
+        if (
+            app.Environment.IsDevelopment() &&
+            app.Configuration.GetValue<bool>("SeedDatabase"))
         {
-            var userFuzzr = scope.ServiceProvider.GetRequiredService<UserFuzzr>();
-            var projectFuzzr = scope.ServiceProvider.GetRequiredService<ProjectFuzzr>();
-            var tagFuzzr = scope.ServiceProvider.GetRequiredService<TagFuzzr>();
+            var userFuzzr =
+                scope.ServiceProvider.GetRequiredService<UserFuzzr>();
 
-            DatabaseSeeder.SeedUsers(dbContext, userFuzzr, count: 50);
+            var projectFuzzr =
+                scope.ServiceProvider.GetRequiredService<ProjectFuzzr>();
+
+            var tagFuzzr =
+                scope.ServiceProvider.GetRequiredService<TagFuzzr>();
+
+            DatabaseSeeder.SeedUsers(
+                dbContext,
+                userFuzzr,
+                count: 50);
+
             DatabaseSeeder.SeedSkills(dbContext);
-            DatabaseSeeder.SeedProjects(dbContext, projectFuzzr, DatabaseSeeder.SeedTags(dbContext, tagFuzzr));
+
+            var tags = DatabaseSeeder.SeedTags(
+                dbContext,
+                tagFuzzr,
+                administrator.Id);
+
+            DatabaseSeeder.SeedProjects(
+                dbContext,
+                projectFuzzr,
+                tags);
         }
 
         app.UseSwagger();

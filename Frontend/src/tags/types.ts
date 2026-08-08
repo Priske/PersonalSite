@@ -8,23 +8,26 @@ export type TagProject = {
   id: number;
   title: string;
 };
-export type TagDetails = {
-  id: number;
-  name: string;
-  projects: TagProject[];
-};
 
 export type TagSummary = {
   id: number;
   name: string;
+  source: string;
+  createdByUserId: number | null;
+  createdAt: string;
+  lastEditedByUserId: number | null;
+  lastEditedAt: string;
 };
 
-export type CreateTagRequest = { name: string };
+export type TagDetails = TagSummary & {
+  projects: TagProject[];
+};
 
-export type CreateTagResponse = {
-  id: number;
+export type CreateTagRequest = {
   name: string;
 };
+
+export type CreateTagResponse = TagSummary;
 
 export type UpdateTagRequest = {
   id: number;

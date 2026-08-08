@@ -11,6 +11,17 @@ public sealed class HomePageConfigConfiguration : IEntityTypeConfiguration<HomeP
     {
         config.HasKey(homePageConfig => homePageConfig.Id);
 
+
+        config.ConfigureSiteContent();
+
+        config.Property(homePageConfig => homePageConfig.HeroBanner)
+            .HasConversion(
+                value => value.Value,
+                value => new HomePageText(value, "Hero Banner"))
+            .HasMaxLength(HomePageText.MaxLength)
+            .IsRequired();
+
+
         config.Property(homePageConfig => homePageConfig.HeroBanner)
             .HasConversion(
                 value => value.Value,

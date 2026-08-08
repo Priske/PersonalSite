@@ -344,7 +344,6 @@
   padding: 0.75rem 1rem;
   font-size: 0.75rem;
 }
-
 /* --------------------------------
    Contact inside preview
 -------------------------------- */
@@ -353,12 +352,125 @@
   width: 100%;
   min-width: 0;
   grid-template-columns: minmax(17rem, 36%) minmax(0, 64%);
+  overflow: hidden;
 }
 
-.home-preview-modal__page .home-contact h2 {
-  font-size: clamp(3rem, 6cqw, 5.5rem);
+.home-preview-modal__page .home-contact .home-section__heading,
+.home-preview-modal__page .home-contact .home-section__content {
+  min-width: 0;
 }
 
+.home-preview-modal__page .home-contact .home-section__content {
+  padding-block: 3rem;
+}
+
+.home-preview-modal__page .contact-panel {
+  min-width: 0;
+
+  /*
+    In the preview, don't force the normal desktop
+    text + fixed 13rem button column layout.
+  */
+  grid-template-columns: 1fr;
+  align-items: start;
+  gap: 2rem;
+
+  padding: 3rem;
+}
+
+.home-preview-modal__page .contact-panel__content {
+  min-width: 0;
+}
+
+.home-preview-modal__page .contact-panel__eyebrow {
+  margin-bottom: 1rem;
+  font-size: clamp(0.65rem, 1.1cqw, 0.8rem);
+}
+
+.home-preview-modal__page .contact-panel h3 {
+  width: 100%;
+  max-width: 11ch;
+
+  margin-bottom: 1.5rem;
+
+  font-size: clamp(2.75rem, 6.5cqw, 4.75rem);
+  line-height: 0.88;
+
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.home-preview-modal__page .contact-panel__description {
+  max-width: 34rem;
+
+  font-size: clamp(0.9rem, 1.35cqw, 1.05rem);
+  line-height: 1.55;
+}
+
+.home-preview-modal__page .contact-panel__links {
+  margin-top: 1.5rem;
+}
+
+.home-preview-modal__page .contact-panel__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+
+  width: 100%;
+  max-width: 30rem;
+}
+
+.home-preview-modal__page .contact-panel__actions .button {
+  position: static;
+
+  width: 100%;
+  min-width: 0;
+
+  padding: 0.75rem 1rem;
+
+  font-size: 0.75rem;
+  text-align: center;
+  white-space: normal;
+}
+
+/*
+  The preview itself is a CSS container, so this reacts
+  to the preview width rather than the browser width.
+*/
+@container (max-width: 48rem) {
+  .home-preview-modal__page .home-contact {
+    grid-template-columns: 1fr;
+  }
+
+  .home-preview-modal__page .home-contact .home-section__heading {
+    min-height: 0;
+    padding: 2rem 1.5rem;
+  }
+
+  .home-preview-modal__page .home-contact .home-section__content {
+    padding: 2rem 1.5rem;
+    border-top: 3px solid var(--color-ink);
+    border-left: 0;
+  }
+
+  .home-preview-modal__page .home-contact .home-section__connector {
+    display: none;
+  }
+
+  .home-preview-modal__page .contact-panel {
+    padding: 2rem;
+  }
+
+  .home-preview-modal__page .contact-panel h3 {
+    max-width: 100%;
+    font-size: clamp(2.5rem, 10cqw, 4rem);
+  }
+
+  .home-preview-modal__page .contact-panel__actions {
+    grid-template-columns: 1fr;
+    max-width: 20rem;
+  }
+}
 /* --------------------------------
    Medium screens
 -------------------------------- */
@@ -380,7 +492,6 @@
     border-top: var(--border-thin);
   }
 }
-
 /* --------------------------------
    Small screens
 -------------------------------- */
@@ -462,5 +573,29 @@
 
   .home-preview-modal__page .home-hero__copy h2 {
     font-size: clamp(3rem, 11cqw, 5rem);
+  }
+
+  .home-preview-modal__page .home-contact {
+    grid-template-columns: 1fr;
+  }
+
+  .home-preview-modal__page .home-contact__panel {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .home-preview-modal__page .home-contact__copy h2 {
+    font-size: clamp(2.75rem, 10cqw, 4.5rem);
+  }
+
+  .home-preview-modal__page .home-contact__actions {
+    padding-top: 0;
+    max-width: 18rem;
+  }
+
+  .home-preview-modal__page .home-contact__actions .button {
+    width: 100%;
+    max-width: 100%;
   }
 }

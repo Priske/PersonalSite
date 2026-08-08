@@ -1,5 +1,5 @@
+using PersonalSite.Api.Domain;
 using PersonalSite.Api.Domain.Actors;
-using PersonalSite.Api.Domain.Common;
 using PersonalSite.Api.Domain.Exceptions;
 using PersonalSite.Api.Domain.Tags;
 using PersonalSite.Api.Storage.Tags;
@@ -15,22 +15,37 @@ public sealed class UpdateTagCommandHandler(
         UpdateTagRequest request,
         CancellationToken cancellationToken)
     {
-        Permissions.EnsureCanManage(actor);
+        var tag = await tagRepository.GetByIdAsync(
+            id,
+            cancellationToken);
+
+        if (tag is null)
+        {
+            return false;
+        }
+
+        TagPermissions.EnsureCanManage(
+            actor,
+            tag);
 
         var name = new TagName(request.Name);
 
-        if (await tagRepository.TagExistsAsync(name, id))
+        if (await tagRepository.TagExistsAsync(
+            name,
+            id))
         {
             throw new DomainException(
                 "A tag with this name already exists.");
         }
 
-        var tag = new Tag
-        {
-            Id = id,
-            Name = name
-        };
+        tag.Name = name;
 
-        return await tagRepository.UpdateAsync(tag, cancellationToken);
+        tag.Edited = new Change(
+            actor.UserId,
+            DateTimeOffset.UtcNow);
+
+        return await tagRepository.UpdateAsync(
+            tag,
+            cancellationToken);
     }
 }

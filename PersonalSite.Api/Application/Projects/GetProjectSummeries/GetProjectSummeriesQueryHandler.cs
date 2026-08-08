@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using PersonalSite.Api.Domain;
 using PersonalSite.Api.Storage;
 
 namespace PersonalSite.Api.Application.Projects.GetProjectSummeries;
 
-public class GetProjectSummeriesQueryHandler(AppDbContext dbContext) : IHandler
+public class GetProjectSummeriesQueryHandler(
+    AppDbContext dbContext) : IHandler
 {
     private const int DefaultPage = 1;
     private const int DefaultPageSize = 10;
@@ -11,28 +13,40 @@ public class GetProjectSummeriesQueryHandler(AppDbContext dbContext) : IHandler
     private const int MaxPageSize = 50;
 
     public async Task<GetProjectSummariesResponse> Execute(
-        GetProjectSummariesRequest request)
+        GetProjectSummariesRequest request,
+        CancellationToken cancellationToken)
     {
-        var page = Math.Max(MinPage, request.Page ?? DefaultPage);
+        var page = Math.Max(
+            MinPage,
+            request.Page ?? DefaultPage);
+
         var pageSize = Math.Clamp(
             request.PageSize ?? DefaultPageSize,
             MinPage,
             MaxPageSize);
 
         var query = dbContext.Projects
-            .AsNoTracking();
+            .AsNoTracking()
+            .Where(project =>
+                project.Source == ContentSource.Official);
 
         if (!string.IsNullOrWhiteSpace(request.Search))
         {
             var search = $"%{request.Search.Trim()}%";
 
             query = query.Where(project =>
-                EF.Functions.ILike((string)project.Title, search) ||
-                EF.Functions.ILike((string)project.Description, search) ||
-                EF.Functions.ILike((string)project.RepositoryUrl, search));
+                EF.Functions.ILike(
+                    (string)project.Title,
+                    search) ||
+                EF.Functions.ILike(
+                    (string)project.Description,
+                    search) ||
+                EF.Functions.ILike(
+                    (string)project.RepositoryUrl,
+                    search));
         }
 
-        var totalItems = await query.CountAsync();
+        var totalItems = await query.CountAsync(cancellationToken);
 
         var projectEntities = await query
             .Include(project => project.Tags)
@@ -40,7 +54,7 @@ public class GetProjectSummeriesQueryHandler(AppDbContext dbContext) : IHandler
             .ThenBy(project => project.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         var projects = projectEntities
             .Select(project => new ProjectSummary
@@ -52,10 +66,19 @@ public class GetProjectSummeriesQueryHandler(AppDbContext dbContext) : IHandler
                 LiveUrl = project.LiveUrl?.Value,
                 IsFeatured = project.IsFeatured,
                 DisplayOrder = project.DisplayOrder,
+
                 Tags = project.Tags
                     .OrderBy(tag => tag.Name.Value)
                     .Select(tag => tag.Name.Value)
-                    .ToList()
+                    .ToList(),
+
+                Source = project.Source.ToString(),
+
+                CreatedByUserId = project.Created.UserId,
+                CreatedAt = project.Created.At,
+
+                LastEditedByUserId = project.Edited.UserId,
+                LastEditedAt = project.Edited.At
             })
             .ToList();
 

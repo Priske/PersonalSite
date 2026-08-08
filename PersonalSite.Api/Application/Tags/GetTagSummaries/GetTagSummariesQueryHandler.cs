@@ -42,7 +42,15 @@ public class GetTagSummariesQueryHandler(
                 new TagSummary
                 {
                     Id = tag.Id,
-                    Name = tag.Name
+                    Name = tag.Name.Value,
+
+                    Source = tag.Source.ToString(),
+
+                    CreatedByUserId = tag.Created.UserId,
+                    CreatedAt = tag.Created.At,
+
+                    LastEditedByUserId = tag.Edited.UserId,
+                    LastEditedAt = tag.Edited.At
                 })
             .ToListAsync();
 
