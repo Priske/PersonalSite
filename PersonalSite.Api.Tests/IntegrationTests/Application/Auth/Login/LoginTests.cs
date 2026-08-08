@@ -119,5 +119,67 @@ public class LoginTestTests : IntegrationTest
         await response.ShouldHaveStatusCode(
             HttpStatusCode.Unauthorized);
     }
+    [Fact]
+    public async Task LoginReturnsUnauthorizedForEmptyEmail()
+    {
+        var request =
+            new LoginRequest
+            {
+                Email = "",
+                Password =
+                    "analytical-engine-password"
+            };
+
+        var response =
+            await Client.PostAsJsonAsync(
+                "/auth/login",
+                request);
+
+        await response.ShouldHaveStatusCode(
+            HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task LoginReturnsUnauthorizedForWhitespaceEmail()
+    {
+        var request =
+            new LoginRequest
+            {
+                Email = "   ",
+                Password =
+                    "analytical-engine-password"
+            };
+
+        var response =
+            await Client.PostAsJsonAsync(
+                "/auth/login",
+                request);
+
+        await response.ShouldHaveStatusCode(
+            HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task LoginReturnsUnauthorizedForEmptyPassword()
+    {
+        SeedUser();
+
+        var request =
+            new LoginRequest
+            {
+                Email =
+                    "ada@example.com",
+                Password =
+                    ""
+            };
+
+        var response =
+            await Client.PostAsJsonAsync(
+                "/auth/login",
+                request);
+
+        await response.ShouldHaveStatusCode(
+            HttpStatusCode.Unauthorized);
+    }
 }
 

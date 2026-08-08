@@ -1,6 +1,6 @@
 using System.Net;
-using System.Net.Http.Json;
 using PersonalSite.Api.Application.Projects.GetProjectSummeries;
+using PersonalSite.Api.Domain.Actors;
 using PersonalSite.Api.Domain.Common;
 using PersonalSite.Api.Domain.Projects;
 using PersonalSite.Api.Domain.Users;
@@ -14,19 +14,27 @@ public class GetProjectSummariesTests : IntegrationTest
     [Fact]
     public async Task GetProjectsReturnsProjects()
     {
-        await AuthenticateAsUser(UserRole.Administrator);
+        var userId =
+            await AuthenticateAsUser(UserRole.Administrator);
+
+        var actor =
+            new Actor(userId, UserRole.Administrator);
 
         SeedProject(
+            actor,
             title: "Personal Site",
             description: "My portfolio website",
-            repositoryUrl: "https://github.com/example/personal-site",
+            repositoryUrl:
+                "https://github.com/example/personal-site",
             liveUrl: "https://example.com",
             displayOrder: 1);
 
         SeedProject(
+            actor,
             title: "Book Tracker",
             description: "An application for tracking books",
-            repositoryUrl: "https://github.com/example/book-tracker",
+            repositoryUrl:
+                "https://github.com/example/book-tracker",
             liveUrl: null,
             displayOrder: 2);
 
@@ -46,24 +54,35 @@ public class GetProjectSummariesTests : IntegrationTest
         var first = content.Items[0];
 
         Assert.Equal("Personal Site", first.Title);
-        Assert.Equal("My portfolio website", first.Description);
+        Assert.Equal(
+            "My portfolio website",
+            first.Description);
+
         Assert.Equal(
             "https://github.com/example/personal-site",
             first.RepositoryUrl);
-        Assert.Equal("https://example.com/", first.LiveUrl);
+
+        Assert.Equal(
+            "https://example.com/",
+            first.LiveUrl);
+
         Assert.True(first.IsFeatured);
         Assert.Equal(1, first.DisplayOrder);
 
         var second = content.Items[1];
 
-        Assert.Equal("Book Tracker", second.Title);
+        Assert.Equal(
+            "Book Tracker",
+            second.Title);
+
         Assert.Null(second.LiveUrl);
     }
 
     [Fact]
     public async Task GetProjectsReturnsEmptyCollectionWhenNoProjectsExist()
     {
-        await AuthenticateAsUser(UserRole.Administrator);
+        await AuthenticateAsUser(
+            UserRole.Administrator);
 
         var response =
             await Client.GetAsync("/projects");
@@ -82,11 +101,19 @@ public class GetProjectSummariesTests : IntegrationTest
     [Fact]
     public async Task GetProjectsUsesRequestedPageAndPageSize()
     {
-        await AuthenticateAsUser(UserRole.Administrator);
+        var userId =
+            await AuthenticateAsUser(
+                UserRole.Administrator);
+
+        var actor =
+            new Actor(
+                userId,
+                UserRole.Administrator);
 
         for (var index = 1; index <= 5; index++)
         {
             SeedProject(
+                actor,
                 title: $"Project {index}",
                 description: $"Description {index}",
                 repositoryUrl:
@@ -109,77 +136,29 @@ public class GetProjectSummariesTests : IntegrationTest
         Assert.Equal(2, content.PageSize);
         Assert.Equal(2, content.Items.Count);
 
-        Assert.Equal("Project 3", content.Items[0].Title);
-        Assert.Equal("Project 4", content.Items[1].Title);
+        Assert.Equal(
+            "Project 3",
+            content.Items[0].Title);
+
+        Assert.Equal(
+            "Project 4",
+            content.Items[1].Title);
     }
 
     [Fact]
     public async Task GetProjectsSearchesByTitle()
     {
-        await AuthenticateAsUser(UserRole.Administrator);
+        var userId =
+            await AuthenticateAsUser(
+                UserRole.Administrator);
+
+        var actor =
+            new Actor(
+                userId,
+                UserRole.Administrator);
 
         SeedProject(
-            title: "Personal Site",
-            description: "Portfolio",
-            repositoryUrl: "https://github.com/example/personal-site",
-            liveUrl: null,
-            displayOrder: 1);
-
-        SeedProject(
-            title: "Book Tracker",
-            description: "Books",
-            repositoryUrl: "https://github.com/example/book-tracker",
-            liveUrl: null,
-            displayOrder: 2);
-
-        var response =
-            await Client.GetAsync("/projects?search=personal");
-
-        var content =
-            await response.ReadJsonAs<GetProjectSummariesResponse>(
-                HttpStatusCode.OK);
-
-        Assert.Single(content.Items);
-        Assert.Equal("Personal Site", content.Items[0].Title);
-        Assert.Equal(1, content.TotalItems);
-    }
-
-    [Fact]
-    public async Task GetProjectsSearchesByDescription()
-    {
-        await AuthenticateAsUser(UserRole.Administrator);
-
-        SeedProject(
-            title: "Personal Site",
-            description: "Portfolio built with ASP.NET Core",
-            repositoryUrl: "https://github.com/example/personal-site",
-            liveUrl: null,
-            displayOrder: 1);
-
-        SeedProject(
-            title: "Book Tracker",
-            description: "Application for books",
-            repositoryUrl: "https://github.com/example/book-tracker",
-            liveUrl: null,
-            displayOrder: 2);
-
-        var response =
-            await Client.GetAsync("/projects?search=ASP.NET");
-
-        var content =
-            await response.ReadJsonAs<GetProjectSummariesResponse>(
-                HttpStatusCode.OK);
-
-        Assert.Single(content.Items);
-        Assert.Equal("Personal Site", content.Items[0].Title);
-    }
-
-    [Fact]
-    public async Task GetProjectsSearchesByRepositoryUrl()
-    {
-        await AuthenticateAsUser(UserRole.Administrator);
-
-        SeedProject(
+            actor,
             title: "Personal Site",
             description: "Portfolio",
             repositoryUrl:
@@ -188,6 +167,100 @@ public class GetProjectSummariesTests : IntegrationTest
             displayOrder: 1);
 
         SeedProject(
+            actor,
+            title: "Book Tracker",
+            description: "Books",
+            repositoryUrl:
+                "https://github.com/example/book-tracker",
+            liveUrl: null,
+            displayOrder: 2);
+
+        var response =
+            await Client.GetAsync(
+                "/projects?search=personal");
+
+        var content =
+            await response.ReadJsonAs<GetProjectSummariesResponse>(
+                HttpStatusCode.OK);
+
+        Assert.Single(content.Items);
+
+        Assert.Equal(
+            "Personal Site",
+            content.Items[0].Title);
+
+        Assert.Equal(1, content.TotalItems);
+    }
+
+    [Fact]
+    public async Task GetProjectsSearchesByDescription()
+    {
+        var userId =
+            await AuthenticateAsUser(
+                UserRole.Administrator);
+
+        var actor =
+            new Actor(
+                userId,
+                UserRole.Administrator);
+
+        SeedProject(
+            actor,
+            title: "Personal Site",
+            description:
+                "Portfolio built with ASP.NET Core",
+            repositoryUrl:
+                "https://github.com/example/personal-site",
+            liveUrl: null,
+            displayOrder: 1);
+
+        SeedProject(
+            actor,
+            title: "Book Tracker",
+            description: "Application for books",
+            repositoryUrl:
+                "https://github.com/example/book-tracker",
+            liveUrl: null,
+            displayOrder: 2);
+
+        var response =
+            await Client.GetAsync(
+                "/projects?search=ASP.NET");
+
+        var content =
+            await response.ReadJsonAs<GetProjectSummariesResponse>(
+                HttpStatusCode.OK);
+
+        Assert.Single(content.Items);
+
+        Assert.Equal(
+            "Personal Site",
+            content.Items[0].Title);
+    }
+
+    [Fact]
+    public async Task GetProjectsSearchesByRepositoryUrl()
+    {
+        var userId =
+            await AuthenticateAsUser(
+                UserRole.Administrator);
+
+        var actor =
+            new Actor(
+                userId,
+                UserRole.Administrator);
+
+        SeedProject(
+            actor,
+            title: "Personal Site",
+            description: "Portfolio",
+            repositoryUrl:
+                "https://github.com/example/personal-site",
+            liveUrl: null,
+            displayOrder: 1);
+
+        SeedProject(
+            actor,
             title: "Book Tracker",
             description: "Books",
             repositoryUrl:
@@ -196,20 +269,25 @@ public class GetProjectSummariesTests : IntegrationTest
             displayOrder: 2);
 
         var response =
-            await Client.GetAsync("/projects?search=gitlab");
+            await Client.GetAsync(
+                "/projects?search=gitlab");
 
         var content =
             await response.ReadJsonAs<GetProjectSummariesResponse>(
                 HttpStatusCode.OK);
 
         Assert.Single(content.Items);
-        Assert.Equal("Book Tracker", content.Items[0].Title);
+
+        Assert.Equal(
+            "Book Tracker",
+            content.Items[0].Title);
     }
 
     [Fact]
     public async Task GetProjectsClampsInvalidPaginationValues()
     {
-        await AuthenticateAsUser(UserRole.Administrator);
+        await AuthenticateAsUser(
+            UserRole.Administrator);
 
         var response =
             await Client.GetAsync(
@@ -224,25 +302,28 @@ public class GetProjectSummariesTests : IntegrationTest
     }
 
     private Project SeedProject(
+        Actor actor,
         string title,
         string description,
         string repositoryUrl,
         string? liveUrl,
         int displayOrder)
     {
-        var project = new Project
-        {
-            Title = new ProjectTitle(title),
-            Description = new ProjectDescription(description),
-            RepositoryUrl = new Url(repositoryUrl),
-            LiveUrl = liveUrl is null
-                ? null
-                : new Url(liveUrl),
-            IsFeatured = displayOrder == 1,
-            DisplayOrder = displayOrder
-        };
+        var project =
+            Project.Create(
+                actor,
+                new ProjectTitle(title),
+                new ProjectDescription(description),
+                displayOrder,
+                new Url(repositoryUrl),
+                liveUrl is null
+                    ? null
+                    : new Url(liveUrl),
+                isFeatured: displayOrder == 1,
+                tags: []);
 
-        Writer.Seed(db => db.Projects.Add(project));
+        Writer.Seed(
+            db => db.Projects.Add(project));
 
         return project;
     }

@@ -14,7 +14,7 @@ public interface ITagRepository
 
     Task DeleteAsync(Tag tag, CancellationToken cancellationToken);
 
-    Task<bool> TagExistsAsync(
-        TagName name,
-        int? excludeId = null);
+    Task<bool> TagExistsAsync(TagName name, int? excludeId = null);
+
+    Task<bool> IsInUseAsync(int id, CancellationToken cancellationToken);
 }

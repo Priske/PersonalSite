@@ -2,7 +2,9 @@ using System.Net;
 
 using PersonalSite.Api.Application.Projects.GetProjectDetails;
 using PersonalSite.Api.Domain.Common;
+using PersonalSite.Api.Domain.Actors;
 using PersonalSite.Api.Domain.Projects;
+using PersonalSite.Api.Domain.Users;
 using PersonalSite.Api.Tests.IntegrationTests.Helpers;
 
 namespace PersonalSite.Api.Tests.IntegrationTests.Application
@@ -13,20 +15,17 @@ public class GetProjectDetailsTests : IntegrationTest
     [Fact]
     public async Task GetProjectDetailsReturnsProject()
     {
-        await AuthenticateAsUser();
+        await AuthenticateAsUser(UserRole.Administrator);
 
-        var project = new Project
-        {
-            Title = new ProjectTitle("Personal site"),
-            Description =
-                new ProjectDescription("My personal portfolio site"),
-            RepositoryUrl =
-                new Url("https://github.com/example/personal-site"),
-            LiveUrl =
-                new Url("https://example.com"),
-            IsFeatured = true,
-            DisplayOrder = 1
-        };
+        var project = Project.Create(
+            new Actor(1, UserRole.Administrator),
+            new ProjectTitle("Personal site"),
+            new ProjectDescription("My personal portfolio site"),
+            1,
+            new Url("https://github.com/example/personal-site"),
+            new Url("https://example.com"),
+            true,
+            []);
 
         Writer.Seed(db => db.Projects.Add(project));
 
@@ -55,19 +54,17 @@ public class GetProjectDetailsTests : IntegrationTest
     [Fact]
     public async Task GetProjectDetailsWithoutLiveUrlReturnsNull()
     {
-        await AuthenticateAsUser();
+        await AuthenticateAsUser(UserRole.Administrator);
 
-        var project = new Project
-        {
-            Title = new ProjectTitle("Personal site"),
-            Description =
-                new ProjectDescription("My personal portfolio site"),
-            RepositoryUrl =
-                new Url("https://github.com/example/personal-site"),
-            LiveUrl = null,
-            IsFeatured = false,
-            DisplayOrder = 1
-        };
+        var project = Project.Create(
+            new Actor(1, UserRole.Administrator),
+            new ProjectTitle("Personal site"),
+            new ProjectDescription("My personal portfolio site"),
+            1,
+            new Url("https://github.com/example/personal-site"),
+            null,
+            false,
+            []);
 
         Writer.Seed(db => db.Projects.Add(project));
 
@@ -84,7 +81,7 @@ public class GetProjectDetailsTests : IntegrationTest
     [Fact]
     public async Task GetUnknownProjectReturnsNotFound()
     {
-        await AuthenticateAsUser();
+        await AuthenticateAsUser(UserRole.Administrator);
 
         var response =
             await Client.GetAsync("/projects/9999");
