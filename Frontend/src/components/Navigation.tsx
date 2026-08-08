@@ -61,7 +61,13 @@ export function Navigation() {
               Contact
             </a>
           </li>
-
+          {isUser && (
+            <li>
+              <NavLink className={navLinkClass} to="/demo-home-page">
+                Demo Homepage
+              </NavLink>
+            </li>
+          )}
           {loggedIn ? (
             <>
               {(isAdministrator || isUser) && (
@@ -74,13 +80,7 @@ export function Navigation() {
               <li>
                 <LogoutButton className="site-nav__link site-nav__logout" />
               </li>
-              {isUser && (
-                <li>
-                  <NavLink className={navLinkClass} to="/demo-home-page">
-                    Demo Homepage
-                  </NavLink>
-                </li>
-              )}
+
               <li>
                 <NavLink className={accountLinkClass} to="/account">
                   Account

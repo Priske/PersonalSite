@@ -1,7 +1,15 @@
-import { useProjects } from "../projects/useProjects";
+import { useDemoProjects, useProjects } from "../projects/useProjects";
 
-export function ProjectsSection() {
-  const projectsQuery = useProjects();
+type ProjectsSectionProps = {
+  demo?: boolean;
+};
+
+export function ProjectsSection({ demo = false }: ProjectsSectionProps) {
+  const officialProjectsQuery = useProjects();
+
+  const demoProjectsQuery = useDemoProjects();
+
+  const projectsQuery = demo ? demoProjectsQuery : officialProjectsQuery;
 
   const content = () => {
     if (projectsQuery.isPending) {
