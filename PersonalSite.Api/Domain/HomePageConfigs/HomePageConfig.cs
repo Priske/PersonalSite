@@ -6,6 +6,21 @@ public sealed class HomePageConfig : SiteContent
 {
     public int Id { get; private set; }
 
+    private HomePageConfig()
+    {
+    }
+
+    internal HomePageConfig(
+        ContentSource source,
+        int userId)
+    {
+        var now = DateTimeOffset.UtcNow;
+
+        Source = source;
+        Created = new Change(userId, now);
+        Edited = new Change(userId, now);
+    }
+
     public required HomePageText HeroBanner { get; set; }
     public required HomePageText HeroFirstName { get; set; }
     public required HomePageText HeroLastName { get; set; }
@@ -30,15 +45,18 @@ public sealed class HomePageConfig : SiteContent
     public required HomePageText ContactLoginActionLabel { get; set; }
 
     public required EmailAddress Email { get; set; }
+
     public PhoneNumber? PhoneNumber { get; set; }
     public Url? LinkedInUrl { get; set; }
     public Url? GitHubUrl { get; set; }
     public Url? CvUrl { get; set; }
-    public static HomePageConfig CreateDemo(int userId)
-    {
-        var now = DateTimeOffset.UtcNow;
 
-        return new HomePageConfig
+    public static HomePageConfig CreateDemo(
+        int userId)
+    {
+        return new HomePageConfig(
+            ContentSource.Demo,
+            userId)
         {
             HeroBanner = new HomePageText(
                 "Welcome to my portfolio",
@@ -56,8 +74,12 @@ public sealed class HomePageConfig : SiteContent
                 "Software Developer",
                 "Hero Role"),
 
-            HeroEyebrow = new HeroEyebrow("Hello"),
-            HeroHeading = new HeroHeading("I build reliable software"),
+            HeroEyebrow = new HeroEyebrow(
+                "Hello"),
+
+            HeroHeading = new HeroHeading(
+                "I build reliable software"),
+
             HeroSummary = new HeroSummary(
                 "This is your demo homepage. Edit the content to preview your own version."),
 
@@ -69,7 +91,8 @@ public sealed class HomePageConfig : SiteContent
                 "Contact me",
                 "Hero Secondary Action Label"),
 
-            ContactSectionNumber = new SectionNumber("02"),
+            ContactSectionNumber =
+                new SectionNumber("02"),
 
             ContactSectionEyebrow = new HomePageText(
                 "Contact",
@@ -97,12 +120,8 @@ public sealed class HomePageConfig : SiteContent
                 "Login",
                 "Contact Login Action Label"),
 
-            Email = new EmailAddress("demo@example.com"),
-
-            Source = ContentSource.Demo,
-
-            Created = new Change(userId, now),
-            Edited = new Change(userId, now)
+            Email = new EmailAddress(
+                "demo@example.com")
         };
     }
 }

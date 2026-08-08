@@ -13,9 +13,9 @@ public class CreateProjectCommandHandler(
     ILogger<CreateProjectCommandHandler> logger) : IHandler
 {
     public async Task<CreateProjectResponse> Execute(
-        CreateProjectRequest request,
-        Actor actor,
-        CancellationToken cancellationToken)
+     CreateProjectRequest request,
+     Actor actor,
+     CancellationToken cancellationToken)
     {
         ProjectPermissions.EnsureCanCreate(actor);
 
@@ -37,11 +37,16 @@ public class CreateProjectCommandHandler(
                 "One or more selected tags do not exist.");
         }
 
+        var displayOrder =
+            await projectRepository.GetNextDisplayOrderAsync(
+                actor,
+                cancellationToken);
+
         var project = Project.Create(
             actor,
             new ProjectTitle(request.Title),
             new ProjectDescription(request.Description),
-            request.DisplayOrder,
+            displayOrder,
             new Url(request.RepositoryUrl),
             liveUrl,
             request.IsFeatured,

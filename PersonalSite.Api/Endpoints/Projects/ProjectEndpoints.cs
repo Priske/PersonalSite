@@ -16,7 +16,7 @@ public static class ProjectEndpoints
         this IEndpointRouteBuilder app)
     {
         app.MapGet("/projects", GetOfficialProjectList);
-        app.MapGet("/zdemo-projects/id:int", GetDemoProjectsList)
+        app.MapGet("/demo-projects/", GetDemoProjectsList)
             .RequireAuthorization();
         app.MapGet("/projects/{id:int}", GetProjectDetails)
             .RequireAuthorization();

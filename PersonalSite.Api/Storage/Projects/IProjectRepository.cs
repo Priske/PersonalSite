@@ -12,4 +12,5 @@ public interface IProjectRepository
     Task<bool> ProjectExistsAsync(Project project, CancellationToken cancellationToken);
     Task<Project?> GetByIdAsync(int id, CancellationToken cancellationToken);
     Task<bool> UpdateOrderAsync(Actor actor, IReadOnlyList<int> ProjectIds, CancellationToken cancellationToken);
+    Task<int> GetNextDisplayOrderAsync(Actor actor, CancellationToken cancellationToken);
 }

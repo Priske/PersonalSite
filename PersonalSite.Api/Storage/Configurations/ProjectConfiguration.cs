@@ -51,14 +51,6 @@ public sealed class ProjectConfiguration
             .HasFilter("\"Source\" = 0")
             .IsUnique();
 
-        project.HasIndex(p => new
-        {
-            p.Created.UserId,
-            p.DisplayOrder
-        })
-            .HasFilter("\"Source\" = 1")
-            .IsUnique();
-
         project.HasMany(p => p.Tags)
             .WithMany(t => t.Projects);
     }

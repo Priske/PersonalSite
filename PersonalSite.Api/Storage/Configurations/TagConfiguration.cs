@@ -11,6 +11,8 @@ public sealed class TagConfiguration
     {
         tag.HasKey(t => t.Id);
 
+        tag.ConfigureSiteContent();
+
         tag.Property(t => t.Name)
             .HasConversion(
                 name => name.Value,

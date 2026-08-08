@@ -39,13 +39,28 @@ public class GetProjectDetailsQueryHandler(
             LiveUrl = project.LiveUrl?.Value,
             IsFeatured = project.IsFeatured,
             DisplayOrder = project.DisplayOrder,
+            Source = project.Source.ToString(),
+
+            CreatedByUserId = project.Created.UserId,
+            CreatedAt = project.Created.At,
+
+            LastEditedByUserId = project.Edited.UserId,
+            LastEditedAt = project.Edited.At,
 
             Tags = project.Tags
                 .OrderBy(tag => tag.Name.Value)
                 .Select(tag => new TagSummary
                 {
                     Id = tag.Id,
-                    Name = tag.Name.Value
+                    Name = tag.Name.Value,
+
+                    Source = tag.Source.ToString(),
+
+                    CreatedByUserId = tag.Created.UserId,
+                    CreatedAt = tag.Created.At,
+
+                    LastEditedByUserId = tag.Edited.UserId,
+                    LastEditedAt = tag.Edited.At
                 })
                 .ToList()
         };

@@ -14,10 +14,14 @@ public sealed class EfTagRepository(AppDbContext dbContext) : ITagRepository
         return tag;
     }
 
-    public async Task<bool> UpdateAsync(Tag tag, CancellationToken cancellationToken)
+    public async Task<bool> UpdateAsync(
+    Tag tag,
+    CancellationToken cancellationToken)
     {
         var existingTag = await dbContext.Tags
-            .SingleOrDefaultAsync(current => current.Id == tag.Id, cancellationToken);
+            .SingleOrDefaultAsync(
+                current => current.Id == tag.Id,
+                cancellationToken);
 
         if (existingTag is null)
         {
@@ -25,8 +29,10 @@ public sealed class EfTagRepository(AppDbContext dbContext) : ITagRepository
         }
 
         existingTag.Name = tag.Name;
+        existingTag.Edited = tag.Edited;
 
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await dbContext.SaveChangesAsync(
+            cancellationToken);
 
         return true;
     }
@@ -38,27 +44,14 @@ public sealed class EfTagRepository(AppDbContext dbContext) : ITagRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+    public async Task DeleteAsync(
+     Tag tag,
+     CancellationToken cancellationToken)
     {
-        var tag = await dbContext.Tags
-            .SingleOrDefaultAsync(current => current.Id == id, cancellationToken);
-
-        if (tag is null)
-        {
-            return false;
-        }
-        var isUsed = await dbContext.Projects
-            .AnyAsync(project => project.Tags.Any(tag => tag.Id == id));
-
-        if (isUsed)
-        {
-            return false;
-        }
         dbContext.Tags.Remove(tag);
 
-        await dbContext.SaveChangesAsync(cancellationToken);
-
-        return true;
+        await dbContext.SaveChangesAsync(
+            cancellationToken);
     }
 
     public Task<bool> TagExistsAsync(TagName name, int? tagIdToIgnore = null)

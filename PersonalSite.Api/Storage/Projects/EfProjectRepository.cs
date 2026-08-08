@@ -44,8 +44,8 @@ public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
     }
 
     public async Task<bool> UpdateAsync(
-    Project project,
-    CancellationToken cancellationToken)
+     Project project,
+     CancellationToken cancellationToken)
     {
         var existingProject = await dbContext.Projects
             .Include(current => current.Tags)
@@ -64,6 +64,8 @@ public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
         existingProject.LiveUrl = project.LiveUrl;
         existingProject.RepositoryUrl = project.RepositoryUrl;
 
+        existingProject.Edited = project.Edited;
+
         existingProject.Tags.Clear();
 
         foreach (var tag in project.Tags)
@@ -77,9 +79,9 @@ public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
     }
 
     public async Task<bool> UpdateOrderAsync(
-    Actor actor,
-    IReadOnlyList<int> projectIds,
-    CancellationToken cancellationToken)
+        Actor actor,
+        IReadOnlyList<int> projectIds,
+        CancellationToken cancellationToken)
     {
         if (projectIds.Count == 0)
         {
@@ -104,14 +106,83 @@ public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
 
         if (!actor.IsAdministrator)
         {
-            var containsUnauthorizedProject = projects.Any(project =>
+            var hasUnauthorizedProject = projects.Any(project =>
                 project.Source != ContentSource.Demo ||
                 project.Created.UserId != actor.UserId);
 
-            if (containsUnauthorizedProject)
+            if (hasUnauthorizedProject)
             {
                 throw new ForbiddenOperationException(
                     "You cannot reorder one or more of these projects.");
+            }
+
+            var totalProjectsInScope = await dbContext.Projects
+                .CountAsync(
+                    project =>
+                        project.Source == ContentSource.Demo &&
+                        project.Created.UserId == actor.UserId,
+                    cancellationToken);
+
+            if (projectIds.Count != totalProjectsInScope)
+            {
+                throw new DomainException(
+                    "The complete project list is required when updating the order.");
+            }
+        }
+        else
+        {
+            var sources = projects
+                .Select(project => project.Source)
+                .Distinct()
+                .ToList();
+
+            if (sources.Count > 1)
+            {
+                throw new DomainException(
+                    "Projects from different scopes cannot be reordered together.");
+            }
+
+            if (sources[0] == ContentSource.Official)
+            {
+                var totalProjectsInScope = await dbContext.Projects
+                    .CountAsync(
+                        project =>
+                            project.Source == ContentSource.Official,
+                        cancellationToken);
+
+                if (projectIds.Count != totalProjectsInScope)
+                {
+                    throw new DomainException(
+                        "The complete project list is required when updating the order.");
+                }
+            }
+            else
+            {
+                var owners = projects
+                    .Select(project => project.Created.UserId)
+                    .Distinct()
+                    .ToList();
+
+                if (owners.Count > 1)
+                {
+                    throw new DomainException(
+                        "Demo projects from different users cannot be reordered together.");
+                }
+
+                var ownerId = owners[0];
+
+                var totalProjectsInScope = await dbContext.Projects
+                    .CountAsync(
+                        project =>
+                            project.Source == ContentSource.Demo &&
+                            project.Created.UserId == ownerId,
+                        cancellationToken);
+
+                if (projectIds.Count != totalProjectsInScope)
+                {
+                    throw new DomainException(
+                        "The complete project list is required when updating the order.");
+                }
             }
         }
 
@@ -130,6 +201,8 @@ public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
+        var editedAt = DateTimeOffset.UtcNow;
+
         for (var index = 0; index < projectIds.Count; index++)
         {
             projectsById[projectIds[index]].DisplayOrder =
@@ -138,7 +211,7 @@ public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
             projectsById[projectIds[index]].Edited =
                 new Change(
                     actor.UserId,
-                    DateTimeOffset.UtcNow);
+                    editedAt);
         }
 
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -146,5 +219,29 @@ public class EfProjectRepository(AppDbContext dbContext) : IProjectRepository
         await transaction.CommitAsync(cancellationToken);
 
         return true;
+    }
+    public async Task<int> GetNextDisplayOrderAsync(
+    Actor actor,
+    CancellationToken cancellationToken)
+    {
+        IQueryable<Project> query = dbContext.Projects;
+
+        if (actor.IsAdministrator)
+        {
+            query = query.Where(project =>
+                project.Source == ContentSource.Official);
+        }
+        else
+        {
+            query = query.Where(project =>
+                project.Source == ContentSource.Demo &&
+                project.Created.UserId == actor.UserId);
+        }
+
+        var maxOrder = await query
+            .Select(project => (int?)project.DisplayOrder)
+            .MaxAsync(cancellationToken);
+
+        return (maxOrder ?? 0) + 1;
     }
 }

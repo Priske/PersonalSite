@@ -13,9 +13,11 @@ public static class TagEndpoints
     public static IEndpointRouteBuilder MapTagEndpoints(
         this IEndpointRouteBuilder app)
     {
-        app.MapGet("/tags", GetTagSummaries);
+        app.MapGet("/tags", GetTagSummaries)
+            .RequireAuthorization();
 
-        app.MapGet("/tags/{id:int}", GetTagDetails);
+        app.MapGet("/tags/{id:int}", GetTagDetails)
+            .RequireAuthorization();
 
         app.MapPost("/tags", CreateTag)
             .RequireAuthorization();
@@ -50,13 +52,19 @@ public static class TagEndpoints
     }
 
     private static async Task<IResult> CreateTag(
-        CreateTagRequest request,
-        CreateTagCommandHandler handler, CancellationToken cancellationToken)
+    ClaimsPrincipal principal,
+    CreateTagRequest request,
+    CreateTagCommandHandler handler,
+    CancellationToken cancellationToken)
     {
         try
         {
-            var created =
-                await handler.Execute(request, cancellationToken);
+            var actor = principal.ToActor();
+
+            var created = await handler.Execute(
+                actor,
+                request,
+                cancellationToken);
 
             return Results.Created(
                 $"/tags/{created.Id}",

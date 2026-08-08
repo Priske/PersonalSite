@@ -2,6 +2,8 @@ using System.Net;
 using System.Net.Http.Json;
 
 using PersonalSite.Api.Application.Projects.CreateProject;
+using PersonalSite.Api.Domain;
+using PersonalSite.Api.Domain.Actors;
 using PersonalSite.Api.Domain.Projects;
 using PersonalSite.Api.Domain.Tags;
 using PersonalSite.Api.Domain.Users;
@@ -15,7 +17,9 @@ public sealed class CreateProjectTests : IntegrationTest
     public async Task PostProjectCreatesProject()
     {
         await AuthenticateAsUser(UserRole.Administrator);
+
         var tagId = SeedTag();
+
         var request = new CreateProjectRequest
         {
             Title = "Personal Site",
@@ -23,7 +27,6 @@ public sealed class CreateProjectTests : IntegrationTest
             RepositoryUrl = "https://github.com/example/personal-site",
             LiveUrl = "https://example.com",
             IsFeatured = true,
-            DisplayOrder = 1,
             TagIds = [tagId]
         };
 
@@ -34,11 +37,17 @@ public sealed class CreateProjectTests : IntegrationTest
         var created = await response.ReadJsonAs<CreateProjectResponse>(
             HttpStatusCode.Created);
 
-        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        Assert.Equal(
+            HttpStatusCode.Created,
+            response.StatusCode);
+
         Assert.NotNull(created);
         Assert.True(created.Id > 0);
 
-        Assert.Equal("Personal Site", created.Title);
+        Assert.Equal(
+            "Personal Site",
+            created.Title);
+
         Assert.Equal(
             "My personal portfolio website",
             created.Description);
@@ -54,11 +63,22 @@ public sealed class CreateProjectTests : IntegrationTest
         Assert.True(created.IsFeatured);
         Assert.Equal(1, created.DisplayOrder);
 
+        Assert.Equal(
+            ContentSource.Official.ToString(),
+            created.Source);
+
+        Assert.NotNull(created.CreatedByUserId);
+        Assert.NotNull(created.LastEditedByUserId);
+
         var project = Reader.Query(
             context => context.Find<Project>(created.Id));
 
         Assert.NotNull(project);
-        Assert.Equal("Personal Site", project.Title);
+
+        Assert.Equal(
+            "Personal Site",
+            project.Title);
+
         Assert.Equal(
             "My personal portfolio website",
             project.Description);
@@ -73,13 +93,22 @@ public sealed class CreateProjectTests : IntegrationTest
 
         Assert.True(project.IsFeatured);
         Assert.Equal(1, project.DisplayOrder);
+
+        Assert.Equal(
+            ContentSource.Official,
+            project.Source);
+
+        Assert.NotNull(project.Created);
+        Assert.NotNull(project.Edited);
     }
 
     [Fact]
     public async Task PostProjectWithoutLiveUrlCreatesProject()
     {
         await AuthenticateAsUser(UserRole.Administrator);
+
         var tagId = SeedTag();
+
         var request = new CreateProjectRequest
         {
             Title = "API Project",
@@ -87,7 +116,6 @@ public sealed class CreateProjectTests : IntegrationTest
             RepositoryUrl = "https://github.com/example/api-project",
             LiveUrl = null,
             IsFeatured = false,
-            DisplayOrder = 2,
             TagIds = [tagId]
         };
 
@@ -111,6 +139,7 @@ public sealed class CreateProjectTests : IntegrationTest
     public async Task PostProjectWithWhitespaceLiveUrlStoresNull()
     {
         await AuthenticateAsUser(UserRole.Administrator);
+
         var tagId = SeedTag();
 
         var request = new CreateProjectRequest
@@ -120,7 +149,6 @@ public sealed class CreateProjectTests : IntegrationTest
             RepositoryUrl = "https://github.com/example/console-project",
             LiveUrl = "   ",
             IsFeatured = false,
-            DisplayOrder = 3,
             TagIds = [tagId]
         };
 
@@ -144,6 +172,7 @@ public sealed class CreateProjectTests : IntegrationTest
     public async Task PostProjectWithWhitespaceTitleReturnsBadRequest()
     {
         await AuthenticateAsUser(UserRole.Administrator);
+
         var tagId = SeedTag();
 
         var request = new CreateProjectRequest
@@ -153,7 +182,6 @@ public sealed class CreateProjectTests : IntegrationTest
             RepositoryUrl = "https://github.com/example/project",
             LiveUrl = null,
             IsFeatured = false,
-            DisplayOrder = 4,
             TagIds = [tagId]
         };
 
@@ -170,6 +198,7 @@ public sealed class CreateProjectTests : IntegrationTest
     public async Task PostProjectWithWhitespaceDescriptionReturnsBadRequest()
     {
         await AuthenticateAsUser(UserRole.Administrator);
+
         var tagId = SeedTag();
 
         var request = new CreateProjectRequest
@@ -179,7 +208,6 @@ public sealed class CreateProjectTests : IntegrationTest
             RepositoryUrl = "https://github.com/example/project",
             LiveUrl = null,
             IsFeatured = false,
-            DisplayOrder = 5,
             TagIds = [tagId]
         };
 
@@ -196,6 +224,7 @@ public sealed class CreateProjectTests : IntegrationTest
     public async Task PostProjectWithInvalidRepositoryUrlReturnsBadRequest()
     {
         await AuthenticateAsUser(UserRole.Administrator);
+
         var tagId = SeedTag();
 
         var request = new CreateProjectRequest
@@ -205,7 +234,6 @@ public sealed class CreateProjectTests : IntegrationTest
             RepositoryUrl = "not-a-url",
             LiveUrl = null,
             IsFeatured = false,
-            DisplayOrder = 6,
             TagIds = [tagId]
         };
 
@@ -222,6 +250,7 @@ public sealed class CreateProjectTests : IntegrationTest
     public async Task PostProjectWithInvalidLiveUrlReturnsBadRequest()
     {
         await AuthenticateAsUser(UserRole.Administrator);
+
         var tagId = SeedTag();
 
         var request = new CreateProjectRequest
@@ -231,7 +260,6 @@ public sealed class CreateProjectTests : IntegrationTest
             RepositoryUrl = "https://github.com/example/project",
             LiveUrl = "invalid-live-url",
             IsFeatured = false,
-            DisplayOrder = 7,
             TagIds = [tagId]
         };
 
@@ -246,13 +274,16 @@ public sealed class CreateProjectTests : IntegrationTest
 
     private int SeedTag(string name = "C#")
     {
-        var tag = new Tag
-        {
-            Name = new TagName(name)
-        };
+        var actor = new Actor(
+            1,
+            UserRole.Administrator);
 
-        Writer.Seed(context =>
-            context.Tags.Add(tag));
+        var tag = Tag.Create(
+            actor,
+            new TagName(name));
+
+        Writer.Seed(
+            context => context.Tags.Add(tag));
 
         return tag.Id;
     }

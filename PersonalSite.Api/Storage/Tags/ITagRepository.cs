@@ -12,7 +12,7 @@ public interface ITagRepository
 
     Task<bool> UpdateAsync(Tag tag, CancellationToken cancellationToken);
 
-    Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
+    Task DeleteAsync(Tag tag, CancellationToken cancellationToken);
 
     Task<bool> TagExistsAsync(
         TagName name,
