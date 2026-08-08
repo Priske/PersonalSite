@@ -13,7 +13,8 @@ public class UpdateUserCommandHandler(IUserRepository userRepository) : IHandler
     public async Task<bool> Execute(
         Actor actor,
         int id,
-        UpdateUserRequest request, CancellationToken cancellationToken)
+        UpdateUserRequest request,
+        CancellationToken cancellationToken)
     {
 
         var mail = new UserEmail(request.Email);

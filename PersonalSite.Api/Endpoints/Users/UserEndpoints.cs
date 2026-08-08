@@ -19,7 +19,8 @@ public static class UserEndpoints
             .RequireAuthorization();
 
         app.MapPost("/users", CreateUser);
-        app.MapPost("/users/fake/replenish", CreateFakeUsers);
+        app.MapPost("/users/fake/replenish", CreateFakeUsers)
+            .RequireAuthorization();
 
         app.MapPut("users", UpdateUser);
         app.MapPut("/users/{id:int}", UpdateUser)
@@ -72,11 +73,13 @@ public static class UserEndpoints
     }
     public static async Task<IResult> CreateFakeUsers(
         CreateFakeUserCommandHandler handler,
+        ClaimsPrincipal principal,
         CancellationToken cancellationToken
     )
     {
         try
         {
+            principal.ToActor();
             var response = await handler.Execute(cancellationToken);
             return Results.Created();
         }
