@@ -18,9 +18,9 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 app.UseDefaultFiles();
 app.UseStaticFiles();
+app.UseCanonicalHostRedirect();
 app.UseCors();
 app.UsePersonalSite();
-
 app.MapFallbackToFile("index.html");
 app.Run();
 
