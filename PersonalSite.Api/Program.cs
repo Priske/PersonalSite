@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using PersonalSite.Api.Wiring;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,11 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(
+        new JsonStringEnumConverter());
+});
 var app = builder.Build();
 app.UseDefaultFiles();
 app.UseStaticFiles();

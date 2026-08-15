@@ -1,15 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PersonalSite.Api.Analytics.Metadata;
 using PersonalSite.Api.Storage.Analytics.Entities;
 
 namespace PersonalSite.Api.Storage.Configurations.MetaData;
 
-internal sealed class ActivityMetadataEntryConfiguration
-    : IEntityTypeConfiguration<ActivityMetadataEntry>
+internal sealed class ObjectMetadataValueEntryConfiguration
+    : IEntityTypeConfiguration<ObjectMetadataValueEntry>
 {
     public void Configure(
-        EntityTypeBuilder<ActivityMetadataEntry> builder)
+        EntityTypeBuilder<ObjectMetadataValueEntry> builder)
     {
         builder.HasKey(x => x.Id);
 
@@ -20,9 +19,9 @@ internal sealed class ActivityMetadataEntryConfiguration
             .IsRequired();
 
         builder
-            .HasOne<ActivityMetadata>()
+            .HasOne<ObjectMetadataValueEntity>()
             .WithMany()
-            .HasForeignKey(x => x.ActivityMetadataId)
+            .HasForeignKey(x => x.ObjectMetadataValueId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

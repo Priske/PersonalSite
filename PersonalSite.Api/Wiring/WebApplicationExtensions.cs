@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Domain.Users;
+using PersonalSite.Api.Endpoints.Analytics;
 using PersonalSite.Api.Endpoints.Auth;
 using PersonalSite.Api.Endpoints.HomePageConfigs;
 using PersonalSite.Api.Endpoints.Projects;
@@ -86,6 +87,7 @@ public static class WebApplicationExtensions
         app.MapSkillGroupEndpoints();
         app.MapProjectEndpoints();
         app.MapHomePageEndpoints();
+        app.MapAnalyticsEndpoints();
         app.MapTagEndpoints();
 
         return app;

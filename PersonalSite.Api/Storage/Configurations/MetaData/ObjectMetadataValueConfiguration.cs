@@ -4,15 +4,12 @@ using PersonalSite.Api.Storage.Analytics.Entities;
 
 namespace PersonalSite.Api.Storage.Configurations.MetaData;
 
-internal sealed class StringMetadataValueConfiguration
-    : IEntityTypeConfiguration<StringMetadataValueEntity>
+internal sealed class ObjectMetadataValueConfiguration
+    : IEntityTypeConfiguration<ObjectMetadataValueEntity>
 {
     public void Configure(
-        EntityTypeBuilder<StringMetadataValueEntity> builder)
+        EntityTypeBuilder<ObjectMetadataValueEntity> builder)
     {
         builder.HasKey(x => x.Id);
-
-        builder.Property(x => x.Value)
-            .IsRequired();
     }
 }

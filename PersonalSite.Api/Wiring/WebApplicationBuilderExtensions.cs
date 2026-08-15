@@ -16,6 +16,7 @@ using PersonalSite.Api.Storage.Skills;
 using PersonalSite.Api.Storage.Projects;
 using PersonalSite.Api.Storage.Tags;
 using PersonalSite.Api.Storage.HomePageConfigs;
+using PersonalSite.Api.Storage.Analytics;
 
 namespace PersonalSite.Api.Wiring;
 
@@ -43,6 +44,7 @@ public static class WebApplicationBuilderExtensions
         builder.Services.AddScoped<IHomePageConfigRepository, EfHomePageRepository>();
         builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         builder.Services.AddScoped<ITagRepository, EfTagRepository>();
+        builder.Services.AddScoped<IActivityRepository, EFActivityRepository>();
 
         builder.Services.AddScoped<ICompromisedPasswordChecker, DatabaseCompromisedPasswordChecker>();
         builder.Services.AddScoped<IPasswordPolicy, PassphrasePasswordPolicy>();

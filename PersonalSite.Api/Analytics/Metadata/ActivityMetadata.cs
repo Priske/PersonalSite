@@ -3,6 +3,7 @@ namespace PersonalSite.Api.Analytics.Metadata;
 public sealed class ActivityMetadata
 {
     private readonly Dictionary<string, IMetadataValue> _values = [];
+    public int Id { get; private set; }
 
     public IReadOnlyDictionary<string, IMetadataValue> Values => _values;
 

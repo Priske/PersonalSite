@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { trackActivity } from "./analytics/analyticsApi";
 import { ContactSection } from "./home/ContactSection";
 import { HeroSection } from "./home/HeroSection";
 import { ProjectsSection } from "./home/ProjectsSection";
@@ -6,6 +8,21 @@ import { useOfficialHomePageConfig } from "./homePageConfig/useHomePageConfig";
 
 export function HomePage() {
   const configQuery = useOfficialHomePageConfig();
+
+  useEffect(() => {
+    void trackActivity({
+      type: "PageViewed",
+      metadata: [
+        {
+          key: "Page",
+          value: {
+            path: "/",
+            name: "HomePage",
+          },
+        },
+      ],
+    });
+  }, []);
 
   if (configQuery.isPending) {
     return null;

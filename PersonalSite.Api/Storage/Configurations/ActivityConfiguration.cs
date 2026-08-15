@@ -20,6 +20,7 @@ public sealed class ActivityConfiguration
         builder.HasMany(x => x.Metadata)
             .WithOne()
             .HasForeignKey("ActivityId")
+            .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Navigation(x => x.Metadata)
