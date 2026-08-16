@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#./dev.sh
+# ./dev.sh
 
 set -e
 
@@ -45,7 +45,18 @@ if [ ! -d "Frontend/node_modules" ]; then
   npm --prefix Frontend ci
 fi
 
+export AzureStorage__AccountName="$(
+  grep '^AZURE_STORAGE_ACCOUNT_NAME=' "$ROOT_DIR/.env.local" |
+  cut -d= -f2-
+)"
+
+export AzureStorage__ContainerName="$(
+  grep '^AZURE_STORAGE_CONTAINER_NAME=' "$ROOT_DIR/.env.local" |
+  cut -d= -f2-
+)"
+
 echo "Starting API..."
+
 dotnet watch \
   --project PersonalSite.Api/PersonalSite.Api.csproj \
   run &
@@ -53,6 +64,7 @@ dotnet watch \
 API_PID=$!
 
 echo "Starting frontend..."
+
 npm --prefix Frontend run dev &
 
 FRONTEND_PID=$!
@@ -60,7 +72,7 @@ FRONTEND_PID=$!
 echo
 echo "Development environment started:"
 echo "Frontend: http://localhost:5173"
-echo "API:      http://localhost:8080"
+echo "API:      http://localhost:5285"
 echo
 echo "Press Ctrl+C to stop the API and frontend."
 echo "PostgreSQL will remain running for faster startup next time."
