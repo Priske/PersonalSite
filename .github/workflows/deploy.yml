@@ -106,7 +106,10 @@ jobs:
           az containerapp update \
             --name "${CONTAINER_APP_NAME}" \
             --resource-group "${RESOURCE_GROUP}" \
-            --image "${REGISTRY}/${IMAGE_NAME}:${GITHUB_SHA}"
+            --image "${REGISTRY}/${IMAGE_NAME}:${GITHUB_SHA}" \
+            --set-env-vars \
+              AzureStorage__AccountName=beneeckmansitestorage \
+              AzureStorage__ContainerName=portfolio-files
 
       - name: Verify deployed image
         run: |
