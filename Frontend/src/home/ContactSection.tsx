@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import { getAccessToken } from "../auth/tokenStorage";
 import type { GetHomePageConfigDetailsResponse } from "../homePageConfig/types";
+import { trackActivity } from "../analytics/analyticsApi";
+import { trackLinkClick } from "../analytics/analytics";
+import { apiPath } from "../api";
 
 type ContactSectionProps = {
   config: GetHomePageConfigDetailsResponse;
@@ -52,6 +55,7 @@ function CvIcon({ className }: IconProps) {
 
 export function ContactSection({ config }: ContactSectionProps) {
   const isAuthenticated = Boolean(getAccessToken());
+  const phoneNumber = config.phoneNumber;
   return (
     <section className="home-section home-contact" id="contact">
       <div className="home-section__heading">
@@ -86,17 +90,31 @@ export function ContactSection({ config }: ContactSectionProps) {
                   href={`mailto:${config.email}`}
                   title="Email"
                   aria-label="Email"
+                  onClick={() =>
+                    void trackLinkClick(
+                      "email",
+                      `mailto:${config.email}`,
+                      "contact",
+                    )
+                  }
                 >
                   <MailIcon />
                 </a>
               )}
 
-              {config.phoneNumber && (
+              {phoneNumber && (
                 <a
                   className="contact-panel__link"
-                  href={`tel:${config.phoneNumber.replace(/\s/g, "")}`}
+                  href={`tel:${phoneNumber.replace(/\s/g, "")}`}
                   title="Phone"
                   aria-label="Phone"
+                  onClick={() =>
+                    void trackLinkClick(
+                      "phone",
+                      `tel:${phoneNumber.replace(/\s/g, "")}`,
+                      "contact",
+                    )
+                  }
                 >
                   <PhoneIcon />
                 </a>
@@ -110,6 +128,13 @@ export function ContactSection({ config }: ContactSectionProps) {
                   rel="noreferrer"
                   title="GitHub"
                   aria-label="GitHub"
+                  onClick={() =>
+                    void trackLinkClick(
+                      "github",
+                      `githubUrl:${config.gitHubUrl}`,
+                      "contact",
+                    )
+                  }
                 >
                   <GitHubIcon />
                 </a>
@@ -123,23 +148,31 @@ export function ContactSection({ config }: ContactSectionProps) {
                   rel="noreferrer"
                   title="LinkedIn"
                   aria-label="LinkedIn"
+                  onClick={() =>
+                    void trackLinkClick(
+                      "linkedin",
+                      `linkedinUrl:${config.linkedInUrl}`,
+                      "contact",
+                    )
+                  }
                 >
                   <LinkedInIcon />
                 </a>
               )}
 
-              {config.cvUrl && (
-                <a
-                  className="contact-panel__link"
-                  href={config.cvUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  title="Download CV"
-                  aria-label="Download CV"
-                >
-                  <CvIcon />
-                </a>
-              )}
+              <a
+                className="contact-panel__link"
+                href={apiPath("/files/cv")}
+                target="_blank"
+                rel="noreferrer"
+                title="Download CV"
+                aria-label="Download CV"
+                onClick={() =>
+                  void trackLinkClick("cv", "/files/cv", "contact")
+                }
+              >
+                <CvIcon />
+              </a>
             </div>
           </div>
 

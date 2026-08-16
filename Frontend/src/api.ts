@@ -10,14 +10,16 @@ export class ApiError extends Error {
     this.status = status;
   }
 }
-
+export function apiPath(path: string) {
+  return `${apiUrl}${path}`;
+}
 async function sendRequest(path: string, options: RequestInit) {
   const headers = new Headers(options.headers);
   const token = getAccessToken();
 
   headers.set("Accept", "application/json");
 
-  if (options.body) {
+  if (options.body && !(options.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
 

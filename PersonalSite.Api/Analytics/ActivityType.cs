@@ -7,6 +7,7 @@ public enum ActivityType
 {
     PageViewed,
     User_Registered,
+    LinkClicked,
     Login,
     Logout,
     DemoHomepageUpdated,

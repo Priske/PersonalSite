@@ -1,5 +1,6 @@
 export type ActivityType =
   | "PageViewed"
+  | "LinkClicked"
   | "User_Registered"
   | "Login"
   | "Logout"

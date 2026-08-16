@@ -4,7 +4,6 @@ using PersonalSite.Api.Application.Projects.DeleteProject;
 using PersonalSite.Api.Application.Projects.GetProjectDetails;
 using PersonalSite.Api.Application.Projects.GetProjectSummeries;
 using PersonalSite.Api.Application.Projects.UpdateProjects;
-using PersonalSite.Api.Domain.Actors;
 using PersonalSite.Api.Domain.Exceptions;
 
 
