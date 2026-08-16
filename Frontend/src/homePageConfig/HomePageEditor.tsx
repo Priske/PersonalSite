@@ -401,13 +401,7 @@ export function HomePageEditor({
               type="file"
               accept=".pdf,application/pdf"
               onChange={(event) => {
-                const file = event.target.files?.[0];
-
-                if (!file) {
-                  return;
-                }
-
-                void uploadCv(file);
+                setCvFile(event.target.files?.[0] ?? null);
               }}
             />
           </label>
