@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { getAccessToken } from "../auth/tokenStorage";
 import type { GetHomePageConfigDetailsResponse } from "../homePageConfig/types";
-import { trackActivity } from "../analytics/analyticsApi";
 import { trackLinkClick } from "../analytics/analytics";
 import { apiPath } from "../api";
 
