@@ -22,10 +22,12 @@ import { TagsPage } from "./tags/TagsPage";
 import { EditHomePage } from "./homePageConfig/EditHomePage";
 import { EditDemoHomePage } from "./homePageConfig/EditDemoHomePage";
 import { DemoHomePage } from "./DemoHomePage";
+import { SiteEntryTracker } from "./analytics/SiteEntryTracker";
 
 function App() {
   return (
     <>
+      <SiteEntryTracker />
       <Navigation />
 
       <Routes>

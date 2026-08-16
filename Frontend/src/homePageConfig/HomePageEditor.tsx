@@ -5,6 +5,7 @@ import type {
   GetHomePageConfigDetailsResponse,
   UpdateHomePageConfigRequest,
 } from "./types";
+import { uploadCv } from "../Files/FilesApi";
 
 type HomePageEditorProps = {
   config: GetHomePageConfigDetailsResponse | undefined;
@@ -26,6 +27,7 @@ export function HomePageEditor({
   onSave,
 }: HomePageEditorProps) {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [cvFile, setCvFile] = useState<File | null>(null);
 
   const [form, setForm] = useState<GetHomePageConfigDetailsResponse | null>(
     null,
@@ -53,7 +55,7 @@ export function HomePageEditor({
     });
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!form) {
@@ -61,6 +63,10 @@ export function HomePageEditor({
     }
 
     onSave(form);
+
+    if (cvFile) {
+      await uploadCv(cvFile);
+    }
   }
 
   if (isLoading || !form) {
@@ -389,11 +395,20 @@ export function HomePageEditor({
           </label>
 
           <label className="form-field">
-            <span>CV URL</span>
+            <span>CV</span>
+
             <input
-              type="url"
-              value={form.cvUrl ?? ""}
-              onChange={(event) => updateField("cvUrl", event.target.value)}
+              type="file"
+              accept=".pdf,application/pdf"
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+
+                if (!file) {
+                  return;
+                }
+
+                void uploadCv(file);
+              }}
             />
           </label>
         </div>
