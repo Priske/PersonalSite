@@ -27,6 +27,37 @@ public static class WebApplicationExtensions
             .GetRequiredService<ILoggerFactory>()
             .CreateLogger("DatabaseStartup");
 
+        var connection = dbContext.Database.GetDbConnection();
+
+        connection.Open();
+
+        using (var command = connection.CreateCommand())
+        {
+            command.CommandText = """
+                SELECT
+                    current_database(),
+                    current_user,
+                    inet_server_addr()::text,
+                    inet_server_port(),
+                    current_schema();
+                """;
+
+            using var reader = command.ExecuteReader();
+
+            if (reader.Read())
+            {
+                logger.LogInformation(
+                    "Actual PostgreSQL connection: Database={Database}, User={User}, Server={Server}, Port={Port}, Schema={Schema}",
+                    reader.GetString(0),
+                    reader.GetString(1),
+                    reader.IsDBNull(2) ? "unknown" : reader.GetString(2),
+                    reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
+                    reader.GetString(4));
+            }
+        }
+
+        connection.Close();
+
         var migrations = dbContext.Database.GetMigrations();
         var appliedMigrations = dbContext.Database.GetAppliedMigrations();
         var pendingMigrations = dbContext.Database.GetPendingMigrations();
@@ -49,30 +80,30 @@ public static class WebApplicationExtensions
 
         logger.LogInformation("Database migrations completed");
 
-        var passwordHasher =
-            scope.ServiceProvider
-                .GetRequiredService<IPasswordHasher<User>>();
+        var passwordHasher = scope.ServiceProvider
+            .GetRequiredService<IPasswordHasher<User>>();
 
-        var administrator =
-            DatabaseSeeder.SeedInitialAdministrator(
-                dbContext,
-                app.Configuration,
-                passwordHasher);
+        var administrator = DatabaseSeeder.SeedInitialAdministrator(
+            dbContext,
+            app.Configuration,
+            passwordHasher);
 
-        DatabaseSeeder.SeedHomePageConfig(dbContext, administrator.Id);
+        DatabaseSeeder.SeedHomePageConfig(
+            dbContext,
+            administrator.Id);
 
         if (
             app.Environment.IsDevelopment() &&
             app.Configuration.GetValue<bool>("SeedDatabase"))
         {
-            var userFuzzr =
-                scope.ServiceProvider.GetRequiredService<UserFuzzr>();
+            var userFuzzr = scope.ServiceProvider
+                .GetRequiredService<UserFuzzr>();
 
-            var projectFuzzr =
-                scope.ServiceProvider.GetRequiredService<ProjectFuzzr>();
+            var projectFuzzr = scope.ServiceProvider
+                .GetRequiredService<ProjectFuzzr>();
 
-            var tagFuzzr =
-                scope.ServiceProvider.GetRequiredService<TagFuzzr>();
+            var tagFuzzr = scope.ServiceProvider
+                .GetRequiredService<TagFuzzr>();
 
             DatabaseSeeder.SeedUsers(
                 dbContext,
