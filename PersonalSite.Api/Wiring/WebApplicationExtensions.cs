@@ -27,6 +27,22 @@ public static class WebApplicationExtensions
             .GetRequiredService<ILoggerFactory>()
             .CreateLogger("DatabaseStartup");
 
+        var migrations = dbContext.Database.GetMigrations();
+        var appliedMigrations = dbContext.Database.GetAppliedMigrations();
+        var pendingMigrations = dbContext.Database.GetPendingMigrations();
+
+        logger.LogInformation(
+            "Known migrations: {Migrations}",
+            string.Join(", ", migrations));
+
+        logger.LogInformation(
+            "Applied migrations: {Migrations}",
+            string.Join(", ", appliedMigrations));
+
+        logger.LogInformation(
+            "Pending migrations: {Migrations}",
+            string.Join(", ", pendingMigrations));
+
         logger.LogInformation("Applying database migrations");
 
         dbContext.Database.Migrate();
