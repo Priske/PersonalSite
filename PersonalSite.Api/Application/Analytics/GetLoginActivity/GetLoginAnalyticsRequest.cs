@@ -7,6 +7,6 @@ public sealed record GetLoginAnalyticsRequest(
     DateTimeOffset? From,
     DateTimeOffset? To,
     string? SortBy,
-    bool Descending,
+    bool? Descending,
     int? Page,
     int? PageSize);

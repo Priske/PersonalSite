@@ -18,7 +18,7 @@ public sealed class LoginActivityCommandHandler(AppDbContext dbContext) : IHandl
         GetLoginAnalyticsRequest request,
         CancellationToken cancellationToken)
     {
-        if (actor.IsAdministrator)
+        if (!actor.IsAdministrator)
         {
             throw new UnauthorizedAccessException();
         }

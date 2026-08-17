@@ -23,6 +23,7 @@ import { EditHomePage } from "./homePageConfig/EditHomePage";
 import { EditDemoHomePage } from "./homePageConfig/EditDemoHomePage";
 import { DemoHomePage } from "./DemoHomePage";
 import { SiteEntryTracker } from "./analytics/SiteEntryTracker";
+import { AnalyticsAdminPage } from "./analytics/AnalyticsAdminPage";
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
             <Route path="projects" element={<AccountProjectsPage />} />
             <Route path="tags" element={<TagsPage />} />
             <Route path="homePage" element={<EditHomePage />} />
+            <Route path="analytics" element={<AnalyticsAdminPage />} />
           </Route>
         </Route>
 

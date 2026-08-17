@@ -26,3 +26,40 @@ export type TrackActivityRequest = {
   type: ActivityType;
   metadata: ActivityMetadataRequest[];
 };
+
+export type GetLoginAnalyticsRequest = {
+  userId?: number;
+  search?: string;
+  successful?: boolean;
+  from?: string;
+  to?: string;
+  sortBy?: string;
+  descending?: boolean;
+  page?: number;
+  pageSize?: number;
+};
+
+export type LoginActivityResponse = {
+  id: number;
+  userId: number | null;
+  createdAt: string;
+  successful: boolean;
+  failureReason: string | null;
+};
+
+export type LoginAnalyticsSummary = {
+  totalAttempts: number;
+  successfulLogins: number;
+  failedLogins: number;
+  unknownEmailAttempts: number;
+  incorrectPasswordAttempts: number;
+};
+
+export type LoginAnalyticsResponse = {
+  summary: LoginAnalyticsSummary;
+  items: LoginActivityResponse[];
+  page: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+};
