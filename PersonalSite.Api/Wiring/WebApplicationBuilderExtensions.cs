@@ -18,6 +18,7 @@ using PersonalSite.Api.Storage.Tags;
 using PersonalSite.Api.Storage.HomePageConfigs;
 using PersonalSite.Api.Storage.Analytics;
 using PersonalSite.Api.Storage.Files;
+using PersonalSite.Api.Analytics.Metadata;
 
 namespace PersonalSite.Api.Wiring;
 
@@ -54,6 +55,7 @@ public static class WebApplicationBuilderExtensions
         builder.Services.AddScoped<UserFuzzr>();
         builder.Services.AddScoped<ProjectFuzzr>();
         builder.Services.AddScoped<TagFuzzr>();
+        builder.Services.AddScoped<ActivityTracker>();
     }
 
     private static void RegisterHandlers(IServiceCollection services)

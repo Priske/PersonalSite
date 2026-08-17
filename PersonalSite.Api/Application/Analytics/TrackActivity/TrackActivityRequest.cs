@@ -1,4 +1,4 @@
-namespace PersonalSite.Api.Application.Analytics;
+namespace PersonalSite.Api.Application.Analytics.TrackActivity;
 
 using PersonalSite.Api.Analytics;
 
