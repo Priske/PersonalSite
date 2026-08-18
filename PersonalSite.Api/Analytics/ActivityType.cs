@@ -9,6 +9,10 @@ public enum ActivityType
     User_Registered,
     LinkClicked,
     Login,
+    LoginFailed,
+    CreatedUser,
+    DeleteUser,
+
     Logout,
     DemoHomepageUpdated,
     DemoProjectCreated,

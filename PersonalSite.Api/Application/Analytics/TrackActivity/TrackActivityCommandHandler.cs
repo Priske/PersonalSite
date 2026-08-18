@@ -3,7 +3,7 @@ using PersonalSite.Api.Analytics;
 using PersonalSite.Api.Analytics.Metadata;
 using PersonalSite.Api.Storage.Analytics;
 
-namespace PersonalSite.Api.Application.Analytics;
+namespace PersonalSite.Api.Application.Analytics.TrackActivity;
 
 public sealed class TrackActivityCommandHandler(
     IActivityRepository activityRepository) : IHandler

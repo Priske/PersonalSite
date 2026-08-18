@@ -20,9 +20,10 @@ public static class AuthEndpoints
 
     private static async Task<IResult> Login(
         LoginRequest request,
-        LoginCommandHandler handler)
+        LoginCommandHandler handler,
+        CancellationToken cancellationToken)
     {
-        var response = await handler.Execute(request);
+        var response = await handler.Execute(request, cancellationToken);
 
         if (response is null)
         {

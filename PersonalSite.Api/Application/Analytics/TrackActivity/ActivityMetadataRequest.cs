@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace PersonalSite.Api.Application.Analytics;
+namespace PersonalSite.Api.Application.Analytics.TrackActivity;
 
 public sealed record ActivityMetadataRequest(
     string Key,

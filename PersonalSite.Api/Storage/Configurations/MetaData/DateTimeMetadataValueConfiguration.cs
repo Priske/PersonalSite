@@ -4,11 +4,11 @@ using PersonalSite.Api.Storage.Analytics.Entities;
 
 namespace PersonalSite.Api.Storage.Configurations.MetaData;
 
-internal sealed class StringMetadataValueConfiguration
-    : IEntityTypeConfiguration<StringMetadataValueEntity>
+internal sealed class DateTimeMetadataValueConfiguration
+    : IEntityTypeConfiguration<DateTimeMetadataValueEntity>
 {
     public void Configure(
-        EntityTypeBuilder<StringMetadataValueEntity> builder)
+        EntityTypeBuilder<DateTimeMetadataValueEntity> builder)
     {
         builder.HasKey(x => x.Id);
 

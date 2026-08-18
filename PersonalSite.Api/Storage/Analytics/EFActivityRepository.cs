@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Analytics;
 using PersonalSite.Api.Analytics.Metadata;
 using PersonalSite.Api.Storage.Analytics.Entities;
@@ -39,6 +40,173 @@ public sealed class EFActivityRepository(AppDbContext dbContext)
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<Activity>> GetAsync(
+        ActivityType type,
+        DateTimeOffset? from,
+        DateTimeOffset? to,
+        CancellationToken cancellationToken)
+    {
+        var query = dbContext.Activities
+            .AsNoTracking()
+            .Where(activity =>
+                activity.Type == type);
+
+        if (from is not null)
+        {
+            query = query.Where(activity =>
+                activity.CreatedAt >= from);
+        }
+
+        if (to is not null)
+        {
+            query = query.Where(activity =>
+                activity.CreatedAt <= to);
+        }
+
+        var activities = await query
+            .Include(activity => activity.Metadata)
+            .ToListAsync(cancellationToken);
+
+        foreach (var activity in activities)
+        {
+            foreach (var metadata in activity.Metadata)
+            {
+                await LoadMetadataValues(
+                    metadata,
+                    cancellationToken);
+            }
+        }
+
+        return activities;
+    }
+
+    private async Task LoadMetadataValues(
+        ActivityMetadata metadata,
+        CancellationToken cancellationToken)
+    {
+        var entries = await dbContext
+            .Set<ActivityMetadataEntry>()
+            .AsNoTracking()
+            .Where(entry =>
+                entry.ActivityMetadataId == metadata.Id)
+            .ToListAsync(cancellationToken);
+
+        foreach (var entry in entries)
+        {
+            var value = await LoadValue(
+                entry.ValueType,
+                entry.ValueId,
+                cancellationToken);
+
+            metadata.Add(
+                entry.Key,
+                value);
+        }
+    }
+
+    private async Task<IMetadataValue> LoadValue(
+        string valueType,
+        int valueId,
+        CancellationToken cancellationToken)
+    {
+        switch (valueType)
+        {
+            case nameof(StringMetadataValue):
+                {
+                    var entity = await dbContext
+                        .Set<StringMetadataValueEntity>()
+                        .AsNoTracking()
+                        .SingleAsync(
+                            x => x.Id == valueId,
+                            cancellationToken);
+
+                    return new StringMetadataValue(
+                        entity.Value);
+                }
+            case nameof(IntegerMetadataValue):
+                {
+                    var entity = await dbContext
+                        .Set<IntegerMetadataValueEntity>()
+                        .AsNoTracking()
+                        .SingleAsync(
+                            x => x.Id == valueId,
+                            cancellationToken);
+
+                    return new IntegerMetadataValue(
+                        entity.Value);
+                }
+
+            case nameof(DecimalMetadataValue):
+                {
+                    var entity = await dbContext
+                        .Set<DecimalMetadataValueEntity>()
+                        .AsNoTracking()
+                        .SingleAsync(
+                            x => x.Id == valueId,
+                            cancellationToken);
+
+                    return new DecimalMetadataValue(
+                        entity.Value);
+                }
+
+            case nameof(BooleanMetadataValue):
+                {
+                    var entity = await dbContext
+                        .Set<BooleanMetadataValueEntity>()
+                        .AsNoTracking()
+                        .SingleAsync(
+                            x => x.Id == valueId,
+                            cancellationToken);
+
+                    return new BooleanMetadataValue(
+                        entity.Value);
+                }
+
+            case nameof(DateTimeMetadataValue):
+                {
+                    var entity = await dbContext
+                        .Set<DateTimeMetadataValueEntity>()
+                        .AsNoTracking()
+                        .SingleAsync(
+                            x => x.Id == valueId,
+                            cancellationToken);
+
+                    return new DateTimeMetadataValue(
+                        entity.Value);
+                }
+
+            case nameof(ObjectMetadataValue):
+                {
+                    var objectValue = new ObjectMetadataValue();
+
+                    var entries = await dbContext
+                        .Set<ObjectMetadataValueEntry>()
+                        .AsNoTracking()
+                        .Where(entry =>
+                            entry.ObjectMetadataValueId == valueId)
+                        .ToListAsync(cancellationToken);
+
+                    foreach (var entry in entries)
+                    {
+                        var childValue = await LoadValue(
+                            entry.ValueType,
+                            entry.ValueId,
+                            cancellationToken);
+
+                        objectValue.Add(
+                            entry.Key,
+                            childValue);
+                    }
+
+                    return objectValue;
+                }
+
+            default:
+                throw new NotSupportedException(
+                    $"Metadata value type '{valueType}' is not supported.");
+        }
+    }
+
     private async Task<(string ValueType, int ValueId)> SaveValue(
         IMetadataValue value,
         CancellationToken cancellationToken)
@@ -61,7 +229,73 @@ public sealed class EFActivityRepository(AppDbContext dbContext)
                         nameof(StringMetadataValue),
                         entity.Id);
                 }
+            case IntegerMetadataValue integerValue:
+                {
+                    var entity = new IntegerMetadataValueEntity
+                    {
+                        Value = integerValue.Value
+                    };
 
+                    dbContext.Set<IntegerMetadataValueEntity>()
+                        .Add(entity);
+
+                    await dbContext.SaveChangesAsync(cancellationToken);
+
+                    return (
+                        nameof(IntegerMetadataValue),
+                        entity.Id);
+                }
+
+            case DecimalMetadataValue decimalValue:
+                {
+                    var entity = new DecimalMetadataValueEntity
+                    {
+                        Value = decimalValue.Value
+                    };
+
+                    dbContext.Set<DecimalMetadataValueEntity>()
+                        .Add(entity);
+
+                    await dbContext.SaveChangesAsync(cancellationToken);
+
+                    return (
+                        nameof(DecimalMetadataValue),
+                        entity.Id);
+                }
+
+            case BooleanMetadataValue booleanValue:
+                {
+                    var entity = new BooleanMetadataValueEntity
+                    {
+                        Value = booleanValue.Value
+                    };
+
+                    dbContext.Set<BooleanMetadataValueEntity>()
+                        .Add(entity);
+
+                    await dbContext.SaveChangesAsync(cancellationToken);
+
+                    return (
+                        nameof(BooleanMetadataValue),
+                        entity.Id);
+                }
+
+            case DateTimeMetadataValue dateTimeValue:
+                {
+                    var entity = new DateTimeMetadataValueEntity
+                    {
+                        Value = dateTimeValue.Value
+                    };
+
+                    dbContext.Set<DateTimeMetadataValueEntity>()
+                        .Add(entity);
+
+                    await dbContext.SaveChangesAsync(cancellationToken);
+
+                    return (
+                        nameof(DateTimeMetadataValue),
+                        entity.Id);
+                }
             case ObjectMetadataValue objectValue:
                 {
                     var entity = new ObjectMetadataValueEntity();
