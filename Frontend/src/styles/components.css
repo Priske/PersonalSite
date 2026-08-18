@@ -704,12 +704,25 @@
    ========================================================= */
 
 .analytics > .account-card__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 24px;
+
   padding: 48px;
   border-bottom: 2px solid #080808;
 }
 
+.analytics > .account-card__header .account-card__eyebrow {
+  grid-column: 1 / -1;
+  width: fit-content;
+  margin: 0;
+}
+
 .analytics > .account-card__header h2 {
+  grid-column: 1;
   margin: 16px 0 12px;
+
   font-size: clamp(2.8rem, 4vw, 4rem);
   line-height: 0.95;
   letter-spacing: -0.05em;
@@ -717,10 +730,47 @@
 }
 
 .analytics > .account-card__header .account-management__description {
+  grid-column: 1;
   margin: 0;
   max-width: none;
 }
 
+.analytics-clear-button {
+  grid-column: 2;
+  grid-row: 2 / 4;
+  align-self: end;
+
+  min-height: 2.7rem;
+  padding: 0.7rem 1.25rem;
+
+  color: #fff;
+  background: #080808;
+  border: 2px solid #080808;
+  border-radius: 999px;
+
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+  white-space: nowrap;
+
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+.analytics-clear-button:hover {
+  color: #080808;
+  background: #fff;
+}
+
+.analytics-clear-button:focus-visible {
+  outline: 2px solid #080808;
+  outline-offset: 3px;
+}
 /* =========================================================
    SUMMARY
    ========================================================= */
@@ -1004,7 +1054,333 @@
 .analytics-registrations__row span:last-child {
   border-right: 0;
 }
+/* User deletion analytics */
 
+.analytics-delete-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 1.5rem;
+  border: 1px solid #111;
+}
+
+.analytics-delete-summary > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+}
+
+.analytics-delete-summary > div + div {
+  border-left: 1px solid #111;
+}
+
+.analytics-delete-summary span {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.analytics-delete-summary strong {
+  font-size: 1.5rem;
+}
+
+.analytics-delete-users {
+  width: 100%;
+  border: 1px solid #111;
+  overflow: hidden;
+}
+
+.analytics-delete-users__header,
+.analytics-delete-users__row {
+  display: grid;
+  grid-template-columns:
+    1.15fr
+    0.65fr
+    0.65fr
+    0.9fr
+    1.65fr;
+  width: 100%;
+}
+
+.analytics-delete-users__header {
+  color: #fff;
+  background: #050505;
+}
+
+.analytics-delete-users__header span {
+  min-width: 0;
+  padding: 1rem 0.8rem;
+
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.analytics-delete-users__row {
+  min-height: 4rem;
+  border-top: 1px solid #111;
+}
+
+.analytics-delete-users__row:nth-child(odd) {
+  background: #eee;
+}
+
+.analytics-delete-users__row:nth-child(even) {
+  background: #fff;
+}
+
+.analytics-delete-users__row > span {
+  display: flex;
+  min-width: 0;
+  padding: 0.9rem 0.8rem;
+
+  align-items: center;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.analytics-delete-users__row > span:last-child {
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   ANALYTICS FILTERS & PAGINATION
+   ========================================================= */
+
+.analytics-filters {
+  display: grid;
+  grid-template-columns:
+    minmax(12rem, 1.5fr)
+    repeat(4, minmax(0, 1fr));
+
+  width: 100%;
+  margin-bottom: 1.5rem;
+
+  border: 1px solid #111;
+}
+
+/* Sections with 6 controls:
+   Search / Status / From
+   To / Sort / Order
+*/
+.analytics-filters:has(> .analytics-filter:nth-child(6)) {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.analytics-filter {
+  display: grid;
+  align-content: center;
+
+  min-width: 0;
+  padding: 0.9rem 1rem;
+
+  border-right: 1px solid #111;
+}
+
+/* -----------------------------
+   5-control layout
+   ----------------------------- */
+
+.analytics-filters:not(:has(> .analytics-filter:nth-child(6)))
+  > .analytics-filter:last-child {
+  border-right: 0;
+}
+
+/* -----------------------------
+   6-control layout
+   ----------------------------- */
+
+.analytics-filters:has(> .analytics-filter:nth-child(6))
+  > .analytics-filter:nth-child(-n + 3) {
+  border-bottom: 1px solid #111;
+}
+
+.analytics-filters:has(> .analytics-filter:nth-child(6))
+  > .analytics-filter:nth-child(3),
+.analytics-filters:has(> .analytics-filter:nth-child(6))
+  > .analytics-filter:nth-child(6) {
+  border-right: 0;
+}
+
+/* -----------------------------
+   Labels
+   ----------------------------- */
+
+.analytics-filter > span {
+  margin-bottom: 0.45rem;
+
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* -----------------------------
+   Inputs / selects
+   ----------------------------- */
+
+.analytics-filter input,
+.analytics-filter select {
+  width: 100%;
+  min-width: 0;
+  height: 2rem;
+
+  padding: 0;
+
+  color: #080808;
+  background: transparent;
+
+  border: 0;
+  border-bottom: 1px solid #080808;
+  border-radius: 0;
+
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.analytics-filter input:focus,
+.analytics-filter select:focus {
+  outline: 0;
+  border-bottom-width: 2px;
+}
+
+/* =========================================================
+   PAGINATION
+   ========================================================= */
+
+.analytics-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  width: 100%;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+
+  border-top: 1px solid #111;
+}
+
+.analytics-pagination__summary {
+  display: flex;
+  gap: 1.25rem;
+
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.analytics-pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.analytics-pagination__size {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  margin-right: 0.5rem;
+}
+
+.analytics-pagination__size span {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.analytics-pagination__size select {
+  min-height: 2.35rem;
+  padding: 0 0.7rem;
+
+  color: #080808;
+  background: #fff;
+
+  border: 1px solid #080808;
+
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.analytics-pagination__button {
+  min-height: 2.35rem;
+  padding: 0 1rem;
+
+  color: #fff;
+  background: #080808;
+
+  border: 1px solid #080808;
+  border-radius: 999px;
+
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+
+  cursor: pointer;
+}
+
+.analytics-pagination__button:hover:not(:disabled) {
+  color: #080808;
+  background: #fff;
+}
+
+.analytics-pagination__button:disabled {
+  cursor: default;
+  opacity: 0.3;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .analytics-filters,
+  .analytics-filters:has(> .analytics-filter:nth-child(6)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .analytics-filter {
+    border-right: 1px solid #111;
+    border-bottom: 1px solid #111;
+  }
+
+  .analytics-filter:nth-child(even) {
+    border-right: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .analytics-filters,
+  .analytics-filters:has(> .analytics-filter:nth-child(6)) {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-filter,
+  .analytics-filter:nth-child(even) {
+    border-right: 0;
+    border-bottom: 1px solid #111;
+  }
+
+  .analytics-filter:last-child {
+    border-bottom: 0;
+  }
+
+  .analytics-pagination {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .analytics-pagination__controls {
+    flex-wrap: wrap;
+  }
+}
 /* =========================================================
    STATUS
    ========================================================= */

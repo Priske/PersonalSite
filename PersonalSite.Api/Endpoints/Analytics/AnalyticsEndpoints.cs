@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using PersonalSite.Api.Application.Analytics.GetCreateUserActivity;
 using PersonalSite.Api.Application.Analytics.GetCreateUserRequest.cs;
+using PersonalSite.Api.Application.Analytics.GetDeleteUserActivity;
 using PersonalSite.Api.Application.Analytics.GetLoginActivity;
 using PersonalSite.Api.Application.Analytics.GetReferrerActivity;
 using PersonalSite.Api.Application.Analytics.TrackActivity;
@@ -17,9 +18,33 @@ public static class AnalyticsEndpoints
         app.MapGet("/analytics/referrers", GetReferrerActivity);
         app.MapGet("/analytics/login", GetLoginActivity).RequireAuthorization();
         app.MapGet("/analytics/create-users", GetCreateUserAnalytics).RequireAuthorization();
+        app.MapGet("/analytics/delete-users", GetDeleteUsersAnalytics).RequireAuthorization();
+
         return app;
     }
 
+    private static async Task<IResult> GetDeleteUsersAnalytics(
+        [AsParameters] GetDeleteUserAnalyticsRequest request,
+        ClaimsPrincipal principal,
+        DeleteUserActivityCommandHandler handler,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var actor = principal.ToActor();
+
+            var response = await handler.ExecuteAsync(
+                actor,
+                request,
+                cancellationToken);
+
+            return Results.Ok(response);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Results.Forbid();
+        }
+    }
     private static async Task<IResult> GetCreateUserAnalytics(
         [AsParameters] GetCreateUserAnalyticsRequest request,
         ClaimsPrincipal principal,

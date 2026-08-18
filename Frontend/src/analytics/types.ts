@@ -111,3 +111,38 @@ export type CreateUserAnalyticsResponse = {
   totalItems: number;
   totalPages: number;
 };
+export type GetDeleteUserAnalyticsRequest = {
+  userId?: number;
+  search?: string;
+  successful?: boolean;
+  from?: string;
+  to?: string;
+  sortBy?: string;
+  descending?: boolean;
+  page?: number;
+  pageSize?: number;
+};
+
+export type DeleteUserActivityResponse = {
+  id: number;
+  userId: number | null;
+  targetUserId: number | null;
+  createdAt: string;
+  successful: boolean;
+  failureReason: string | null;
+};
+
+export type DeleteUserAnalyticsSummary = {
+  totalAttempts: number;
+  successfulDeletes: number;
+  failedDeletes: number;
+};
+
+export type DeleteUserAnalyticsResponse = {
+  summary: DeleteUserAnalyticsSummary;
+  items: DeleteUserActivityResponse[];
+  page: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+};

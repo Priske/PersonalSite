@@ -2,7 +2,9 @@ import { apiRequest, apiRequestWithoutResponse } from "../api";
 
 import type {
   CreateUserAnalyticsResponse,
+  DeleteUserAnalyticsResponse,
   GetCreateUserAnalyticsRequest,
+  GetDeleteUserAnalyticsRequest,
   GetLoginAnalyticsRequest,
   LoginAnalyticsResponse,
   ReferrerActivityRequest,
@@ -103,5 +105,25 @@ export function getCreateUserAnalytics(request: GetCreateUserAnalyticsRequest) {
 
   return apiRequest<CreateUserAnalyticsResponse>(
     `/analytics/create-users?${searchParams.toString()}`,
+  );
+}
+
+export function getDeleteUserAnalytics(request: GetDeleteUserAnalyticsRequest) {
+  const searchParams = new URLSearchParams();
+
+  addAnalyticsFilters(searchParams, request);
+
+  addPaging(searchParams, request);
+
+  if (request.userId !== undefined) {
+    searchParams.set("userId", request.userId.toString());
+  }
+
+  if (request.successful !== undefined) {
+    searchParams.set("successful", request.successful.toString());
+  }
+
+  return apiRequest<DeleteUserAnalyticsResponse>(
+    `/analytics/delete-users?${searchParams.toString()}`,
   );
 }
