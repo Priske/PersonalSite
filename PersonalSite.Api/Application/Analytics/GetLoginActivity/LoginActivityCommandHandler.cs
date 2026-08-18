@@ -72,6 +72,22 @@ public sealed class LoginActivityCommandHandler(
                 .ToList();
         }
 
+        if (!string.IsNullOrWhiteSpace(request.Search))
+        {
+            var search = request.Search.Trim();
+
+            allActivities = allActivities
+                .Where(activity =>
+                    activity.UserId?.ToString()
+                        .Contains(
+                            search,
+                            StringComparison.OrdinalIgnoreCase) == true ||
+                    GetFailureReason(activity)?.Contains(
+                        search,
+                        StringComparison.OrdinalIgnoreCase) == true)
+                .ToList();
+        }
+
         var totalItems = allActivities.Count;
 
         var successfulLogins = allActivities.Count(activity =>

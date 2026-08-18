@@ -1240,7 +1240,9 @@
   font: inherit;
   font-size: 0.85rem;
 }
-
+.analytics-filter input[type="date"] {
+  font-size: 0.78rem;
+}
 .analytics-filter input:focus,
 .analytics-filter select:focus {
   outline: 0;
