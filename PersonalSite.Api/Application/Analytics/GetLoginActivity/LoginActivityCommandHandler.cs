@@ -1,12 +1,12 @@
-using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Analytics;
 using PersonalSite.Api.Analytics.Metadata;
 using PersonalSite.Api.Domain.Actors;
-using PersonalSite.Api.Storage;
+using PersonalSite.Api.Storage.Analytics;
 
 namespace PersonalSite.Api.Application.Analytics.GetLoginActivity;
 
-public sealed class LoginActivityCommandHandler(AppDbContext dbContext) : IHandler
+public sealed class LoginActivityCommandHandler(
+    IActivityRepository activityRepository) : IHandler
 {
     private const int DefaultPage = 1;
     private const int DefaultPageSize = 20;
@@ -23,51 +23,62 @@ public sealed class LoginActivityCommandHandler(AppDbContext dbContext) : IHandl
             throw new UnauthorizedAccessException();
         }
 
-        var page = Math.Max(MinPage, request.Page ?? DefaultPage);
-        var pageSize = Math.Clamp(request.PageSize ?? DefaultPageSize, MinPage, MaxPageSize);
+        var page = Math.Max(
+            MinPage,
+            request.Page ?? DefaultPage);
 
-        var query = dbContext.Activities
-            .AsNoTracking()
-            .Where(activity =>
-                activity.Type == ActivityType.Login ||
-                activity.Type == ActivityType.LoginFailed);
+        var pageSize = Math.Clamp(
+            request.PageSize ?? DefaultPageSize,
+            MinPage,
+            MaxPageSize);
+
+        var successfulActivities = await activityRepository.GetAsync(
+            ActivityType.Login,
+            request.From,
+            request.To,
+            cancellationToken);
+
+        var failedActivities = await activityRepository.GetAsync(
+            ActivityType.LoginFailed,
+            request.From,
+            request.To,
+            cancellationToken);
+
+        var allActivities = successfulActivities
+            .Concat(failedActivities)
+            .ToList();
 
         if (request.UserId is not null)
         {
-            query = query.Where(activity => activity.UserId == request.UserId);
+            allActivities = allActivities
+                .Where(activity =>
+                    activity.UserId == request.UserId)
+                .ToList();
         }
 
         if (request.Successful is true)
         {
-            query = query.Where(activity => activity.Type == ActivityType.Login);
+            allActivities = allActivities
+                .Where(activity =>
+                    activity.Type == ActivityType.Login)
+                .ToList();
         }
 
         if (request.Successful is false)
         {
-            query = query.Where(activity => activity.Type == ActivityType.LoginFailed);
+            allActivities = allActivities
+                .Where(activity =>
+                    activity.Type == ActivityType.LoginFailed)
+                .ToList();
         }
 
-        if (request.From is not null)
-        {
-            query = query.Where(activity => activity.CreatedAt >= request.From);
-        }
+        var totalItems = allActivities.Count;
 
-        if (request.To is not null)
-        {
-            query = query.Where(activity => activity.CreatedAt <= request.To);
-        }
+        var successfulLogins = allActivities.Count(activity =>
+            activity.Type == ActivityType.Login);
 
-        var totalItems = await query.CountAsync(cancellationToken);
-
-        var successfulLogins = await query
-            .CountAsync(activity => activity.Type == ActivityType.Login, cancellationToken);
-
-        var failedLogins = await query
-            .CountAsync(activity => activity.Type == ActivityType.LoginFailed, cancellationToken);
-
-        var allActivities = await query
-            .Include(activity => activity.Metadata)
-            .ToListAsync(cancellationToken);
+        var failedLogins = allActivities.Count(activity =>
+            activity.Type == ActivityType.LoginFailed);
 
         var unknownEmailAttempts = allActivities.Count(activity =>
             GetFailureReason(activity) == "unknown_email");
@@ -87,7 +98,9 @@ public sealed class LoginActivityCommandHandler(AppDbContext dbContext) : IHandl
                 GetFailureReason(activity)))
             .ToList();
 
-        var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+        var totalPages =
+            (int)Math.Ceiling(
+                totalItems / (double)pageSize);
 
         return new LoginAnalyticsResponse(
             new LoginAnalyticsSummary(
@@ -107,7 +120,9 @@ public sealed class LoginActivityCommandHandler(AppDbContext dbContext) : IHandl
     {
         foreach (var metadata in activity.Metadata)
         {
-            if (metadata.Values.TryGetValue("reason", out var value) &&
+            if (metadata.Values.TryGetValue(
+                    "reason",
+                    out var value) &&
                 value is StringMetadataValue stringValue)
             {
                 return stringValue.Value;

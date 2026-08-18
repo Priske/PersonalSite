@@ -1,7 +1,9 @@
 
 using System.Security.Claims;
 using PersonalSite.Api.Application.Analytics.GetLoginActivity;
+using PersonalSite.Api.Application.Analytics.GetReferrerActivity;
 using PersonalSite.Api.Application.Analytics.TrackActivity;
+using PersonalSite.Api.Domain.Exceptions;
 using PersonalSite.Api.Storage.Analytics;
 
 namespace PersonalSite.Api.Endpoints.Analytics;
@@ -11,10 +13,27 @@ public static class AnalyticsEndpoints
     public static IEndpointRouteBuilder MapAnalyticsEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapPost("/analytics", TrackActivity);
-        //app.MapGet("/analytics/referrers", GetReferrerActivity);
+        app.MapGet("/analytics/referrers", GetReferrerActivity);
         app.MapGet("/analytics/login", GetLoginActivity).RequireAuthorization();
         //app.MapGet("/analytics/createUsers", GetCreateUserAnalytics);
         return app;
+    }
+    private static async Task<IResult> GetReferrerActivity(
+        [AsParameters] GetReferrerAnalyticsRequest request,
+        ReferrerActivityCommandHandler handler,
+        CancellationToken cancellationToken
+    )
+    {
+        try
+        {
+            var response = await handler.ExecuteAsync(request, cancellationToken);
+            return Results.Ok(response);
+        }
+        catch (DomainException ex)
+        {
+            throw new DomainException($"Something whent wrong gathering Referrers: {ex.Message}");
+        }
+
     }
 
     private static async Task<IResult> GetLoginActivity(

@@ -23,7 +23,7 @@ import { EditHomePage } from "./homePageConfig/EditHomePage";
 import { EditDemoHomePage } from "./homePageConfig/EditDemoHomePage";
 import { DemoHomePage } from "./DemoHomePage";
 import { SiteEntryTracker } from "./analytics/SiteEntryTracker";
-import { AnalyticsAdminPage } from "./analytics/AnalyticsAdminPage";
+import { AnalyticsAdminPage } from "./account/AnalyticsAdminPage";
 
 function App() {
   return (

@@ -877,6 +877,87 @@
   white-space: nowrap;
 }
 
+/* Referrer analytics */
+
+.analytics-section--referrers {
+  margin-top: 4rem;
+}
+
+.analytics-referrers {
+  width: 100%;
+  border: 1px solid #111;
+}
+
+.analytics-referrers__header,
+.analytics-referrers__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 8rem;
+}
+
+.analytics-referrers__header {
+  background: #050505;
+  color: #fff;
+}
+
+.analytics-referrers__header span {
+  padding: 1rem 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.analytics-referrers__header span:last-child {
+  text-align: center;
+}
+
+.analytics-referrers__row {
+  min-height: 4rem;
+  border-top: 1px solid #111;
+}
+
+.analytics-referrers__row:nth-child(odd) {
+  background: #ececec;
+}
+
+.analytics-referrers__row:nth-child(even) {
+  background: #fff;
+}
+
+.analytics-referrers__row > span,
+.analytics-referrers__row > strong {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.25rem;
+}
+
+.analytics-referrers__row > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.analytics-referrers__row > strong {
+  justify-content: center;
+  border-left: 1px solid #111;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+@media (max-width: 700px) {
+  .analytics-referrers__header,
+  .analytics-referrers__row {
+    grid-template-columns: minmax(0, 1fr) 5rem;
+  }
+
+  .analytics-referrers__header span,
+  .analytics-referrers__row > span,
+  .analytics-referrers__row > strong {
+    padding: 0.85rem 1rem;
+  }
+}
+
 /* =========================================================
    STATUS
    ========================================================= */

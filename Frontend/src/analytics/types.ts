@@ -63,3 +63,20 @@ export type LoginAnalyticsResponse = {
   totalItems: number;
   totalPages: number;
 };
+
+export type ReferrerActivityRequest = {
+  search?: string;
+  from?: string;
+  to?: string;
+  sortBy?: string;
+  descending?: boolean;
+};
+export type ReferrerAnalyticsItem = {
+  referrer: string;
+  count: number;
+};
+
+export type ReferrerAnalyticsResponse = {
+  totalPageViews: number;
+  referrers: ReferrerAnalyticsItem[];
+};
