@@ -14,6 +14,7 @@ type HomePageEditorProps = {
   isSaving: boolean;
   saveError: Error | null;
   isSaveSuccess: boolean;
+  canUploadCv: boolean;
   onSave: (request: UpdateHomePageConfigRequest) => void;
 };
 
@@ -24,6 +25,7 @@ export function HomePageEditor({
   isSaving,
   saveError,
   isSaveSuccess,
+  canUploadCv,
   onSave,
 }: HomePageEditorProps) {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -64,7 +66,7 @@ export function HomePageEditor({
 
     onSave(form);
 
-    if (cvFile) {
+    if (canUploadCv && cvFile) {
       await uploadCv(cvFile);
     }
   }
@@ -394,17 +396,32 @@ export function HomePageEditor({
             />
           </label>
 
-          <label className="form-field">
-            <span>CV</span>
+          {canUploadCv ? (
+            <label className="form-field">
+              <span>CV</span>
 
-            <input
-              type="file"
-              accept=".pdf,application/pdf"
-              onChange={(event) => {
-                setCvFile(event.target.files?.[0] ?? null);
-              }}
-            />
-          </label>
+              <input
+                type="file"
+                accept=".pdf,application/pdf"
+                onChange={(event) => {
+                  setCvFile(event.target.files?.[0] ?? null);
+                }}
+              />
+            </label>
+          ) : (
+            <div className="form-field">
+              <span>CV</span>
+
+              <a
+                className="button button--secondary"
+                href="/files/cv"
+                target="_blank"
+                rel="noreferrer"
+              >
+                View CV
+              </a>
+            </div>
+          )}
         </div>
       </form>
 

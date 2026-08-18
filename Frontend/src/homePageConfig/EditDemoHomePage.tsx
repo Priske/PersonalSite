@@ -16,6 +16,7 @@ export function EditDemoHomePage() {
       isSaving={mutation.isPending}
       saveError={mutation.error}
       isSaveSuccess={mutation.isSuccess}
+      canUploadCv={false}
       onSave={(request) => mutation.mutate(request)}
     />
   );
