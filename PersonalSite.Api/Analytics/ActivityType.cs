@@ -11,6 +11,8 @@ public enum ActivityType
     Login,
     LoginFailed,
     CreatedUser,
+    DeleteUser,
+
     Logout,
     DemoHomepageUpdated,
     DemoProjectCreated,

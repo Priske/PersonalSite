@@ -123,6 +123,57 @@ public sealed class EFActivityRepository(AppDbContext dbContext)
                     return new StringMetadataValue(
                         entity.Value);
                 }
+            case nameof(IntegerMetadataValue):
+                {
+                    var entity = await dbContext
+                        .Set<IntegerMetadataValueEntity>()
+                        .AsNoTracking()
+                        .SingleAsync(
+                            x => x.Id == valueId,
+                            cancellationToken);
+
+                    return new IntegerMetadataValue(
+                        entity.Value);
+                }
+
+            case nameof(DecimalMetadataValue):
+                {
+                    var entity = await dbContext
+                        .Set<DecimalMetadataValueEntity>()
+                        .AsNoTracking()
+                        .SingleAsync(
+                            x => x.Id == valueId,
+                            cancellationToken);
+
+                    return new DecimalMetadataValue(
+                        entity.Value);
+                }
+
+            case nameof(BooleanMetadataValue):
+                {
+                    var entity = await dbContext
+                        .Set<BooleanMetadataValueEntity>()
+                        .AsNoTracking()
+                        .SingleAsync(
+                            x => x.Id == valueId,
+                            cancellationToken);
+
+                    return new BooleanMetadataValue(
+                        entity.Value);
+                }
+
+            case nameof(DateTimeMetadataValue):
+                {
+                    var entity = await dbContext
+                        .Set<DateTimeMetadataValueEntity>()
+                        .AsNoTracking()
+                        .SingleAsync(
+                            x => x.Id == valueId,
+                            cancellationToken);
+
+                    return new DateTimeMetadataValue(
+                        entity.Value);
+                }
 
             case nameof(ObjectMetadataValue):
                 {
@@ -178,7 +229,73 @@ public sealed class EFActivityRepository(AppDbContext dbContext)
                         nameof(StringMetadataValue),
                         entity.Id);
                 }
+            case IntegerMetadataValue integerValue:
+                {
+                    var entity = new IntegerMetadataValueEntity
+                    {
+                        Value = integerValue.Value
+                    };
 
+                    dbContext.Set<IntegerMetadataValueEntity>()
+                        .Add(entity);
+
+                    await dbContext.SaveChangesAsync(cancellationToken);
+
+                    return (
+                        nameof(IntegerMetadataValue),
+                        entity.Id);
+                }
+
+            case DecimalMetadataValue decimalValue:
+                {
+                    var entity = new DecimalMetadataValueEntity
+                    {
+                        Value = decimalValue.Value
+                    };
+
+                    dbContext.Set<DecimalMetadataValueEntity>()
+                        .Add(entity);
+
+                    await dbContext.SaveChangesAsync(cancellationToken);
+
+                    return (
+                        nameof(DecimalMetadataValue),
+                        entity.Id);
+                }
+
+            case BooleanMetadataValue booleanValue:
+                {
+                    var entity = new BooleanMetadataValueEntity
+                    {
+                        Value = booleanValue.Value
+                    };
+
+                    dbContext.Set<BooleanMetadataValueEntity>()
+                        .Add(entity);
+
+                    await dbContext.SaveChangesAsync(cancellationToken);
+
+                    return (
+                        nameof(BooleanMetadataValue),
+                        entity.Id);
+                }
+
+            case DateTimeMetadataValue dateTimeValue:
+                {
+                    var entity = new DateTimeMetadataValueEntity
+                    {
+                        Value = dateTimeValue.Value
+                    };
+
+                    dbContext.Set<DateTimeMetadataValueEntity>()
+                        .Add(entity);
+
+                    await dbContext.SaveChangesAsync(cancellationToken);
+
+                    return (
+                        nameof(DateTimeMetadataValue),
+                        entity.Id);
+                }
             case ObjectMetadataValue objectValue:
                 {
                     var entity = new ObjectMetadataValueEntity();
