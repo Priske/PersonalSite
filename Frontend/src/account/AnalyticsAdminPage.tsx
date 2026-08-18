@@ -1,3 +1,4 @@
+import { useCreateUserAnalytics } from "../analytics/useCreateUserAnalytics";
 import { useLoginAnalytics } from "../analytics/useLoginAnalytics";
 import { useReferrerAnalytics } from "../analytics/useReferrerAnalytics";
 
@@ -12,7 +13,18 @@ export function AnalyticsAdminPage() {
     descending: true,
   });
 
-  if (loginAnalyticsQuery.isPending || referrerAnalyticsQuery.isPending) {
+  const createUserAnalyticsQuery = useCreateUserAnalytics({
+    page: 1,
+    pageSize: 20,
+    sortBy: "createdAt",
+    descending: true,
+  });
+
+  if (
+    loginAnalyticsQuery.isPending ||
+    referrerAnalyticsQuery.isPending ||
+    createUserAnalyticsQuery.isPending
+  ) {
     return (
       <section className="account-card">
         <div className="account-management__body">
@@ -22,7 +34,11 @@ export function AnalyticsAdminPage() {
     );
   }
 
-  if (loginAnalyticsQuery.isError || referrerAnalyticsQuery.isError) {
+  if (
+    loginAnalyticsQuery.isError ||
+    referrerAnalyticsQuery.isError ||
+    createUserAnalyticsQuery.isError
+  ) {
     return (
       <section className="account-card">
         <div className="account-management__body">
@@ -34,6 +50,7 @@ export function AnalyticsAdminPage() {
 
   const loginAnalytics = loginAnalyticsQuery.data;
   const referrerAnalytics = referrerAnalyticsQuery.data;
+  const createUserAnalytics = createUserAnalyticsQuery.data;
 
   return (
     <section className="account-card analytics">
@@ -138,6 +155,42 @@ export function AnalyticsAdminPage() {
             <div className="analytics-referrers__row" key={item.referrer}>
               <span>{formatReferrer(item.referrer)}</span>
               <strong>{item.count}</strong>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="analytics-section analytics-section--registrations">
+        <div className="analytics-section__header">
+          <div>
+            <p className="account-card__eyebrow">Users</p>
+            <h3>Registrations</h3>
+          </div>
+
+          <span>
+            {createUserAnalytics.summary.totalCreatedUsers} registered
+          </span>
+        </div>
+
+        <div className="analytics-registrations">
+          <div className="analytics-registrations__header">
+            <span>User</span>
+            <span>Name</span>
+            <span>Email</span>
+            <span>Created</span>
+          </div>
+
+          {createUserAnalytics.items.map((activity) => (
+            <div className="analytics-registrations__row" key={activity.id}>
+              <span>
+                {activity.userId === null ? "Unknown" : `#${activity.userId}`}
+              </span>
+
+              <span>{activity.name ?? "—"}</span>
+
+              <span>{activity.email ?? "—"}</span>
+
+              <span>{new Date(activity.createdAt).toLocaleString()}</span>
             </div>
           ))}
         </div>

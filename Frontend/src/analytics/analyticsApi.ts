@@ -1,6 +1,8 @@
 import { apiRequest, apiRequestWithoutResponse } from "../api";
 
 import type {
+  CreateUserAnalyticsResponse,
+  GetCreateUserAnalyticsRequest,
   GetLoginAnalyticsRequest,
   LoginAnalyticsResponse,
   ReferrerActivityRequest,
@@ -89,5 +91,17 @@ export function getLoginAnalytics(request: GetLoginAnalyticsRequest) {
 
   return apiRequest<LoginAnalyticsResponse>(
     `/analytics/login?${searchParams.toString()}`,
+  );
+}
+
+export function getCreateUserAnalytics(request: GetCreateUserAnalyticsRequest) {
+  const searchParams = new URLSearchParams();
+
+  addAnalyticsFilters(searchParams, request);
+
+  addPaging(searchParams, request);
+
+  return apiRequest<CreateUserAnalyticsResponse>(
+    `/analytics/create-users?${searchParams.toString()}`,
   );
 }

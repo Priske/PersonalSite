@@ -957,6 +957,53 @@
     padding: 0.85rem 1rem;
   }
 }
+/* User creation analytics */
+
+.analytics-registrations {
+  width: 100%;
+  border: 1px solid #111;
+}
+
+.analytics-registrations__header,
+.analytics-registrations__row {
+  display: grid;
+  grid-template-columns: 0.7fr 1.2fr 2fr 1.5fr;
+}
+
+.analytics-registrations__header {
+  background: #050505;
+  color: #fff;
+}
+
+.analytics-registrations__header span {
+  padding: 1.1rem 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.analytics-registrations__row {
+  border-top: 1px solid #111;
+}
+
+.analytics-registrations__row:first-of-type {
+  border-top: 0;
+}
+
+.analytics-registrations__row:nth-child(odd) {
+  background: #eee;
+}
+
+.analytics-registrations__row span {
+  min-width: 0;
+  padding: 1.25rem;
+  border-right: 1px solid #111;
+  overflow-wrap: anywhere;
+}
+
+.analytics-registrations__row span:last-child {
+  border-right: 0;
+}
 
 /* =========================================================
    STATUS

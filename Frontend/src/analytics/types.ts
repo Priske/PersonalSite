@@ -80,3 +80,34 @@ export type ReferrerAnalyticsResponse = {
   totalPageViews: number;
   referrers: ReferrerAnalyticsItem[];
 };
+
+export type GetCreateUserAnalyticsRequest = {
+  search?: string;
+  from?: string;
+  to?: string;
+  sortBy?: string;
+  descending?: boolean;
+  page?: number;
+  pageSize?: number;
+};
+
+export type CreateUserActivityResponse = {
+  id: number;
+  userId: number | null;
+  name: string | null;
+  email: string | null;
+  createdAt: string;
+};
+
+export type CreateUserAnalyticsSummary = {
+  totalCreatedUsers: number;
+};
+
+export type CreateUserAnalyticsResponse = {
+  summary: CreateUserAnalyticsSummary;
+  items: CreateUserActivityResponse[];
+  page: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+};

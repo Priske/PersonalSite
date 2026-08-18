@@ -1,9 +1,10 @@
 
 using System.Security.Claims;
+using PersonalSite.Api.Application.Analytics.GetCreateUserActivity;
+using PersonalSite.Api.Application.Analytics.GetCreateUserRequest.cs;
 using PersonalSite.Api.Application.Analytics.GetLoginActivity;
 using PersonalSite.Api.Application.Analytics.GetReferrerActivity;
 using PersonalSite.Api.Application.Analytics.TrackActivity;
-using PersonalSite.Api.Domain.Exceptions;
 using PersonalSite.Api.Storage.Analytics;
 
 namespace PersonalSite.Api.Endpoints.Analytics;
@@ -15,8 +16,31 @@ public static class AnalyticsEndpoints
         app.MapPost("/analytics", TrackActivity);
         app.MapGet("/analytics/referrers", GetReferrerActivity);
         app.MapGet("/analytics/login", GetLoginActivity).RequireAuthorization();
-        //app.MapGet("/analytics/createUsers", GetCreateUserAnalytics);
+        app.MapGet("/analytics/create-users", GetCreateUserAnalytics).RequireAuthorization();
         return app;
+    }
+
+    private static async Task<IResult> GetCreateUserAnalytics(
+        [AsParameters] GetCreateUserAnalyticsRequest request,
+        ClaimsPrincipal principal,
+        CreateUserActivityCommandHandler handler,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var actor = principal.ToActor();
+
+            var response = await handler.ExecuteAsync(
+                actor,
+                request,
+                cancellationToken);
+
+            return Results.Ok(response);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Results.Forbid();
+        }
     }
     private static async Task<IResult> GetReferrerActivity(
         [AsParameters] GetReferrerAnalyticsRequest request,
@@ -29,9 +53,9 @@ public static class AnalyticsEndpoints
             var response = await handler.ExecuteAsync(request, cancellationToken);
             return Results.Ok(response);
         }
-        catch (DomainException ex)
+        catch (UnauthorizedAccessException)
         {
-            throw new DomainException($"Something whent wrong gathering Referrers: {ex.Message}");
+            return Results.Forbid();
         }
 
     }
