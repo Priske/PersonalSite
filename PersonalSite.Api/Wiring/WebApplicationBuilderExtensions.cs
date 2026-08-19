@@ -48,6 +48,8 @@ public static class WebApplicationBuilderExtensions
         builder.Services.AddScoped<ITagRepository, EfTagRepository>();
         builder.Services.AddScoped<IActivityRepository, EFActivityRepository>();
         builder.Services.AddScoped<IFileStorage, AzureBlobFileStorage>();
+        builder.Services.AddScoped<IStoredFileRepository, EfStoredFileRepository>();
+        builder.Services.AddScoped<IFeaturedContentRepository, EfFeaturedContentRepository>();
 
         builder.Services.AddScoped<ICompromisedPasswordChecker, DatabaseCompromisedPasswordChecker>();
         builder.Services.AddScoped<IPasswordPolicy, PassphrasePasswordPolicy>();

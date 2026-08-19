@@ -9,11 +9,9 @@ public static class FileEndpoints
     public static IEndpointRouteBuilder MapFileEndpoints(
         this IEndpointRouteBuilder app)
     {
-        app.MapPost(
-                "/files/cv",
-                UploadCv)
+        app.MapPost("/files/cv", UploadCv)
             .RequireAuthorization()
-             .DisableAntiforgery();
+            .DisableAntiforgery();
         app.MapGet("/files/cv", GetCv);
         return app;
     }

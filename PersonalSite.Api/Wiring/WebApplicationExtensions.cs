@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Domain.Users;
 using PersonalSite.Api.Endpoints.Analytics;
 using PersonalSite.Api.Endpoints.Auth;
+using PersonalSite.Api.Endpoints.FeaturedContent;
 using PersonalSite.Api.Endpoints.Files;
 using PersonalSite.Api.Endpoints.HomePageConfigs;
 using PersonalSite.Api.Endpoints.Projects;

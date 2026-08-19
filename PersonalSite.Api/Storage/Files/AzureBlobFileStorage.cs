@@ -76,4 +76,14 @@ public sealed class AzureBlobFileStorage(
             return null;
         }
     }
+    public async Task DeleteAsync(
+    string fileName,
+    CancellationToken cancellationToken)
+    {
+        var blobClient =
+            GetContainerClient().GetBlobClient(fileName);
+
+        await blobClient.DeleteIfExistsAsync(
+            cancellationToken: cancellationToken);
+    }
 }

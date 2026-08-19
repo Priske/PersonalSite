@@ -12,4 +12,8 @@ public interface IFileStorage
     Task<Stream?> OpenReadAsync(
         string fileName,
         CancellationToken cancellationToken);
+
+    Task DeleteAsync(
+        string fileName,
+        CancellationToken cancellationToken);
 }
