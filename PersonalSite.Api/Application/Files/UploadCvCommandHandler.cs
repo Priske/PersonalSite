@@ -1,4 +1,5 @@
 using PersonalSite.Api.Domain.Actors;
+using PersonalSite.Api.Domain.Files;
 using PersonalSite.Api.Domain.Users;
 using PersonalSite.Api.Storage.Files;
 
@@ -7,7 +8,7 @@ namespace PersonalSite.Api.Application.Files;
 public sealed class UploadCvCommandHandler(
     IFileStorage fileStorage) : IHandler
 {
-    private static readonly FileUploadRules Rules = new(
+    private static readonly FileRules Rules = new(
         AllowedExtensions:
         [
             ".pdf"

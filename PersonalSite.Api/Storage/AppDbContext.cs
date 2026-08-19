@@ -1,6 +1,8 @@
 
 using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Analytics;
+using PersonalSite.Api.Domain.FeaturedContent;
+using PersonalSite.Api.Domain.Files;
 using PersonalSite.Api.Domain.HomePageConfigs;
 using PersonalSite.Api.Domain.Projects;
 using PersonalSite.Api.Domain.Skills;
@@ -21,8 +23,13 @@ public sealed class AppDbContext(
     public DbSet<SkillGroup> SkillGroups => Set<SkillGroup>();
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<Tag> Tags => Set<Tag>();
+    public DbSet<StoredFile> StoredFiles => Set<StoredFile>();
+
+    public DbSet<FeaturedContentFile> FeaturedContentFiles => Set<FeaturedContentFile>();
+    public DbSet<FeaturedContent> FeaturedContents => Set<FeaturedContent>();
 
     public DbSet<HomePageConfig> HomepageConfigs => Set<HomePageConfig>();
+
 
     public DbSet<Activity> Activities => Set<Activity>();
 
