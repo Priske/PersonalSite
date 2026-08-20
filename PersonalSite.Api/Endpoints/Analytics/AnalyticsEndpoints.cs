@@ -17,7 +17,8 @@ public static class AnalyticsEndpoints
     public static IEndpointRouteBuilder MapAnalyticsEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapPost("/analytics", TrackActivity);
-        app.MapGet("/analytics/referrers", GetReferrerActivity);
+        app.MapGet("/analytics/referrers", GetReferrerActivity)
+            .RequireAuthorization();
         app.MapGet("/analytics/contact-links", GetContactLinkActivity)
             .RequireAuthorization();
         app.MapGet("/analytics/videos", GetVideoActivity)
@@ -117,13 +118,18 @@ public static class AnalyticsEndpoints
     }
     private static async Task<IResult> GetReferrerActivity(
         [AsParameters] GetReferrerAnalyticsRequest request,
+        ClaimsPrincipal principal,
         ReferrerActivityCommandHandler handler,
         CancellationToken cancellationToken
     )
     {
         try
         {
-            var response = await handler.ExecuteAsync(request, cancellationToken);
+            var response = await handler.ExecuteAsync(
+                principal.ToActor(),
+                request,
+                cancellationToken);
+
             return Results.Ok(response);
         }
         catch (UnauthorizedAccessException)

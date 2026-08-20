@@ -19,6 +19,7 @@ public static class WebApplicationExtensions
 {
     public static WebApplication UsePersonalSite(this WebApplication app)
     {
+
         using var scope = app.Services.CreateScope();
 
         var dbContext = scope.ServiceProvider
@@ -89,9 +90,12 @@ public static class WebApplicationExtensions
             app.Configuration,
             passwordHasher);
 
-        DatabaseSeeder.SeedHomePageConfig(
-            dbContext,
-            administrator.Id);
+        if (administrator is not null)
+        {
+            DatabaseSeeder.SeedHomePageConfig(
+                dbContext,
+                administrator.Id);
+        }
 
         if (
             app.Environment.IsDevelopment() &&
