@@ -254,17 +254,6 @@ export function HomePageEditor({
           <h3>Section heading</h3>
 
           <label className="form-field">
-            <span>Section number</span>
-            <input
-              value={form.contactSectionNumber}
-              onChange={(event) =>
-                updateField("contactSectionNumber", event.target.value)
-              }
-              disabled
-            />
-          </label>
-
-          <label className="form-field">
             <span>Section eyebrow</span>
             <input
               value={form.contactSectionEyebrow}
@@ -458,7 +447,7 @@ export function HomePageEditor({
                 onClick={(event) => event.preventDefault()}
               >
                 <HeroSection config={form} />
-                <ContactSection config={form} />
+                <ContactSection config={form} number="04" />
               </div>
             </div>
           </div>

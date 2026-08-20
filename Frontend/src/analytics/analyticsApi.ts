@@ -1,6 +1,8 @@
 import { apiRequest, apiRequestWithoutResponse } from "../api";
 
 import type {
+  ContactLinkAnalyticsRequest,
+  ContactLinkAnalyticsResponse,
   CreateUserAnalyticsResponse,
   DeleteUserAnalyticsResponse,
   GetCreateUserAnalyticsRequest,
@@ -10,6 +12,8 @@ import type {
   ReferrerActivityRequest,
   ReferrerAnalyticsResponse,
   TrackActivityRequest,
+  VideoAnalyticsRequest,
+  VideoAnalyticsResponse,
 } from "./types";
 
 type AnalyticsFilterRequest = {
@@ -70,10 +74,33 @@ export function getReferrerActivity(request: ReferrerActivityRequest) {
   );
 }
 
+export function getContactLinkAnalytics(
+  request: ContactLinkAnalyticsRequest,
+) {
+  const searchParams = new URLSearchParams();
+
+  addAnalyticsFilters(searchParams, request);
+
+  return apiRequest<ContactLinkAnalyticsResponse>(
+    `/analytics/contact-links?${searchParams.toString()}`,
+  );
+}
+
+export function getVideoAnalytics(request: VideoAnalyticsRequest) {
+  const searchParams = new URLSearchParams();
+
+  addAnalyticsFilters(searchParams, request);
+
+  return apiRequest<VideoAnalyticsResponse>(
+    `/analytics/videos?${searchParams.toString()}`,
+  );
+}
+
 export function trackActivity(request: TrackActivityRequest) {
   return apiRequestWithoutResponse("/analytics", {
     method: "POST",
     body: JSON.stringify(request),
+    keepalive: true,
   });
 }
 

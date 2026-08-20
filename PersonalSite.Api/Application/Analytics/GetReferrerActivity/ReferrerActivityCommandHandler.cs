@@ -1,5 +1,6 @@
 using PersonalSite.Api.Analytics;
 using PersonalSite.Api.Analytics.Metadata;
+using PersonalSite.Api.Domain.Actors;
 using PersonalSite.Api.Storage.Analytics;
 
 namespace PersonalSite.Api.Application.Analytics.GetReferrerActivity;
@@ -8,9 +9,15 @@ public sealed class ReferrerActivityCommandHandler(
     IActivityRepository activityRepository) : IHandler
 {
     public async Task<ReferrerAnalyticsResponse> ExecuteAsync(
+        Actor actor,
         GetReferrerAnalyticsRequest request,
         CancellationToken cancellationToken)
     {
+        if (!actor.IsAdministrator)
+        {
+            throw new UnauthorizedAccessException();
+        }
+
         var allActivities = await activityRepository.GetAsync(
             ActivityType.PageViewed,
             request.From,

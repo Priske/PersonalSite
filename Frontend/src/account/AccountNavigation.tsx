@@ -57,9 +57,20 @@ export function AccountNavigation({ user }: AccountNavigationProps) {
           <span>Projects</span>
         </NavLink>
 
+        {isAdministrator && (
+          <NavLink
+            className={navigationClass}
+            to="/account/featured-content"
+          >
+            <span className="account-navigation__number">04</span>
+
+            <span>Featured</span>
+          </NavLink>
+        )}
+
         <NavLink className={navigationClass} to="/account/tags">
           <span className="account-navigation__number">
-            {isAdministrator ? "04" : "03"}
+            {isAdministrator ? "05" : "03"}
           </span>
 
           <span>Tags</span>
@@ -74,14 +85,14 @@ export function AccountNavigation({ user }: AccountNavigationProps) {
           }
         >
           <span className="account-navigation__number">
-            {isAdministrator ? "05" : "04"}
+            {isAdministrator ? "06" : "04"}
           </span>
 
           <span>Home Page</span>
         </NavLink>
         {isAdministrator && (
           <NavLink className={navigationClass} to="/account/analytics">
-            <span className="account-navigation__number">06</span>
+            <span className="account-navigation__number">07</span>
 
             <span>Analytics</span>
           </NavLink>

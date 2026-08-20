@@ -1,6 +1,9 @@
 export type ActivityType =
   | "PageViewed"
   | "LinkClicked"
+  | "VideoStarted"
+  | "VideoWatched"
+  | "VideoCompleted"
   | "User_Registered"
   | "Login"
   | "Logout"
@@ -79,6 +82,36 @@ export type ReferrerAnalyticsItem = {
 export type ReferrerAnalyticsResponse = {
   totalPageViews: number;
   referrers: ReferrerAnalyticsItem[];
+};
+
+export type ContactLinkAnalyticsRequest = ReferrerActivityRequest;
+
+export type ContactLinkAnalyticsItem = {
+  label: string;
+  clicks: number;
+};
+
+export type ContactLinkAnalyticsResponse = {
+  totalClicks: number;
+  links: ContactLinkAnalyticsItem[];
+};
+
+export type VideoAnalyticsRequest = ReferrerActivityRequest;
+
+export type VideoAnalyticsItem = {
+  featuredContentId: number;
+  fileId: number;
+  fileName: string;
+  plays: number;
+  completions: number;
+  watchedSeconds: number;
+};
+
+export type VideoAnalyticsResponse = {
+  totalPlays: number;
+  totalCompletions: number;
+  totalWatchedSeconds: number;
+  videos: VideoAnalyticsItem[];
 };
 
 export type GetCreateUserAnalyticsRequest = {

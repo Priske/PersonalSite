@@ -44,9 +44,13 @@ public class EfSkillRepository(AppDbContext dbContext) : ISkillRepository
         await using var transaction =
             await dbContext.Database.BeginTransactionAsync(cancellationToken);
 
+        var temporaryDisplayOrder =
+            skills.Max(skill => skill.DisplayOrder) + 1;
+
         for (var index = 0; index < skillIds.Count; index++)
         {
-            skillsById[skillIds[index]].DisplayOrder = 10_000 + index;
+            skillsById[skillIds[index]].DisplayOrder =
+                temporaryDisplayOrder + index;
         }
 
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -61,6 +65,22 @@ public class EfSkillRepository(AppDbContext dbContext) : ISkillRepository
     }
     public async Task<Skill> AddAsync(Skill skill)
     {
+        var displayOrderIsTaken = await dbContext.Skills.AnyAsync(
+            existing =>
+                existing.SkillGroupId == skill.SkillGroupId &&
+                existing.DisplayOrder == skill.DisplayOrder);
+
+        if (displayOrderIsTaken)
+        {
+            var highestDisplayOrder = await dbContext.Skills
+                .Where(existing =>
+                    existing.SkillGroupId == skill.SkillGroupId)
+                .MaxAsync(existing => (int?)existing.DisplayOrder)
+                ?? 0;
+
+            skill.DisplayOrder = highestDisplayOrder + 1;
+        }
+
         dbContext.Skills.Add(skill);
         await dbContext.SaveChangesAsync();
         return skill;

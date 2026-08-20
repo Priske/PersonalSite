@@ -1,4 +1,4 @@
-namespace PersonalSite.Api.Application.Files;
+namespace PersonalSite.Api.Domain.Files;
 
 public static class FileValidator
 {
@@ -6,7 +6,7 @@ public static class FileValidator
         string fileName,
         string contentType,
         long fileSize,
-        FileUploadRules rules)
+        FileRules rules)
     {
         if (fileSize <= 0)
         {

@@ -35,3 +35,45 @@ export function trackLinkClick(
     ],
   });
 }
+
+type VideoActivity = {
+  featuredContentId: number;
+  fileId: number;
+  fileName: string;
+  positionSeconds: number;
+  durationSeconds: number;
+};
+
+export function trackVideoStarted(video: VideoActivity) {
+  return trackActivity({
+    type: "VideoStarted",
+    metadata: [{ key: "Video", value: video }],
+  });
+}
+
+export function trackVideoWatched(
+  video: VideoActivity,
+  watchedSeconds: number,
+  reason: string,
+) {
+  return trackActivity({
+    type: "VideoWatched",
+    metadata: [
+      {
+        key: "Video",
+        value: {
+          ...video,
+          watchedSeconds,
+          reason,
+        },
+      },
+    ],
+  });
+}
+
+export function trackVideoCompleted(video: VideoActivity) {
+  return trackActivity({
+    type: "VideoCompleted",
+    metadata: [{ key: "Video", value: video }],
+  });
+}

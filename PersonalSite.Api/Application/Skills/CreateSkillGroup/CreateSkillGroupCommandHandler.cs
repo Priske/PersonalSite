@@ -14,11 +14,10 @@ public class CreateSkillGroupCommandHandler(
     {
         Permissions.EnsureCanManage(actor);
 
-        var skillGroup = new SkillGroup
-        {
-            Name = new SkillGroupName(request.Name),
-            DisplayOrder = request.DisplayOrder
-        };
+        var skillGroup = SkillGroup.Create(
+            actor,
+            new SkillGroupName(request.Name),
+            request.DisplayOrder);
 
         var savedGroup = await skillGroupRepository.AddAsync(skillGroup);
 

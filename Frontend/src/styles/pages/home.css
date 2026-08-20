@@ -441,6 +441,131 @@
   }
 }
 /* -----------------------------
+   Featured content
+----------------------------- */
+
+.featured-list {
+  grid-column: 2;
+  display: grid;
+  gap: var(--space-4);
+}
+
+.featured-card {
+  display: grid;
+  gap: var(--space-4);
+  padding: clamp(2rem, 4vw, 3rem);
+  border: 2px solid var(--color-ink);
+  box-shadow: var(--shadow-soft);
+}
+
+.featured-card:nth-child(even) {
+  background: var(--color-panel);
+}
+
+.featured-card__copy {
+  min-width: 0;
+}
+
+.featured-card__copy h3 {
+  margin: 0 0 var(--space-3);
+  font-size: clamp(2.3rem, 3.5vw, 3.4rem);
+  line-height: 0.95;
+  overflow-wrap: anywhere;
+}
+
+.featured-card__copy p {
+  max-width: 46rem;
+  margin: 0;
+  color: var(--color-muted);
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.featured-card__files {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.featured-carousel {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.featured-carousel__media {
+  min-width: 0;
+}
+
+.featured-carousel__controls {
+  display: flex;
+  justify-content: center;
+  gap: 0.65rem;
+}
+
+.featured-carousel__dot {
+  width: 0.8rem;
+  height: 0.8rem;
+  padding: 0;
+  border: 2px solid var(--color-ink);
+  border-radius: 50%;
+  background: var(--color-paper);
+  cursor: pointer;
+}
+
+.featured-carousel__dot--active {
+  background: var(--color-ink);
+}
+
+.featured-carousel__dot:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
+}
+
+.featured-card__video,
+.featured-card__image {
+  display: block;
+  width: 100%;
+  max-height: 38rem;
+  border: 2px solid var(--color-ink);
+  background: var(--color-ink);
+  object-fit: contain;
+}
+
+.featured-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.featured-card__tags li {
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--color-ink);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--color-paper);
+}
+
+.featured-card__tags li:nth-child(even) {
+  background: var(--color-panel);
+}
+
+.featured-card__document {
+  width: fit-content;
+}
+
+@media (max-width: 780px) {
+  .featured-list {
+    grid-column: 1;
+  }
+}
+
+/* -----------------------------
    Contact
 ----------------------------- */
 

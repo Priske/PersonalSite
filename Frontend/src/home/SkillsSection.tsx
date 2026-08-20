@@ -1,13 +1,17 @@
 import { SkillList } from "../skills/SkillList";
 import { useSkillGroups } from "../skills/useSkillGroups";
 
-export function SkillsSection() {
+type SkillsSectionProps = {
+  number: string;
+};
+
+export function SkillsSection({ number }: SkillsSectionProps) {
   const groupsQuery = useSkillGroups();
 
   return (
     <section className="home-section" id="skills">
       <div className="home-section__heading">
-        <p className="home-section__number">01</p>
+        <p className="home-section__number">{number}</p>
 
         <div>
           <p className="home-section__eyebrow">What I work with</p>

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Domain.Users;
 using PersonalSite.Api.Endpoints.Analytics;
 using PersonalSite.Api.Endpoints.Auth;
+using PersonalSite.Api.Endpoints.FeaturedContent;
 using PersonalSite.Api.Endpoints.Files;
 using PersonalSite.Api.Endpoints.HomePageConfigs;
 using PersonalSite.Api.Endpoints.Projects;
@@ -18,6 +19,7 @@ public static class WebApplicationExtensions
 {
     public static WebApplication UsePersonalSite(this WebApplication app)
     {
+
         using var scope = app.Services.CreateScope();
 
         var dbContext = scope.ServiceProvider
@@ -88,9 +90,12 @@ public static class WebApplicationExtensions
             app.Configuration,
             passwordHasher);
 
-        DatabaseSeeder.SeedHomePageConfig(
-            dbContext,
-            administrator.Id);
+        if (administrator is not null)
+        {
+            DatabaseSeeder.SeedHomePageConfig(
+                dbContext,
+                administrator.Id);
+        }
 
         if (
             app.Environment.IsDevelopment() &&
@@ -110,7 +115,9 @@ public static class WebApplicationExtensions
                 userFuzzr,
                 count: 50);
 
-            DatabaseSeeder.SeedSkills(dbContext);
+            DatabaseSeeder.SeedSkills(
+                dbContext,
+                administrator.Id);
 
             var tags = DatabaseSeeder.SeedTags(
                 dbContext,
@@ -130,6 +137,7 @@ public static class WebApplicationExtensions
         app.UseAuthorization();
 
         app.MapFileEndpoints();
+        app.MapFeaturedContentEndpoints();
         app.MapUserEndpoints();
         app.MapAuthEndpoints();
         app.MapSkillEndpoints();

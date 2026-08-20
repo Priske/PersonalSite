@@ -17,5 +17,9 @@ public enum ActivityType
     DemoHomepageUpdated,
     DemoProjectCreated,
     DemoProjectUpdated,
-    DemoProjectDeleted
+    DemoProjectDeleted,
+
+    VideoStarted,
+    VideoWatched,
+    VideoCompleted
 }
