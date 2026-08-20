@@ -226,7 +226,9 @@ export function TagsPage() {
                         : null;
 
                     const canDelete =
-                      details !== null && details.projects.length === 0;
+                      details !== null &&
+                      details.projects.length === 0 &&
+                      !details.isUsedByFeaturedContent;
 
                     return (
                       <li
@@ -372,6 +374,12 @@ export function TagsPage() {
                                       ))}
                                     </ul>
                                   )}
+
+                                  {details.isUsedByFeaturedContent && (
+                                    <p className="tag-details__description">
+                                      This tag is also used by featured content.
+                                    </p>
+                                  )}
                                 </section>
 
                                 <section className="tag-details__section tag-details__section--danger">
@@ -391,7 +399,7 @@ export function TagsPage() {
                                   ) : (
                                     <p className="tag-details__description">
                                       This tag cannot be deleted while it is
-                                      used by a project.
+                                      used by site content.
                                     </p>
                                   )}
 

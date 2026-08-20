@@ -24,6 +24,11 @@ public sealed class GetTagDetailsQueryHandler(
                  project.Title))
              .ToList(),
 
+         IsUsedByFeaturedContent = dbContext.FeaturedContents
+             .Any(content =>
+                 content.Tags.Any(
+                     contentTag => contentTag.Id == tag.Id)),
+
          Source = tag.Source.ToString(),
 
          CreatedByUserId = tag.Created.UserId,

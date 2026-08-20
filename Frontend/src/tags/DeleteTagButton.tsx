@@ -116,7 +116,7 @@ export function DeleteTagButton({
 
         {errorStatus === 409 && (
           <p className="form-message form-message--error">
-            This tag cannot be deleted while it is used by a project.
+            This tag cannot be deleted while it is used by site content.
           </p>
         )}
 

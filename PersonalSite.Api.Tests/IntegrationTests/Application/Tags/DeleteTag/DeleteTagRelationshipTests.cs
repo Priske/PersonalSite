@@ -2,6 +2,7 @@ using System.Net;
 
 using PersonalSite.Api.Domain.Actors;
 using PersonalSite.Api.Domain.Common;
+using PersonalSite.Api.Domain.FeaturedContent;
 using PersonalSite.Api.Domain.Projects;
 using PersonalSite.Api.Domain.Tags;
 using PersonalSite.Api.Domain.Users;
@@ -101,6 +102,56 @@ public sealed class DeleteTagRelationshipTests : IntegrationTest
                     db.Tags.Find(tag.Id));
 
         Assert.Null(
+            existing);
+    }
+
+    [Fact]
+    public async Task DeleteTagUsedByFeaturedContentReturnsConflict()
+    {
+        var userId =
+            await AuthenticateAsUser(
+                UserRole.Administrator);
+
+        var actor =
+            new Actor(
+                userId,
+                UserRole.Administrator);
+
+        var tag =
+            Tag.Create(
+                actor,
+                new TagName("ASP.NET Core"));
+
+        var featuredContent =
+            FeaturedContent.Create(
+                actor,
+                new FeaturedContentTitle(
+                    "Personal Site Walkthrough"),
+                new FeaturedContentDescription(
+                    "A walkthrough of the personal site."),
+                [tag]);
+
+        Writer.Seed(
+            db =>
+            {
+                db.Tags.Add(tag);
+                db.FeaturedContents.Add(featuredContent);
+            });
+
+        var response =
+            await Client.DeleteAsync(
+                $"/tags/{tag.Id}");
+
+        Assert.Equal(
+            HttpStatusCode.Conflict,
+            response.StatusCode);
+
+        var existing =
+            Reader.Query(
+                db =>
+                    db.Tags.Find(tag.Id));
+
+        Assert.NotNull(
             existing);
     }
 

@@ -8,6 +8,8 @@ public sealed record GetTagDetailsResponse
 
     public required IReadOnlyList<TagProjectResponse> Projects { get; init; }
 
+    public required bool IsUsedByFeaturedContent { get; init; }
+
     public required string Source { get; init; }
 
     public int? CreatedByUserId { get; init; }

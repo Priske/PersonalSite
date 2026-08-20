@@ -398,18 +398,18 @@ export function HomePageEditor({
               />
             </label>
           ) : (
-            <div className="form-field">
-              <span>CV</span>
+            <label className="form-field">
+              <span>CV URL</span>
 
-              <a
-                className="button button--secondary"
-                href="/files/cv"
-                target="_blank"
-                rel="noreferrer"
-              >
-                View CV
-              </a>
-            </div>
+              <input
+                type="url"
+                value={form.cvUrl ?? ""}
+                onChange={(event) =>
+                  updateField("cvUrl", event.target.value)
+                }
+                placeholder="https://example.com/cv.pdf"
+              />
+            </label>
           )}
         </div>
       </form>

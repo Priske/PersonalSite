@@ -56,6 +56,10 @@ function CvIcon({ className }: IconProps) {
 export function ContactSection({ config, number }: ContactSectionProps) {
   const isAuthenticated = Boolean(getAccessToken());
   const phoneNumber = config.phoneNumber;
+  const cvUrl =
+    config.source === "Demo"
+      ? config.cvUrl
+      : apiPath("/files/cv");
   return (
     <section className="home-section home-contact" id="contact">
       <div className="home-section__heading">
@@ -160,19 +164,21 @@ export function ContactSection({ config, number }: ContactSectionProps) {
                 </a>
               )}
 
-              <a
-                className="contact-panel__link"
-                href={apiPath("/files/cv")}
-                target="_blank"
-                rel="noreferrer"
-                title="Download CV"
-                aria-label="Download CV"
-                onClick={() =>
-                  void trackLinkClick("cv", "/files/cv", "contact")
-                }
-              >
-                <CvIcon />
-              </a>
+              {cvUrl && (
+                <a
+                  className="contact-panel__link"
+                  href={cvUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  title="View CV"
+                  aria-label="View CV"
+                  onClick={() =>
+                    void trackLinkClick("cv", cvUrl, "contact")
+                  }
+                >
+                  <CvIcon />
+                </a>
+              )}
             </div>
           </div>
 

@@ -21,6 +21,7 @@ export type TagSummary = {
 
 export type TagDetails = TagSummary & {
   projects: TagProject[];
+  isUsedByFeaturedContent: boolean;
 };
 
 export type CreateTagRequest = {

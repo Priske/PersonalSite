@@ -34,7 +34,7 @@ public sealed class DeleteTagCommandHandler(
         if (isInUse)
         {
             throw new TagInUseException(
-                "This tag cannot be deleted because it is used by a project.");
+                "This tag cannot be deleted because it is used by site content.");
         }
 
         await tagRepository.DeleteAsync(

@@ -53,14 +53,26 @@ public sealed class EfTagRepository(AppDbContext dbContext) : ITagRepository
         await dbContext.SaveChangesAsync(
             cancellationToken);
     }
-    public Task<bool> IsInUseAsync(
-    int id,
-    CancellationToken cancellationToken)
+    public async Task<bool> IsInUseAsync(
+        int id,
+        CancellationToken cancellationToken)
     {
-        return dbContext.Projects
+        var isUsedByProject = await dbContext.Projects
             .AnyAsync(
                 project =>
                     project.Tags.Any(
+                        tag => tag.Id == id),
+                cancellationToken);
+
+        if (isUsedByProject)
+        {
+            return true;
+        }
+
+        return await dbContext.FeaturedContents
+            .AnyAsync(
+                content =>
+                    content.Tags.Any(
                         tag => tag.Id == id),
                 cancellationToken);
     }
