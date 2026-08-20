@@ -1,10 +1,11 @@
 import { useDemoProjects, useProjects } from "../projects/useProjects";
 
 type ProjectsSectionProps = {
+  number: string;
   demo?: boolean;
 };
 
-export function ProjectsSection({ demo = false }: ProjectsSectionProps) {
+export function ProjectsSection({ number, demo = false }: ProjectsSectionProps) {
   const officialProjectsQuery = useProjects();
 
   const demoProjectsQuery = useDemoProjects();
@@ -74,7 +75,7 @@ export function ProjectsSection({ demo = false }: ProjectsSectionProps) {
   return (
     <section className="home-section" id="projects">
       <div className="home-section__heading">
-        <p className="home-section__number">02</p>
+        <p className="home-section__number">{number}</p>
 
         <div>
           <p className="home-section__eyebrow">Selected work</p>

@@ -22,12 +22,15 @@ public sealed class EfStoredFileRepository(
     public void Remove(StoredFile file) =>
         dbContext.StoredFiles.Remove(file);
 
-    public Task<bool> IsReferencedAsync(
+    public Task<bool> IsReferencedByOtherFeaturedContentAsync(
         int id,
+        int featuredContentId,
         CancellationToken cancellationToken)
     {
         return dbContext.FeaturedContentFiles.AnyAsync(
-            attachment => attachment.StoredFileId == id,
+            attachment =>
+                attachment.StoredFileId == id &&
+                attachment.FeaturedContentId != featuredContentId,
             cancellationToken);
     }
 }

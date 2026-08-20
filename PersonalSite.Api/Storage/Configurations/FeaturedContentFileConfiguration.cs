@@ -20,11 +20,5 @@ public sealed class FeaturedContentFileConfiguration
             .WithMany()
             .HasForeignKey(file => file.StoredFileId)
             .OnDelete(DeleteBehavior.Restrict);
-
-        builder.Property(file => file.SortOrder)
-            .IsRequired();
-
-        builder.Property(file => file.Caption)
-            .HasMaxLength(500);
     }
 }

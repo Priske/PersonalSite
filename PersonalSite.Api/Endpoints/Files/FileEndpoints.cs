@@ -1,5 +1,7 @@
 using System.Security.Claims;
+using Microsoft.Net.Http.Headers;
 using PersonalSite.Api.Application.Files;
+using PersonalSite.Api.Application.Files.GetStoredFile;
 using PersonalSite.Api.Storage.Files;
 
 namespace PersonalSite.Api.Endpoints.Files;
@@ -13,6 +15,7 @@ public static class FileEndpoints
             .RequireAuthorization()
             .DisableAntiforgery();
         app.MapGet("/files/cv", GetCv);
+        app.MapGet("/files/{fileId:int}", GetFile);
         return app;
     }
 
@@ -61,5 +64,35 @@ public static class FileEndpoints
             stream,
             contentType: "application/pdf",
             fileDownloadName: "Ben-Eeckman-CV.pdf");
+    }
+
+    private static async Task<IResult> GetFile(
+        int fileId,
+        HttpResponse response,
+        GetStoredFileQueryHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var file = await handler.Execute(
+            fileId,
+            cancellationToken);
+
+        if (file is null)
+        {
+            return Results.NotFound();
+        }
+
+        var contentDisposition =
+            new ContentDispositionHeaderValue("inline")
+            {
+                FileNameStar = file.FileName
+            };
+
+        response.Headers.ContentDisposition =
+            contentDisposition.ToString();
+
+        return Results.File(
+            file.Content,
+            file.ContentType,
+            enableRangeProcessing: true);
     }
 }

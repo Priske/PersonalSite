@@ -6,6 +6,7 @@ import { apiPath } from "../api";
 
 type ContactSectionProps = {
   config: GetHomePageConfigDetailsResponse;
+  number: string;
 };
 
 type IconProps = {
@@ -52,13 +53,13 @@ function CvIcon({ className }: IconProps) {
   );
 }
 
-export function ContactSection({ config }: ContactSectionProps) {
+export function ContactSection({ config, number }: ContactSectionProps) {
   const isAuthenticated = Boolean(getAccessToken());
   const phoneNumber = config.phoneNumber;
   return (
     <section className="home-section home-contact" id="contact">
       <div className="home-section__heading">
-        <p className="home-section__number">{config.contactSectionNumber}</p>
+        <p className="home-section__number">{number}</p>
 
         <div>
           <p className="home-section__eyebrow">
@@ -176,7 +177,17 @@ export function ContactSection({ config }: ContactSectionProps) {
           </div>
 
           <div className="contact-panel__actions">
-            <a className="button" href={`mailto:${config.email}`}>
+            <a
+              className="button"
+              href={`mailto:${config.email}`}
+              onClick={() =>
+                void trackLinkClick(
+                  "email",
+                  `mailto:${config.email}`,
+                  "contact",
+                )
+              }
+            >
               {config.contactEmailActionLabel}
             </a>
             <Link

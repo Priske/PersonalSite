@@ -23,6 +23,21 @@ namespace PersonalSite.Api.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("FeaturedContentTag", b =>
+                {
+                    b.Property<int>("FeaturedContentId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TagsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("FeaturedContentId", "TagsId");
+
+                    b.HasIndex("TagsId");
+
+                    b.ToTable("FeaturedContentTag");
+                });
+
             modelBuilder.Entity("PersonalSite.Api.Analytics.Activity", b =>
                 {
                     b.Property<int>("Id")
@@ -62,6 +77,103 @@ namespace PersonalSite.Api.Migrations
                     b.HasIndex("ActivityId");
 
                     b.ToTable("ActivityMetadata");
+                });
+
+            modelBuilder.Entity("PersonalSite.Api.Domain.FeaturedContent.FeaturedContent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<int>("Source")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.ComplexProperty<Dictionary<string, object>>("Created", "PersonalSite.Api.Domain.FeaturedContent.FeaturedContent.Created#Change", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<DateTimeOffset>("At")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<int?>("UserId")
+                                .HasColumnType("integer");
+                        });
+
+                    b.ComplexProperty<Dictionary<string, object>>("Edited", "PersonalSite.Api.Domain.FeaturedContent.FeaturedContent.Edited#Change", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<DateTimeOffset>("At")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<int?>("UserId")
+                                .HasColumnType("integer");
+                        });
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FeaturedContents");
+                });
+
+            modelBuilder.Entity("PersonalSite.Api.Domain.FeaturedContent.FeaturedContentFile", b =>
+                {
+                    b.Property<int>("FeaturedContentId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StoredFileId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("FeaturedContentId", "StoredFileId");
+
+                    b.HasIndex("StoredFileId");
+
+                    b.ToTable("FeaturedContentFiles");
+                });
+
+            modelBuilder.Entity("PersonalSite.Api.Domain.Files.StoredFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("OriginalFileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<long>("SizeInBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("StorageKey")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StorageKey")
+                        .IsUnique();
+
+                    b.ToTable("StoredFiles");
                 });
 
             modelBuilder.Entity("PersonalSite.Api.Domain.HomePageConfigs.HomePageConfig", b =>
@@ -633,6 +745,21 @@ namespace PersonalSite.Api.Migrations
                     b.ToTable("ProjectTag");
                 });
 
+            modelBuilder.Entity("FeaturedContentTag", b =>
+                {
+                    b.HasOne("PersonalSite.Api.Domain.FeaturedContent.FeaturedContent", null)
+                        .WithMany()
+                        .HasForeignKey("FeaturedContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PersonalSite.Api.Domain.Tags.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PersonalSite.Api.Analytics.Metadata.ActivityMetadata", b =>
                 {
                     b.HasOne("PersonalSite.Api.Analytics.Activity", null)
@@ -640,6 +767,23 @@ namespace PersonalSite.Api.Migrations
                         .HasForeignKey("ActivityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PersonalSite.Api.Domain.FeaturedContent.FeaturedContentFile", b =>
+                {
+                    b.HasOne("PersonalSite.Api.Domain.FeaturedContent.FeaturedContent", null)
+                        .WithMany("Files")
+                        .HasForeignKey("FeaturedContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PersonalSite.Api.Domain.Files.StoredFile", "File")
+                        .WithMany()
+                        .HasForeignKey("StoredFileId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("File");
                 });
 
             modelBuilder.Entity("PersonalSite.Api.Domain.Skills.Skill", b =>
@@ -689,6 +833,11 @@ namespace PersonalSite.Api.Migrations
             modelBuilder.Entity("PersonalSite.Api.Analytics.Activity", b =>
                 {
                     b.Navigation("Metadata");
+                });
+
+            modelBuilder.Entity("PersonalSite.Api.Domain.FeaturedContent.FeaturedContent", b =>
+                {
+                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("PersonalSite.Api.Domain.Skills.SkillGroup", b =>

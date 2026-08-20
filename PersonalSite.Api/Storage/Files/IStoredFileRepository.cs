@@ -7,5 +7,8 @@ public interface IStoredFileRepository
     Task<StoredFile?> GetAsync(int id, CancellationToken cancellationToken);
     void Add(StoredFile file);
     void Remove(StoredFile file);
-    Task<bool> IsReferencedAsync(int id, CancellationToken cancellationToken);
+    Task<bool> IsReferencedByOtherFeaturedContentAsync(
+        int id,
+        int featuredContentId,
+        CancellationToken cancellationToken);
 }

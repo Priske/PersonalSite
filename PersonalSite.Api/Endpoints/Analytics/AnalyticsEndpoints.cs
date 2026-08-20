@@ -1,10 +1,12 @@
 
 using System.Security.Claims;
+using PersonalSite.Api.Application.Analytics.GetContactLinkActivity;
 using PersonalSite.Api.Application.Analytics.GetCreateUserActivity;
 using PersonalSite.Api.Application.Analytics.GetCreateUserRequest.cs;
 using PersonalSite.Api.Application.Analytics.GetDeleteUserActivity;
 using PersonalSite.Api.Application.Analytics.GetLoginActivity;
 using PersonalSite.Api.Application.Analytics.GetReferrerActivity;
+using PersonalSite.Api.Application.Analytics.GetVideoActivity;
 using PersonalSite.Api.Application.Analytics.TrackActivity;
 using PersonalSite.Api.Storage.Analytics;
 
@@ -16,11 +18,57 @@ public static class AnalyticsEndpoints
     {
         app.MapPost("/analytics", TrackActivity);
         app.MapGet("/analytics/referrers", GetReferrerActivity);
+        app.MapGet("/analytics/contact-links", GetContactLinkActivity)
+            .RequireAuthorization();
+        app.MapGet("/analytics/videos", GetVideoActivity)
+            .RequireAuthorization();
         app.MapGet("/analytics/login", GetLoginActivity).RequireAuthorization();
         app.MapGet("/analytics/create-users", GetCreateUserAnalytics).RequireAuthorization();
         app.MapGet("/analytics/delete-users", GetDeleteUsersAnalytics).RequireAuthorization();
 
         return app;
+    }
+
+    private static async Task<IResult> GetContactLinkActivity(
+        [AsParameters] GetContactLinkAnalyticsRequest request,
+        ClaimsPrincipal principal,
+        ContactLinkActivityCommandHandler handler,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await handler.ExecuteAsync(
+                principal.ToActor(),
+                request,
+                cancellationToken);
+
+            return Results.Ok(response);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Results.Forbid();
+        }
+    }
+
+    private static async Task<IResult> GetVideoActivity(
+        [AsParameters] GetVideoAnalyticsRequest request,
+        ClaimsPrincipal principal,
+        VideoActivityCommandHandler handler,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await handler.ExecuteAsync(
+                principal.ToActor(),
+                request,
+                cancellationToken);
+
+            return Results.Ok(response);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Results.Forbid();
+        }
     }
 
     private static async Task<IResult> GetDeleteUsersAnalytics(

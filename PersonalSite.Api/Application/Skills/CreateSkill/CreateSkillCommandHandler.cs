@@ -24,12 +24,11 @@ public class CreateSkillCommandHandler(
             throw new NotFoundException("Skill group not found.");
         }
 
-        var skill = new Skill
-        {
-            SkillGroupId = groupId,
-            SkillName = new SkillName(request.Name),
-            DisplayOrder = request.DisplayOrder
-        };
+        var skill = Skill.Create(
+            actor,
+            groupId,
+            new SkillName(request.Name),
+            request.DisplayOrder);
 
         var saved = await skillRepository.AddAsync(skill);
 

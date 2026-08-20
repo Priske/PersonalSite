@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using PersonalSite.Api.Domain;
+using PersonalSite.Api.Domain.Actors;
 using PersonalSite.Api.Domain.Common;
 using PersonalSite.Api.Domain.HomePageConfigs;
 using PersonalSite.Api.Domain.Skills;
@@ -92,36 +93,37 @@ public static class DatabaseSeeder
     }
 
     public static void SeedSkills(
-        AppDbContext dbContext)
+        AppDbContext dbContext,
+        int administratorUserId)
     {
         if (dbContext.SkillGroups.Any())
         {
             return;
         }
 
-        var backend = new SkillGroup
-        {
-            Name = new SkillGroupName("Backend"),
-            DisplayOrder = 1
-        };
+        var actor = new Actor(
+            administratorUserId,
+            UserRole.Administrator);
 
-        var frontend = new SkillGroup
-        {
-            Name = new SkillGroupName("Frontend"),
-            DisplayOrder = 2
-        };
+        var backend = SkillGroup.Create(
+            actor,
+            new SkillGroupName("Backend"),
+            1);
 
-        var data = new SkillGroup
-        {
-            Name = new SkillGroupName("Data"),
-            DisplayOrder = 3
-        };
+        var frontend = SkillGroup.Create(
+            actor,
+            new SkillGroupName("Frontend"),
+            2);
 
-        var workflow = new SkillGroup
-        {
-            Name = new SkillGroupName("Workflow"),
-            DisplayOrder = 4
-        };
+        var data = SkillGroup.Create(
+            actor,
+            new SkillGroupName("Data"),
+            3);
+
+        var workflow = SkillGroup.Create(
+            actor,
+            new SkillGroupName("Workflow"),
+            4);
 
         dbContext.SkillGroups.AddRange(
             backend,
@@ -132,102 +134,85 @@ public static class DatabaseSeeder
         dbContext.SaveChanges();
 
         dbContext.Skills.AddRange(
-            new Skill
-            {
-                SkillGroupId = backend.Id,
-                SkillName = new SkillName("C#"),
-                DisplayOrder = 1
-            },
-            new Skill
-            {
-                SkillGroupId = backend.Id,
-                SkillName = new SkillName("ASP.NET Core"),
-                DisplayOrder = 2
-            },
-            new Skill
-            {
-                SkillGroupId = backend.Id,
-                SkillName = new SkillName("Minimal APIs"),
-                DisplayOrder = 3
-            },
-            new Skill
-            {
-                SkillGroupId = backend.Id,
-                SkillName = new SkillName("Entity Framework Core"),
-                DisplayOrder = 4
-            },
+            Skill.Create(
+                actor,
+                backend.Id,
+                new SkillName("C#"),
+                1),
+            Skill.Create(
+                actor,
+                backend.Id,
+                new SkillName("ASP.NET Core"),
+                2),
+            Skill.Create(
+                actor,
+                backend.Id,
+                new SkillName("Minimal APIs"),
+                3),
+            Skill.Create(
+                actor,
+                backend.Id,
+                new SkillName("Entity Framework Core"),
+                4),
 
-            new Skill
-            {
-                SkillGroupId = frontend.Id,
-                SkillName = new SkillName("React"),
-                DisplayOrder = 1
-            },
-            new Skill
-            {
-                SkillGroupId = frontend.Id,
-                SkillName = new SkillName("TypeScript"),
-                DisplayOrder = 2
-            },
-            new Skill
-            {
-                SkillGroupId = frontend.Id,
-                SkillName = new SkillName("HTML"),
-                DisplayOrder = 3
-            },
-            new Skill
-            {
-                SkillGroupId = frontend.Id,
-                SkillName = new SkillName("CSS"),
-                DisplayOrder = 4
-            },
+            Skill.Create(
+                actor,
+                frontend.Id,
+                new SkillName("React"),
+                1),
+            Skill.Create(
+                actor,
+                frontend.Id,
+                new SkillName("TypeScript"),
+                2),
+            Skill.Create(
+                actor,
+                frontend.Id,
+                new SkillName("HTML"),
+                3),
+            Skill.Create(
+                actor,
+                frontend.Id,
+                new SkillName("CSS"),
+                4),
 
-            new Skill
-            {
-                SkillGroupId = data.Id,
-                SkillName = new SkillName("SQL"),
-                DisplayOrder = 1
-            },
-            new Skill
-            {
-                SkillGroupId = data.Id,
-                SkillName = new SkillName("SQLite"),
-                DisplayOrder = 2
-            },
-            new Skill
-            {
-                SkillGroupId = data.Id,
-                SkillName =
-                    new SkillName(
-                        "Relational database design"),
-                DisplayOrder = 3
-            },
+            Skill.Create(
+                actor,
+                data.Id,
+                new SkillName("SQL"),
+                1),
+            Skill.Create(
+                actor,
+                data.Id,
+                new SkillName("SQLite"),
+                2),
+            Skill.Create(
+                actor,
+                data.Id,
+                new SkillName(
+                    "Relational database design"),
+                3),
 
-            new Skill
-            {
-                SkillGroupId = workflow.Id,
-                SkillName = new SkillName("Git"),
-                DisplayOrder = 1
-            },
-            new Skill
-            {
-                SkillGroupId = workflow.Id,
-                SkillName = new SkillName("REST APIs"),
-                DisplayOrder = 2
-            },
-            new Skill
-            {
-                SkillGroupId = workflow.Id,
-                SkillName = new SkillName("Testing"),
-                DisplayOrder = 3
-            },
-            new Skill
-            {
-                SkillGroupId = workflow.Id,
-                SkillName =
-                    new SkillName("Clean architecture"),
-                DisplayOrder = 4
-            });
+            Skill.Create(
+                actor,
+                workflow.Id,
+                new SkillName("Git"),
+                1),
+            Skill.Create(
+                actor,
+                workflow.Id,
+                new SkillName("REST APIs"),
+                2),
+            Skill.Create(
+                actor,
+                workflow.Id,
+                new SkillName("Testing"),
+                3),
+            Skill.Create(
+                actor,
+                workflow.Id,
+                new SkillName("Clean architecture"),
+                4));
 
         dbContext.SaveChanges();
     }

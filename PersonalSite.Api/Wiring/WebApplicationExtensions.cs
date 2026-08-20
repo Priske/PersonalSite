@@ -111,7 +111,9 @@ public static class WebApplicationExtensions
                 userFuzzr,
                 count: 50);
 
-            DatabaseSeeder.SeedSkills(dbContext);
+            DatabaseSeeder.SeedSkills(
+                dbContext,
+                administrator.Id);
 
             var tags = DatabaseSeeder.SeedTags(
                 dbContext,
@@ -131,6 +133,7 @@ public static class WebApplicationExtensions
         app.UseAuthorization();
 
         app.MapFileEndpoints();
+        app.MapFeaturedContentEndpoints();
         app.MapUserEndpoints();
         app.MapAuthEndpoints();
         app.MapSkillEndpoints();

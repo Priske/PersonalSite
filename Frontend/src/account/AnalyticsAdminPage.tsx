@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { ContactLinkAnalyticsSection } from "../analytics/components/ContactLinkAnalyticsSection";
 import { DeleteUserAnalyticsSection } from "../analytics/components/DeleteUserAnalyticsSection";
 import { LoginAnalyticsSection } from "../analytics/components/LoginAnalyticsSection";
 import { ReferrerAnalyticsSection } from "../analytics/components/ReferrerAnalyticsSection";
 import { RegistrationAnalyticsSection } from "../analytics/components/RegistrationAnalyticsSection";
+import { VideoAnalyticsSection } from "../analytics/components/VideoAnalyticsSection";
 
 export function AnalyticsAdminPage() {
   const [resetKey, setResetKey] = useState(0);
@@ -37,6 +39,10 @@ export function AnalyticsAdminPage() {
       <LoginAnalyticsSection resetKey={resetKey} />
 
       <ReferrerAnalyticsSection resetKey={resetKey} />
+
+      <ContactLinkAnalyticsSection resetKey={resetKey} />
+
+      <VideoAnalyticsSection resetKey={resetKey} />
 
       <RegistrationAnalyticsSection resetKey={resetKey} />
 

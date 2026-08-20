@@ -16,8 +16,8 @@ export function DemoHomePage() {
   return (
     <main className="home-page">
       <HeroSection config={configQuery.data} />
-      <ProjectsSection demo />
-      <ContactSection config={configQuery.data} />
+      <ProjectsSection number="01" demo />
+      <ContactSection config={configQuery.data} number="02" />
     </main>
   );
 }

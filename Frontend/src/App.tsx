@@ -24,6 +24,9 @@ import { EditDemoHomePage } from "./homePageConfig/EditDemoHomePage";
 import { DemoHomePage } from "./DemoHomePage";
 import { SiteEntryTracker } from "./analytics/SiteEntryTracker";
 import { AnalyticsAdminPage } from "./account/AnalyticsAdminPage";
+import { AccountFeaturedContentPage } from "./account/AccountFeaturedContentPage";
+import { AddFeaturedContentPage } from "./featured/AddFeaturedContentPage";
+import { ManageFeaturedContentPage } from "./featured/ManageFeaturedContentPage";
 
 function App() {
   return (
@@ -59,10 +62,22 @@ function App() {
             <Route path="tags" element={<TagsPage />} />
             <Route path="homePage" element={<EditHomePage />} />
             <Route path="analytics" element={<AnalyticsAdminPage />} />
+            <Route element={<RequireAdministrator />}>
+              <Route
+                path="featured-content"
+                element={<AccountFeaturedContentPage />}
+              />
+              <Route
+                path="featured-content/new"
+                element={<AddFeaturedContentPage />}
+              />
+              <Route
+                path="featured-content/:featuredContentId/edit"
+                element={<ManageFeaturedContentPage />}
+              />
+            </Route>
           </Route>
         </Route>
-
-        <Route element={<RequireAdministrator />}></Route>
       </Routes>
     </>
   );

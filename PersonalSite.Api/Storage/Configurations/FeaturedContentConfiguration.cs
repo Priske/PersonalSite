@@ -12,10 +12,20 @@ public sealed class FeaturedContentConfiguration
     {
         builder.HasKey(content => content.Id);
 
+        builder.ConfigureSiteContent();
+
         builder.Property(content => content.Title)
+            .HasConversion(
+                title => title.Value,
+                value => new FeaturedContentTitle(value))
+            .HasMaxLength(FeaturedContentTitle.MaxLength)
             .IsRequired();
 
         builder.Property(content => content.Description)
+            .HasConversion(
+                description => description.Value,
+                value => new FeaturedContentDescription(value))
+            .HasMaxLength(FeaturedContentDescription.MaxLength)
             .IsRequired();
 
         builder.HasMany(content => content.Files)
@@ -23,13 +33,7 @@ public sealed class FeaturedContentConfiguration
             .HasForeignKey(file => file.FeaturedContentId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Navigation(content => content.Files)
-            .UsePropertyAccessMode(PropertyAccessMode.Field);
-
         builder.HasMany(content => content.Tags)
             .WithMany();
-
-        builder.Navigation(content => content.Tags)
-            .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

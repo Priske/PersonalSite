@@ -808,6 +808,16 @@
   line-height: 1;
 }
 
+.analytics-summary.analytics-summary--videos {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 1.5rem 0;
+  border: 1px solid #080808;
+}
+
+.analytics-summary--videos .analytics-summary__item strong {
+  white-space: nowrap;
+}
+
 /* =========================================================
    LOGIN ACTIVITY SECTION
    ========================================================= */
@@ -1005,6 +1015,87 @@
   .analytics-referrers__row > span,
   .analytics-referrers__row > strong {
     padding: 0.85rem 1rem;
+  }
+}
+
+.analytics-videos {
+  width: 100%;
+  border: 1px solid #111;
+}
+
+.analytics-videos__header,
+.analytics-videos__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) repeat(3, 7rem);
+}
+
+.analytics-videos__header {
+  background: #050505;
+  color: #fff;
+}
+
+.analytics-videos__header span,
+.analytics-videos__row > span,
+.analytics-videos__row > strong {
+  padding: 1rem 1.25rem;
+}
+
+.analytics-videos__header span {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.analytics-videos__header span:not(:first-child),
+.analytics-videos__row > strong {
+  text-align: center;
+}
+
+.analytics-videos__row {
+  min-height: 4rem;
+  border-top: 1px solid #111;
+}
+
+.analytics-videos__row:nth-child(odd) {
+  background: #ececec;
+}
+
+.analytics-videos__row:nth-child(even) {
+  background: #fff;
+}
+
+.analytics-videos__row > span,
+.analytics-videos__row > strong {
+  display: flex;
+  align-items: center;
+}
+
+.analytics-videos__row > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.analytics-videos__row > strong {
+  justify-content: center;
+  border-left: 1px solid #111;
+}
+
+@media (max-width: 700px) {
+  .analytics-videos__header,
+  .analytics-videos__row {
+    grid-template-columns: minmax(8rem, 1fr) repeat(3, 6rem);
+  }
+
+  .analytics-videos {
+    overflow-x: auto;
+  }
+
+  .analytics-videos__header span,
+  .analytics-videos__row > span,
+  .analytics-videos__row > strong {
+    padding: 0.85rem 0.75rem;
   }
 }
 /* User creation analytics */
@@ -1475,6 +1566,16 @@
 
   .analytics-summary__item strong {
     font-size: 2.5rem;
+  }
+
+  .analytics-summary.analytics-summary--videos {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-summary--videos .analytics-summary__item +
+    .analytics-summary__item {
+    border-top: 1px solid #080808;
+    border-left: 0;
   }
 
   .analytics-section {
