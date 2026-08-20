@@ -5,7 +5,7 @@ namespace PersonalSite.Api.Domain.FeaturedContent;
 public sealed record FeaturedContentDescription
 {
     public const int MinLength = 5;
-    public const int MaxLength = 250;
+    public const int MaxLength = 500;
 
     public string Value { get; }
 
