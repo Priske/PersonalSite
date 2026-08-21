@@ -81,7 +81,7 @@ public class CreateUserCommandHandler(
         {
             Id = savedUser.Id,
             Name = savedUser.Name,
-            Email = savedUser.Email,
+            Email = savedUser.Email.ToString(),
         };
     }
 }

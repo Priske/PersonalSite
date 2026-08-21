@@ -22,34 +22,39 @@ services:
       retries: 10
 
   api:
-    build:
-      context: .
-      dockerfile: PersonalSite.Api/Dockerfile
-    container_name: personal-site-api
-    restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
+  build:
+    context: .
+    dockerfile: PersonalSite.Api/Dockerfile
+  container_name: personal-site-api
+  restart: unless-stopped
+  depends_on:
+    postgres:
+      condition: service_healthy
+  environment:
+    ASPNETCORE_ENVIRONMENT: Development
 
-      ConnectionStrings__PersonalSite: >
-        Host=postgres;
-        Port=5432;
-        Database=personal_site;
-        Username=personal_site;
-        Password=${POSTGRES_PASSWORD}
+    ConnectionStrings__PersonalSite: >
+      Host=postgres;
+      Port=5432;
+      Database=personal_site;
+      Username=personal_site;
+      Password=${POSTGRES_PASSWORD}
 
-      Jwt__SigningKey: ${JWT_SIGNING_KEY}
-      Jwt__Issuer: PersonalSite.Api
-      Jwt__Audience: PersonalSite.Client
-      InitialAdmin__Name: ${INITIAL_ADMIN_NAME}
-      InitialAdmin__Email: ${INITIAL_ADMIN_EMAIL}
-      InitialAdmin__Password: ${INITIAL_ADMIN_PASSWORD}
-      AzureStorage__AccountName: ${AZURE_STORAGE_ACCOUNT_NAME}
-      AzureStorage__ContainerName: ${AZURE_STORAGE_CONTAINER_NAME}
-    ports:
-      - "8080:8080"
+    Jwt__SigningKey: ${JWT_SIGNING_KEY}
+    Jwt__Issuer: PersonalSite.Api
+    Jwt__Audience: PersonalSite.Client
+
+    InitialAdmin__Name: ${INITIAL_ADMIN_NAME}
+    InitialAdmin__Email: ${INITIAL_ADMIN_EMAIL}
+    InitialAdmin__Password: ${INITIAL_ADMIN_PASSWORD}
+
+    AzureStorage__AccountName: ${AZURE_STORAGE_ACCOUNT_NAME}
+    AzureStorage__ContainerName: ${AZURE_STORAGE_CONTAINER_NAME}
+
+    Smtp__Password: ${SMTP_PASSWORD}
+
+  ports:
+    - "8080:8080"
 
 volumes:
   personal-site-postgres-data:

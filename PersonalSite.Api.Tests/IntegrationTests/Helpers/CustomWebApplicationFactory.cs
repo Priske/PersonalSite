@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using PersonalSite.Api.Application.Mails;
 using Npgsql;
 using PersonalSite.Api.Storage;
 using Testcontainers.PostgreSql;
@@ -36,7 +37,13 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
     new("InitialAdmin:Name", "Integration Test Admin"),
     new("InitialAdmin:Email", "admin@integration.test"),
-    new("InitialAdmin:Password", "Integration-Test-Password-123!")
+    new("InitialAdmin:Password", "Integration-Test-Password-123!"),
+
+    new("Smtp:Host", "smtp.test.invalid"),
+    new("Smtp:Port", "465"),
+    new("Smtp:Username", "contact@test.invalid"),
+    new("Smtp:Password", "integration-test-smtp-password"),
+    new("Smtp:FromAddress", "contact@test.invalid")
     ];
     public CustomWebApplicationFactory()
     {
@@ -77,6 +84,12 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             services.RemoveAll<AppDbContext>();
 
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+            services.RemoveAll<IEmailSender>();
+
+            services.AddSingleton<FakeEmailSender>();
+
+            services.AddSingleton<IEmailSender>(provider =>
+            provider.GetRequiredService<FakeEmailSender>());
         });
     }
 

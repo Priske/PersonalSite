@@ -19,6 +19,8 @@ using PersonalSite.Api.Storage.HomePageConfigs;
 using PersonalSite.Api.Storage.Analytics;
 using PersonalSite.Api.Storage.Files;
 using PersonalSite.Api.Analytics.Metadata;
+using PersonalSite.Api.Infrastructure.Mails;
+using PersonalSite.Api.Application.Mails;
 
 namespace PersonalSite.Api.Wiring;
 
@@ -29,6 +31,7 @@ public static class WebApplicationBuilderExtensions
         RegisterStorage(builder);
         RegisterHandlers(builder.Services);
         RegisterAuthentication(builder);
+        RegisterMail(builder);
 
         return builder;
     }
@@ -121,6 +124,22 @@ public static class WebApplicationBuilderExtensions
             });
         builder.Services.AddAuthorization();
 
+    }
+    private static void RegisterMail(WebApplicationBuilder builder)
+    {
+        var settings = builder.Configuration
+            .GetRequiredSection(SmtpSettings.SectionName)
+            .Get<SmtpSettings>()
+            ?? throw new InvalidOperationException(
+                "SMTP settings are missing.");
+
+        if (string.IsNullOrWhiteSpace(settings.Password))
+        {
+            throw new InvalidOperationException(
+                "SMTP password is missing.");
+        }
+        builder.Services.AddSingleton(settings);
+        builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
     }
 
     private static readonly Type HandlerMarker = typeof(IHandler);
