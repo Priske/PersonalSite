@@ -101,7 +101,23 @@ jobs:
           docker push "${REGISTRY}/${IMAGE_NAME}:${GITHUB_SHA}"
           docker push "${REGISTRY}/${IMAGE_NAME}:latest"
 
+      - name: Configure SMTP secret
+        env:
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+        run: |
+          if [ -z "${SMTP_PASSWORD}" ]; then
+            echo "The required GitHub secret SMTP_PASSWORD is missing."
+            exit 1
+          fi
+
+          az containerapp secret set \
+            --name "${CONTAINER_APP_NAME}" \
+            --resource-group "${RESOURCE_GROUP}" \
+            --secrets "smtp-password=${SMTP_PASSWORD}" \
+            --output none
+
       - name: Deploy container image
+        id: deploy
         run: |
           az containerapp update \
             --name "${CONTAINER_APP_NAME}" \
@@ -109,13 +125,71 @@ jobs:
             --image "${REGISTRY}/${IMAGE_NAME}:${GITHUB_SHA}" \
             --set-env-vars \
               AzureStorage__AccountName=beneeckmansitestorage \
-              AzureStorage__ContainerName=portfolio-files
+              AzureStorage__ContainerName=portfolio-files \
+              Smtp__Password=secretref:smtp-password \
+            --output none
 
-      - name: Verify deployed image
-        run: |
-          DEPLOYED_IMAGE=$(az containerapp show \
+          REVISION_NAME=$(az containerapp show \
             --name "${CONTAINER_APP_NAME}" \
             --resource-group "${RESOURCE_GROUP}" \
+            --query "properties.latestRevisionName" \
+            --output tsv)
+
+          if [ -z "${REVISION_NAME}" ]; then
+            echo "Azure did not return a new revision name."
+            exit 1
+          fi
+
+          echo "revision_name=${REVISION_NAME}" >> "${GITHUB_OUTPUT}"
+          echo "Created revision: ${REVISION_NAME}"
+
+      - name: Wait for deployed revision
+        env:
+          REVISION_NAME: ${{ steps.deploy.outputs.revision_name }}
+        run: |
+          for ATTEMPT in $(seq 1 30); do
+            HEALTH_STATE=$(az containerapp revision show \
+              --name "${CONTAINER_APP_NAME}" \
+              --resource-group "${RESOURCE_GROUP}" \
+              --revision "${REVISION_NAME}" \
+              --query "properties.healthState" \
+              --output tsv)
+
+            RUNNING_STATE=$(az containerapp revision show \
+              --name "${CONTAINER_APP_NAME}" \
+              --resource-group "${RESOURCE_GROUP}" \
+              --revision "${REVISION_NAME}" \
+              --query "properties.runningState" \
+              --output tsv)
+
+            echo "Attempt ${ATTEMPT}: health=${HEALTH_STATE}, running=${RUNNING_STATE}"
+
+            if [ "${HEALTH_STATE}" = "Healthy" ] &&
+               [ "${RUNNING_STATE}" = "Running" ]; then
+              echo "The new revision is healthy and running."
+              exit 0
+            fi
+
+            if [ "${HEALTH_STATE}" = "Unhealthy" ] ||
+               [ "${RUNNING_STATE}" = "Failed" ]; then
+              echo "The new revision failed to start."
+              exit 1
+            fi
+
+            sleep 10
+          done
+
+          echo "Timed out waiting for the new revision."
+          exit 1
+
+      - name: Verify deployed image
+        env:
+          REVISION_NAME: ${{ steps.deploy.outputs.revision_name }}
+        run: |
+          DEPLOYED_IMAGE=$(az containerapp revision show \
+            --name "${CONTAINER_APP_NAME}" \
+            --resource-group "${RESOURCE_GROUP}" \
+            --revision "${REVISION_NAME}" \
             --query "properties.template.containers[0].image" \
             --output tsv)
 
@@ -125,8 +199,28 @@ jobs:
           echo "Deployed: ${DEPLOYED_IMAGE}"
 
           if [ "${DEPLOYED_IMAGE}" != "${EXPECTED_IMAGE}" ]; then
-            echo "The Container App is not using the expected image."
+            echo "The new revision is not using the expected image."
             exit 1
+          fi
+
+      - name: Route traffic to deployed revision
+        env:
+          REVISION_NAME: ${{ steps.deploy.outputs.revision_name }}
+        run: |
+          REVISION_MODE=$(az containerapp show \
+            --name "${CONTAINER_APP_NAME}" \
+            --resource-group "${RESOURCE_GROUP}" \
+            --query "properties.configuration.activeRevisionsMode" \
+            --output tsv)
+
+          echo "Revision mode: ${REVISION_MODE}"
+
+          if [ "${REVISION_MODE}" = "Multiple" ]; then
+            az containerapp ingress traffic set \
+              --name "${CONTAINER_APP_NAME}" \
+              --resource-group "${RESOURCE_GROUP}" \
+              --revision-weight "${REVISION_NAME}=100" \
+              --output none
           fi
 
       - name: Verify website

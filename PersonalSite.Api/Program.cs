@@ -2,7 +2,10 @@ using System.Text.Json.Serialization;
 using PersonalSite.Api.Wiring;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.AddApplicationServices();
+builder.AddPersonalSiteRateLimiting();
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -13,6 +16,7 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -21,13 +25,21 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(
         new JsonStringEnumConverter());
 });
+
 var app = builder.Build();
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseCanonicalHostRedirect();
+
+app.UseRouting();
 app.UseCors();
+app.UsePersonalSiteRateLimiting();
+
 app.UsePersonalSite();
+
 app.MapFallbackToFile("index.html");
+
 app.Run();
 
 public partial class Program;
