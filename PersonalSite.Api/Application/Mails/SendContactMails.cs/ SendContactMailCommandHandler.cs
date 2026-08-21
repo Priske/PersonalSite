@@ -14,7 +14,7 @@ public sealed class SendContactMailCommandHandler(
         var message = new ContactMessage(request.Message);
 
         var outgoingEmail = new OutgoingEmail(
-            FromName: "beneeckman.be Contact Form",
+            FromName: "Contact Form",
             ToAddress: "contact@beneeckman.be",
             Subject: $"[Portfolio contact] Message from {name.Value}",
             Body: $"""

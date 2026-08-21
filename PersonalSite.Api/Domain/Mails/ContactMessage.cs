@@ -1,4 +1,4 @@
-using PersonalSite.Api.Domain.Common;
+using PersonalSite.Api.Domain.Exceptions;
 
 namespace PersonalSite.Api.Domain.Mails;
 
@@ -11,11 +11,35 @@ public sealed record ContactMessage
 
     public ContactMessage(string? value)
     {
-        Value = TextValue.Create(
-            value,
-            fieldName: "Contact Message",
-            minLength: MinLength,
-            maxLength: MaxLength);
+        var cleaned = value?.Trim();
+
+        if (string.IsNullOrWhiteSpace(cleaned))
+        {
+            throw new DomainException(
+                "Contact message is required.");
+        }
+
+        if (cleaned.Length < MinLength)
+        {
+            throw new DomainException(
+                $"Contact message must be at least {MinLength} characters.");
+        }
+
+        if (cleaned.Length > MaxLength)
+        {
+            throw new DomainException(
+                $"Contact message cannot be longer than {MaxLength} characters.");
+        }
+
+        if (cleaned.Any(character =>
+                char.IsControl(character) &&
+                character is not '\r' and not '\n' and not '\t'))
+        {
+            throw new DomainException(
+                "Contact message contains invalid characters.");
+        }
+
+        Value = cleaned;
     }
 
     public static implicit operator string(ContactMessage ContactMessage)
