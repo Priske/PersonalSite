@@ -55,6 +55,11 @@ export AzureStorage__ContainerName="$(
   cut -d= -f2-
 )"
 
+export Smtp__Password="$(
+  grep '^SMTP_PASSWORD=' "$ROOT_DIR/.env.local" |
+  cut -d= -f2-
+)"
+
 echo "Starting API..."
 
 dotnet watch \

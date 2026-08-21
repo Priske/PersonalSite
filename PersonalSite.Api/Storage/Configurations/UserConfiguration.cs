@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PersonalSite.Api.Domain.Common;
 using PersonalSite.Api.Domain.Users;
 
 namespace PersonalSite.Api.Storage.Configurations;
@@ -13,7 +14,7 @@ public sealed class UserConfiguration
             .HasConversion(
                 email => email.Value,
                 value => new UserEmail(value))
-            .HasMaxLength(UserEmail.MaxLength)
+            .HasMaxLength(EmailValue.MaxLength)
             .IsRequired();
 
         user.HasIndex(u => u.Email)

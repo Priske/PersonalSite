@@ -1,8 +1,11 @@
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { getAccessToken } from "../auth/tokenStorage";
-import type { GetHomePageConfigDetailsResponse } from "../homePageConfig/types";
 import { trackLinkClick } from "../analytics/analytics";
 import { apiPath } from "../api";
+import { getAccessToken } from "../auth/tokenStorage";
+import type { GetHomePageConfigDetailsResponse } from "../homePageConfig/types";
+import { makeContact } from "../mails/mailsApi";
 
 type ContactSectionProps = {
   config: GetHomePageConfigDetailsResponse;
@@ -55,11 +58,96 @@ function CvIcon({ className }: IconProps) {
 
 export function ContactSection({ config, number }: ContactSectionProps) {
   const isAuthenticated = Boolean(getAccessToken());
+  const isDemo = config.source === "Demo";
   const phoneNumber = config.phoneNumber;
-  const cvUrl =
-    config.source === "Demo"
-      ? config.cvUrl
-      : apiPath("/files/cv");
+
+  const cvUrl = isDemo ? config.cvUrl : apiPath("/files/cv");
+
+  const contactFormId = useId();
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const [isContactFormOpen, setIsContactFormOpen] = useState(false);
+
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const [messageSent, setMessageSent] = useState(false);
+
+  const contactMutation = useMutation({
+    mutationFn: makeContact,
+
+    onSuccess: () => {
+      formRef.current?.reset();
+      setFormError(null);
+      setMessageSent(true);
+    },
+
+    onError: (error) => {
+      setMessageSent(false);
+
+      setFormError(
+        error instanceof Error
+          ? error.message
+          : "The message could not be sent.",
+      );
+    },
+  });
+
+  useEffect(() => {
+    if (!isContactFormOpen || isDemo) {
+      return;
+    }
+
+    const animationFrame = window.requestAnimationFrame(() => {
+      formRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest",
+      });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+    };
+  }, [isContactFormOpen, isDemo]);
+
+  function toggleContactForm() {
+    setIsContactFormOpen((isOpen) => !isOpen);
+    setFormError(null);
+    setMessageSent(false);
+    contactMutation.reset();
+  }
+
+  function handleContactSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    setFormError(null);
+    setMessageSent(false);
+
+    const formData = new FormData(event.currentTarget);
+
+    const name = formData.get("name")?.toString().trim() ?? "";
+
+    const email = formData.get("email")?.toString().trim() ?? "";
+
+    const message = formData.get("message")?.toString().trim() ?? "";
+
+    if (!name || !email || !message) {
+      setFormError("Name, email and message are required.");
+      return;
+    }
+
+    if (message.length < 10) {
+      setFormError("Your message must contain at least 10 characters.");
+      return;
+    }
+
+    contactMutation.mutate({
+      name,
+      email,
+      message,
+    });
+  }
+
   return (
     <section className="home-section home-contact" id="contact">
       <div className="home-section__heading">
@@ -69,6 +157,7 @@ export function ContactSection({ config, number }: ContactSectionProps) {
           <p className="home-section__eyebrow">
             {config.contactSectionEyebrow}
           </p>
+
           <h2>{config.contactSectionHeading}</h2>
         </div>
       </div>
@@ -82,7 +171,9 @@ export function ContactSection({ config, number }: ContactSectionProps) {
         <div className="contact-panel">
           <div className="contact-panel__content">
             <p className="contact-panel__eyebrow">{config.contactEyebrow}</p>
+
             <h3>{config.contactHeading}</h3>
+
             <p className="contact-panel__description">
               {config.contactDescription}
             </p>
@@ -172,9 +263,7 @@ export function ContactSection({ config, number }: ContactSectionProps) {
                   rel="noreferrer"
                   title="View CV"
                   aria-label="View CV"
-                  onClick={() =>
-                    void trackLinkClick("cv", cvUrl, "contact")
-                  }
+                  onClick={() => void trackLinkClick("cv", cvUrl, "contact")}
                 >
                   <CvIcon />
                 </a>
@@ -183,19 +272,35 @@ export function ContactSection({ config, number }: ContactSectionProps) {
           </div>
 
           <div className="contact-panel__actions">
-            <a
-              className="button"
-              href={`mailto:${config.email}`}
-              onClick={() =>
-                void trackLinkClick(
-                  "email",
-                  `mailto:${config.email}`,
-                  "contact",
-                )
-              }
-            >
-              {config.contactEmailActionLabel}
-            </a>
+            {isDemo ? (
+              <a
+                className="button"
+                href={`mailto:${config.email}`}
+                onClick={() =>
+                  void trackLinkClick(
+                    "email",
+                    `mailto:${config.email}`,
+                    "contact",
+                  )
+                }
+              >
+                {config.contactEmailActionLabel}
+              </a>
+            ) : (
+              <button
+                className="button"
+                type="button"
+                aria-expanded={isContactFormOpen}
+                aria-controls={contactFormId}
+                disabled={contactMutation.isPending}
+                onClick={toggleContactForm}
+              >
+                {isContactFormOpen
+                  ? "Close form"
+                  : config.contactEmailActionLabel}
+              </button>
+            )}
+
             <Link
               className="button button--secondary"
               to={isAuthenticated ? "/account" : "/login"}
@@ -203,6 +308,77 @@ export function ContactSection({ config, number }: ContactSectionProps) {
               {isAuthenticated ? "Account" : config.contactLoginActionLabel}
             </Link>
           </div>
+
+          {!isDemo && isContactFormOpen && (
+            <form
+              ref={formRef}
+              className="contact-form"
+              id={contactFormId}
+              onSubmit={handleContactSubmit}
+            >
+              <div className="contact-form__fields">
+                <div className="contact-form__field">
+                  <label htmlFor={`${contactFormId}-name`}>Name</label>
+
+                  <input
+                    id={`${contactFormId}-name`}
+                    name="name"
+                    autoComplete="name"
+                    maxLength={100}
+                    required
+                  />
+                </div>
+
+                <div className="contact-form__field">
+                  <label htmlFor={`${contactFormId}-email`}>Email</label>
+
+                  <input
+                    id={`${contactFormId}-email`}
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    maxLength={254}
+                    required
+                  />
+                </div>
+
+                <div className="contact-form__field contact-form__field--message">
+                  <label htmlFor={`${contactFormId}-message`}>Message</label>
+
+                  <textarea
+                    id={`${contactFormId}-message`}
+                    name="message"
+                    minLength={10}
+                    maxLength={5000}
+                    rows={8}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="contact-form__status" aria-live="polite">
+                {formError && (
+                  <p className="contact-form__error">{formError}</p>
+                )}
+
+                {messageSent && (
+                  <p className="contact-form__success">
+                    Your message has been sent.
+                  </p>
+                )}
+              </div>
+
+              <div className="contact-form__actions">
+                <button
+                  className="button"
+                  type="submit"
+                  disabled={contactMutation.isPending}
+                >
+                  {contactMutation.isPending ? "Sending..." : "Send message"}
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       </div>
     </section>

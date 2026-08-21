@@ -1,3 +1,4 @@
+using PersonalSite.Api.Domain.Common;
 using PersonalSite.Api.Domain.Exceptions;
 using PersonalSite.Api.Domain.Users;
 
@@ -40,7 +41,7 @@ public class UserEmailTests
         var exception = Assert.Throws<DomainException>(
             () => new UserEmail(input!));
 
-        Assert.Equal("Email is required.", exception.Message);
+        Assert.Equal("User email is required.", exception.Message);
     }
 
     [Theory]
@@ -55,7 +56,7 @@ public class UserEmailTests
         var exception = Assert.Throws<DomainException>(
             () => new UserEmail(input));
 
-        Assert.Equal("Email is not valid.", exception.Message);
+        Assert.Equal("User email is not valid.", exception.Message);
     }
 
     [Fact]
@@ -88,14 +89,14 @@ public class UserEmailTests
     [Fact]
     public void Constructor_WithEmailLongerThanMaximum_ThrowsDomainException()
     {
-        var localPart = new string('a', UserEmail.MaxLength);
+        var localPart = new string('a', EmailValue.MaxLength);
         var input = $"{localPart}@example.com";
 
         var exception = Assert.Throws<DomainException>(
             () => new UserEmail(input));
 
         Assert.Equal(
-            $"Email cannot be longer than {UserEmail.MaxLength} characters.",
+            $"User email cannot be longer than {EmailValue.MaxLength} characters.",
             exception.Message);
     }
 

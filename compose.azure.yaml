@@ -27,6 +27,8 @@ services:
 
       AzureStorage__AccountName: ${AZURE_STORAGE_ACCOUNT_NAME}
       AzureStorage__ContainerName: ${AZURE_STORAGE_CONTAINER_NAME}
-      
+
+      Smtp__Password: ${SMTP_PASSWORD}
+
     ports:
       - "8080:8080"
