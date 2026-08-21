@@ -133,14 +133,38 @@ public static class WebApplicationBuilderExtensions
             ?? throw new InvalidOperationException(
                 "SMTP settings are missing.");
 
+        if (string.IsNullOrWhiteSpace(settings.Host))
+        {
+            throw new InvalidOperationException(
+                "SMTP host is missing.");
+        }
+
+        if (settings.Port is <= 0 or > 65535)
+        {
+            throw new InvalidOperationException(
+                "SMTP port is invalid.");
+        }
+
+        if (string.IsNullOrWhiteSpace(settings.Username))
+        {
+            throw new InvalidOperationException(
+                "SMTP username is missing.");
+        }
+
         if (string.IsNullOrWhiteSpace(settings.Password))
         {
             throw new InvalidOperationException(
                 "SMTP password is missing.");
         }
+
+        if (string.IsNullOrWhiteSpace(settings.FromAddress))
+        {
+            throw new InvalidOperationException(
+                "SMTP from address is missing.");
+        }
+
         builder.Services.AddSingleton(settings);
         builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
     }
-
     private static readonly Type HandlerMarker = typeof(IHandler);
 }

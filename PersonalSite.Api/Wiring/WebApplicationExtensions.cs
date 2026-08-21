@@ -6,6 +6,7 @@ using PersonalSite.Api.Endpoints.Auth;
 using PersonalSite.Api.Endpoints.FeaturedContent;
 using PersonalSite.Api.Endpoints.Files;
 using PersonalSite.Api.Endpoints.HomePageConfigs;
+using PersonalSite.Api.Endpoints.Mails;
 using PersonalSite.Api.Endpoints.Projects;
 using PersonalSite.Api.Endpoints.Skills;
 using PersonalSite.Api.Endpoints.Tags;
@@ -146,6 +147,7 @@ public static class WebApplicationExtensions
         app.MapHomePageEndpoints();
         app.MapAnalyticsEndpoints();
         app.MapTagEndpoints();
+        app.MapMailEndpoints();
 
         return app;
     }
