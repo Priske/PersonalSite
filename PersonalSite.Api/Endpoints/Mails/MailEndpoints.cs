@@ -1,4 +1,4 @@
-using PersonalSite.Api.Application.Mails.SendContactMails.cs;
+using PersonalSite.Api.Application.Mails.SendContactMails;
 using PersonalSite.Api.Domain.Exceptions;
 using PersonalSite.Api.Wiring;
 

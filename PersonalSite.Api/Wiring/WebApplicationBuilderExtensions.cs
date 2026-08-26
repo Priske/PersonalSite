@@ -21,6 +21,8 @@ using PersonalSite.Api.Storage.Files;
 using PersonalSite.Api.Analytics.Metadata;
 using PersonalSite.Api.Infrastructure.Mails;
 using PersonalSite.Api.Application.Mails;
+using PersonalSite.Api.Infrastructure.OpenAI;
+using OpenAI.Responses;
 
 namespace PersonalSite.Api.Wiring;
 
@@ -32,6 +34,7 @@ public static class WebApplicationBuilderExtensions
         RegisterHandlers(builder.Services);
         RegisterAuthentication(builder);
         RegisterMail(builder);
+        RegisterOpenAi(builder);
 
         return builder;
     }
@@ -165,6 +168,35 @@ public static class WebApplicationBuilderExtensions
 
         builder.Services.AddSingleton(settings);
         builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
+    }
+    private static void RegisterOpenAi(WebApplicationBuilder builder)
+    {
+        var settings = builder.Configuration
+            .GetRequiredSection(OpenAiSettings.SectionName)
+            .Get<OpenAiSettings>()
+            ?? throw new InvalidOperationException(
+                "OpenAI settings are missing.");
+
+        if (string.IsNullOrWhiteSpace(settings.ApiKey))
+        {
+            throw new InvalidOperationException(
+                "OpenAI API key is missing.");
+        }
+
+        if (string.IsNullOrWhiteSpace(settings.Model))
+        {
+            throw new InvalidOperationException(
+                "OpenAI model is missing.");
+        }
+
+        builder.Services.AddSingleton(settings);
+
+#pragma warning disable OPENAI001
+        builder.Services.AddSingleton(
+            _ => new ResponsesClient(settings.ApiKey));
+#pragma warning restore OPENAI001
+
+        builder.Services.AddScoped<OpenAiAssistantClient>();
     }
     private static readonly Type HandlerMarker = typeof(IHandler);
 }

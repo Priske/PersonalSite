@@ -1,4 +1,4 @@
-namespace PersonalSite.Api.Application.Mails.SendContactMails.cs;
+namespace PersonalSite.Api.Application.Mails.SendContactMails;
 
 public sealed record SendContactMailRequest
 {

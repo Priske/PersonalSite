@@ -14,6 +14,9 @@ public static class FileEndpoints
         app.MapPost("/files/cv", UploadCv)
             .RequireAuthorization()
             .DisableAntiforgery();
+        app.MapPost("/file/AssistantKnowledge", UploadAssistantKnowledge)
+            .RequireAuthorization()
+            .DisableAntiforgery();
         app.MapGet("/files/cv", GetCv);
         app.MapGet("/files/{fileId:int}", GetFile);
         return app;
@@ -41,10 +44,52 @@ public static class FileEndpoints
 
             return Results.NoContent();
         }
+        catch (UnauthorizedAccessException)
+        {
+            return Results.Forbid();
+        }
         catch (ArgumentException exception)
         {
-            return Results.BadRequest(new { error = exception.Message });
+            return Results.BadRequest(new
+            {
+                error = exception.Message
+            });
         }
+    }
+    private static async Task<IResult> UploadAssistantKnowledge(
+    IFormFile file,
+    ClaimsPrincipal principal,
+    UploadAssistantKnowledgeCommandHandler handler,
+    CancellationToken cancellationToken)
+    {
+        try
+        {
+            var actor = principal.ToActor();
+
+            await using var stream = file.OpenReadStream();
+
+            await handler.ExecuteAsync(
+                actor,
+                stream,
+                file.FileName,
+                file.ContentType,
+                file.Length,
+                cancellationToken);
+
+            return Results.NoContent();
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Results.Forbid();
+        }
+        catch (ArgumentException exception)
+        {
+            return Results.BadRequest(new
+            {
+                error = exception.Message
+            });
+        }
+
     }
 
     private static async Task<IResult> GetCv(

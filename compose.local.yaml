@@ -51,6 +51,8 @@ services:
 
       Smtp__Password: ${SMTP_PASSWORD}
 
+      OpenAI__ApiKey: ${OPENAI_API_KEY}
+
     ports:
       - "8080:8080"
 
