@@ -6,6 +6,8 @@ namespace PersonalSite.Api.Wiring;
 public static class RateLimitPolicies
 {
     public const string ContactMail = "contact-mail";
+
+    public const string Assistant = "assistant";
 }
 
 public static class RateLimitingExtensions
@@ -22,11 +24,18 @@ public static class RateLimitingExtensions
                 context,
                 cancellationToken) =>
             {
+                var isAssistantRequest =
+                    context.HttpContext.Request.Path
+                        .StartsWithSegments("/assistant");
+
+                var errorMessage = isAssistantRequest
+                    ? "Too many assistant questions. Please try again later."
+                    : "Too many contact messages. Please try again later.";
+
                 await context.HttpContext.Response.WriteAsJsonAsync(
                     new
                     {
-                        error =
-                            "Too many contact messages. Please try again later."
+                        error = errorMessage
                     },
                     cancellationToken);
             };
@@ -41,6 +50,24 @@ public static class RateLimitingExtensions
                             new FixedWindowRateLimiterOptions
                             {
                                 PermitLimit = 3,
+                                Window =
+                                    TimeSpan.FromMinutes(10),
+                                QueueLimit = 0,
+                                QueueProcessingOrder =
+                                    QueueProcessingOrder.OldestFirst,
+                                AutoReplenishment = true
+                            }));
+
+            options.AddPolicy<string>(
+                RateLimitPolicies.Assistant,
+                httpContext =>
+                    RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey:
+                            GetClientAddress(httpContext),
+                        factory: _ =>
+                            new FixedWindowRateLimiterOptions
+                            {
+                                PermitLimit = 10,
                                 Window =
                                     TimeSpan.FromMinutes(10),
                                 QueueLimit = 0,

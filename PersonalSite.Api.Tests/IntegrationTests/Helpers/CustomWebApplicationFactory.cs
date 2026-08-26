@@ -32,18 +32,27 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
     new("Jwt:Issuer", "PersonalSite.Tests"),
     new("Jwt:Audience", "PersonalSite.Tests"),
-    new("Jwt:SigningKey", "personal-site-test-signing-key-with-32-characters"),
+    new(
+        "Jwt:SigningKey",
+        "personal-site-test-signing-key-with-32-characters"),
     new("Jwt:ExpirationMinutes", "10"),
 
     new("InitialAdmin:Name", "Integration Test Admin"),
     new("InitialAdmin:Email", "admin@integration.test"),
-    new("InitialAdmin:Password", "Integration-Test-Password-123!"),
+    new(
+        "InitialAdmin:Password",
+        "Integration-Test-Password-123!"),
 
     new("Smtp:Host", "smtp.test.invalid"),
     new("Smtp:Port", "465"),
     new("Smtp:Username", "contact@test.invalid"),
-    new("Smtp:Password", "integration-test-smtp-password"),
-    new("Smtp:FromAddress", "contact@test.invalid")
+    new(
+        "Smtp:Password",
+        "integration-test-smtp-password"),
+    new("Smtp:FromAddress", "contact@test.invalid"),
+
+    new("OpenAI:ApiKey", "integration-test-openai-api-key"),
+    new("OpenAI:Model", "gpt-5-mini")
     ];
     public CustomWebApplicationFactory()
     {

@@ -116,6 +116,21 @@ jobs:
             --secrets "smtp-password=${SMTP_PASSWORD}" \
             --output none
 
+      - name: Configure OpenAI secret
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "${OPENAI_API_KEY}" ]; then
+            echo "The required GitHub secret OPENAI_API_KEY is missing."
+            exit 1
+          fi
+
+          az containerapp secret set \
+            --name "${CONTAINER_APP_NAME}" \
+            --resource-group "${RESOURCE_GROUP}" \
+            --secrets "openai-api-key=${OPENAI_API_KEY}" \
+            --output none
+
       - name: Deploy container image
         id: deploy
         run: |
@@ -127,6 +142,7 @@ jobs:
               AzureStorage__AccountName=beneeckmansitestorage \
               AzureStorage__ContainerName=portfolio-files \
               Smtp__Password=secretref:smtp-password \
+              OpenAI__ApiKey=secretref:openai-api-key \
             --output none
 
           REVISION_NAME=$(az containerapp show \

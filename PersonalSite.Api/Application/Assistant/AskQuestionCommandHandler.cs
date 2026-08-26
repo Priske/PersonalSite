@@ -1,5 +1,6 @@
 using PersonalSite.Api.Analytics;
 using PersonalSite.Api.Analytics.Metadata;
+using PersonalSite.Api.Domain.Exceptions.Assistant;
 using PersonalSite.Api.Infrastructure.OpenAI;
 
 namespace PersonalSite.Api.Application.Assistant;
@@ -14,11 +15,28 @@ public class AskQuestionCommandHandler(
         int? userId,
         CancellationToken cancellationToken)
     {
+        if (string.IsNullOrWhiteSpace(request.Question))
+        {
+            throw new InvalidAssistantQuestionException(
+                "A question is required.");
+        }
+
+        var question = request.Question.Trim();
+
+        if (
+            question.Length >
+            AskQuestionRequest.MaximumQuestionLength)
+        {
+            throw new InvalidAssistantQuestionException(
+                $"Questions cannot exceed " +
+                $"{AskQuestionRequest.MaximumQuestionLength} characters.");
+        }
+
         var knowledge = await knowledgeReader.ReadAsync(
             cancellationToken);
 
         var answer = await assistantClient.AskAsync(
-            request.Question,
+            question,
             knowledge,
             cancellationToken);
 
@@ -30,7 +48,7 @@ public class AskQuestionCommandHandler(
                 metadata.Add(
                     "question",
                     new StringMetadataValue(
-                        request.Question));
+                        question));
 
                 metadata.Add(
                     "answer",
