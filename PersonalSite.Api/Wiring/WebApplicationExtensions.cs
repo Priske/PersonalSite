@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Domain.Users;
 using PersonalSite.Api.Endpoints.Analytics;
+using PersonalSite.Api.Endpoints.Assistant;
 using PersonalSite.Api.Endpoints.Auth;
 using PersonalSite.Api.Endpoints.FeaturedContent;
 using PersonalSite.Api.Endpoints.Files;
@@ -141,6 +142,7 @@ public static class WebApplicationExtensions
         app.MapFeaturedContentEndpoints();
         app.MapUserEndpoints();
         app.MapAuthEndpoints();
+        app.MapAssistantEndpoints();
         app.MapSkillEndpoints();
         app.MapSkillGroupEndpoints();
         app.MapProjectEndpoints();

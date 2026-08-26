@@ -10,3 +10,5 @@
 @import "./pages/home.css";
 @import "./pages/users.css";
 @import "./pages/tags.css";
+@import "./pages/assistant-chat.css";
+@import "./pages/assistant.css";

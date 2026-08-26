@@ -25,4 +25,5 @@ public sealed class StoredFile
             SizeInBytes = sizeInBytes
         };
     }
+
 }

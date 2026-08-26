@@ -1,6 +1,6 @@
 using PersonalSite.Api.Domain.Mails;
 
-namespace PersonalSite.Api.Application.Mails.SendContactMails.cs;
+namespace PersonalSite.Api.Application.Mails.SendContactMails;
 
 public sealed class SendContactMailCommandHandler(
     IEmailSender emailSender) : IHandler

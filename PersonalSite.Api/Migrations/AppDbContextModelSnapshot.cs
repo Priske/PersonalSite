@@ -79,6 +79,19 @@ namespace PersonalSite.Api.Migrations
                     b.ToTable("ActivityMetadata");
                 });
 
+            modelBuilder.Entity("PersonalSite.Api.Domain.Assistant.AssistantKnowledge", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AssistantKnowledges");
+                });
+
             modelBuilder.Entity("PersonalSite.Api.Domain.FeaturedContent.FeaturedContent", b =>
                 {
                     b.Property<int>("Id")
@@ -140,6 +153,21 @@ namespace PersonalSite.Api.Migrations
                     b.HasIndex("StoredFileId");
 
                     b.ToTable("FeaturedContentFiles");
+                });
+
+            modelBuilder.Entity("PersonalSite.Api.Domain.Files.AssistantKnowledgeFile", b =>
+                {
+                    b.Property<int>("AssistantKnowledgeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StoredFileId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("AssistantKnowledgeId", "StoredFileId");
+
+                    b.HasIndex("StoredFileId");
+
+                    b.ToTable("AssistantKnowledgeFiles");
                 });
 
             modelBuilder.Entity("PersonalSite.Api.Domain.Files.StoredFile", b =>
@@ -786,6 +814,23 @@ namespace PersonalSite.Api.Migrations
                     b.Navigation("File");
                 });
 
+            modelBuilder.Entity("PersonalSite.Api.Domain.Files.AssistantKnowledgeFile", b =>
+                {
+                    b.HasOne("PersonalSite.Api.Domain.Assistant.AssistantKnowledge", null)
+                        .WithMany("Files")
+                        .HasForeignKey("AssistantKnowledgeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PersonalSite.Api.Domain.Files.StoredFile", "File")
+                        .WithMany()
+                        .HasForeignKey("StoredFileId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("File");
+                });
+
             modelBuilder.Entity("PersonalSite.Api.Domain.Skills.Skill", b =>
                 {
                     b.HasOne("PersonalSite.Api.Domain.Skills.SkillGroup", "SkillGroup")
@@ -833,6 +878,11 @@ namespace PersonalSite.Api.Migrations
             modelBuilder.Entity("PersonalSite.Api.Analytics.Activity", b =>
                 {
                     b.Navigation("Metadata");
+                });
+
+            modelBuilder.Entity("PersonalSite.Api.Domain.Assistant.AssistantKnowledge", b =>
+                {
+                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("PersonalSite.Api.Domain.FeaturedContent.FeaturedContent", b =>

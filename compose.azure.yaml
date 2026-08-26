@@ -29,6 +29,8 @@ services:
       AzureStorage__ContainerName: ${AZURE_STORAGE_CONTAINER_NAME}
 
       Smtp__Password: ${SMTP_PASSWORD}
+      
+      OpenAI__ApiKey: ${OPENAI_API_KEY}
 
     ports:
       - "8080:8080"

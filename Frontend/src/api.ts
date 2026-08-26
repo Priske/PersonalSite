@@ -2,17 +2,26 @@ import { getAccessToken } from "./auth/tokenStorage";
 
 const apiUrl = import.meta.env.VITE_API_URL ?? "";
 
+type ApiErrorResponse = {
+  error?: unknown;
+  detail?: unknown;
+};
+
 export class ApiError extends Error {
   status: number;
 
   constructor(status: number, message: string) {
     super(message);
+
+    this.name = "ApiError";
     this.status = status;
   }
 }
+
 export function apiPath(path: string) {
   return `${apiUrl}${path}`;
 }
+
 async function sendRequest(path: string, options: RequestInit) {
   const headers = new Headers(options.headers);
   const token = getAccessToken();
@@ -36,13 +45,15 @@ async function sendRequest(path: string, options: RequestInit) {
     let message = `Request failed with status ${response.status}`;
 
     try {
-      const body = await response.json();
+      const body = (await response.json()) as ApiErrorResponse;
 
-      if (typeof body?.error === "string") {
+      if (typeof body.error === "string") {
         message = body.error;
+      } else if (typeof body.detail === "string") {
+        message = body.detail;
       }
     } catch {
-      // No JSON response body.
+      // The response did not contain JSON.
     }
 
     throw new ApiError(response.status, message);
@@ -56,6 +67,7 @@ export async function apiRequest<T>(
   options: RequestInit = {},
 ): Promise<T> {
   const response = await sendRequest(path, options);
+
   return response.json() as Promise<T>;
 }
 

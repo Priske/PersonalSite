@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
-using PersonalSite.Api.Application.Analytics.GetCreateUserRequest.cs;
+using PersonalSite.Api.Application.Analytics.GetCreateUserRequest;
 using PersonalSite.Api.Application.Users.CreateUsers;
 using PersonalSite.Api.Domain.Users;
 using PersonalSite.Api.Tests.IntegrationTests.Helpers;
