@@ -1,10 +1,9 @@
 using PersonalSite.Api.Analytics;
 using PersonalSite.Api.Analytics.Metadata;
-using PersonalSite.Api.Application.Analytics.GetCreateUserRequest.cs;
 using PersonalSite.Api.Domain.Actors;
 using PersonalSite.Api.Storage.Analytics;
 
-namespace PersonalSite.Api.Application.Analytics.GetCreateUserActivity;
+namespace PersonalSite.Api.Application.Analytics.GetCreateUserRequest;
 
 public sealed class CreateUserActivityCommandHandler(
     IActivityRepository activityRepository) : IHandler

@@ -1,4 +1,3 @@
-using System.ClientModel;
 using OpenAI.Responses;
 using PersonalSite.Api.Domain.Exceptions.Assistant;
 
@@ -161,11 +160,19 @@ public sealed class OpenAiAssistantClient(
 
             return answer;
         }
-        catch (ClientResultException exception)
-            when (exception.Status == 429)
+        catch (AssistantUnavailableException)
+        {
+            throw;
+        }
+        catch (OperationCanceledException)
+            when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception exception)
         {
             throw new AssistantUnavailableException(
-                "The assistant has no available OpenAI capacity.",
+                "The OpenAI assistant request failed.",
                 exception);
         }
     }

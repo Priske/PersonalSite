@@ -13,7 +13,8 @@ type ChatMessage = {
   role: "visitor" | "assistant";
   text: string;
 };
-
+const unavailableMessage =
+  "The portfolio assistant is currently unavailable. Please try again later.";
 const messagesStorageKey = "personal-site-assistant-messages";
 
 const initialMessage: ChatMessage = {
@@ -86,6 +87,9 @@ export function AssistantChatBox() {
     onSuccess: (response) => {
       addMessage("assistant", response.answer);
     },
+    onError: () => {
+      addMessage("assistant", unavailableMessage);
+    },
   });
 
   useEffect(() => {
@@ -94,10 +98,7 @@ export function AssistantChatBox() {
         messagesStorageKey,
         JSON.stringify(messages),
       );
-    } catch {
-      // The chat continues to work even if browser
-      // storage is unavailable.
-    }
+    } catch {}
   }, [messages]);
 
   useEffect(() => {
@@ -254,12 +255,6 @@ export function AssistantChatBox() {
 
               <p>Thinking…</p>
             </article>
-          )}
-
-          {askMutation.isError && (
-            <p className="assistant-chat__error" role="alert">
-              {askMutation.error.message}
-            </p>
           )}
 
           <div ref={messagesEndRef} />

@@ -58,7 +58,7 @@ public static class AssistantEndpoints
 
             return Results.Problem(
                 title: "Assistant temporarily unavailable",
-                detail: "Please try again later.",
+                detail: "The portfolio assistant is currently unavailable. Please try again later.",
                 statusCode:
                     StatusCodes.Status503ServiceUnavailable);
         }

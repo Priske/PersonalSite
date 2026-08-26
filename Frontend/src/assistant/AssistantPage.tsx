@@ -1,8 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRef, useState, type FormEvent } from "react";
+import { AssistantChatLogs } from "./AssistantChatLogs";
 import { uploadAssistantKnowledge } from "./assistantApi";
 
-export function AssistantKnowledgePage() {
+export function AssistantPage() {
   const formRef = useRef<HTMLFormElement>(null);
   const [file, setFile] = useState<File | null>(null);
 
@@ -72,6 +73,8 @@ export function AssistantKnowledgePage() {
           </button>
         </div>
       </form>
+
+      <AssistantChatLogs />
     </section>
   );
 }

@@ -1,8 +1,8 @@
 
 using System.Security.Claims;
+using PersonalSite.Api.Application.Analytics.GetAssistantChatAnalytics;
 using PersonalSite.Api.Application.Analytics.GetContactLinkActivity;
-using PersonalSite.Api.Application.Analytics.GetCreateUserActivity;
-using PersonalSite.Api.Application.Analytics.GetCreateUserRequest.cs;
+using PersonalSite.Api.Application.Analytics.GetCreateUserRequest;
 using PersonalSite.Api.Application.Analytics.GetDeleteUserActivity;
 using PersonalSite.Api.Application.Analytics.GetLoginActivity;
 using PersonalSite.Api.Application.Analytics.GetReferrerActivity;
@@ -26,6 +26,7 @@ public static class AnalyticsEndpoints
         app.MapGet("/analytics/login", GetLoginActivity).RequireAuthorization();
         app.MapGet("/analytics/create-users", GetCreateUserAnalytics).RequireAuthorization();
         app.MapGet("/analytics/delete-users", GetDeleteUsersAnalytics).RequireAuthorization();
+        app.MapGet("/analytics/assistant-chat", GetAssistantChatAnalytics).RequireAuthorization();
 
         return app;
     }
@@ -99,6 +100,29 @@ public static class AnalyticsEndpoints
         ClaimsPrincipal principal,
         CreateUserActivityCommandHandler handler,
         CancellationToken cancellationToken)
+    {
+        try
+        {
+            var actor = principal.ToActor();
+
+            var response = await handler.ExecuteAsync(
+                actor,
+                request,
+                cancellationToken);
+
+            return Results.Ok(response);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Results.Forbid();
+        }
+    }
+
+    private static async Task<IResult> GetAssistantChatAnalytics(
+    [AsParameters] GetAssistantChatAnalyticsRequest request,
+    ClaimsPrincipal principal,
+    AssistantChatActivityCommandHandler handler,
+    CancellationToken cancellationToken)
     {
         try
         {

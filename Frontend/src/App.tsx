@@ -27,7 +27,7 @@ import { AnalyticsAdminPage } from "./account/AnalyticsAdminPage";
 import { AccountFeaturedContentPage } from "./account/AccountFeaturedContentPage";
 import { AddFeaturedContentPage } from "./featured/AddFeaturedContentPage";
 import { ManageFeaturedContentPage } from "./featured/ManageFeaturedContentPage";
-import { AssistantKnowledgePage } from "./assistant/AssistantKnowledgePage";
+import { AssistantPage } from "./assistant/AssistantPage";
 import { AssistantChatBox } from "./assistant/AssistantChatBox";
 
 function App() {
@@ -77,10 +77,7 @@ function App() {
                 path="featured-content/:featuredContentId/edit"
                 element={<ManageFeaturedContentPage />}
               />
-              <Route
-                path="assistant-knowledge"
-                element={<AssistantKnowledgePage />}
-              />
+              <Route path="assistant-knowledge" element={<AssistantPage />} />
             </Route>
           </Route>
         </Route>
