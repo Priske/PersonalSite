@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRef, useState, type FormEvent } from "react";
-import { uploadAssistantKnowledge } from "./assistantKnowledgeApi";
+import { uploadAssistantKnowledge } from "./assistantApi";
 
 export function AssistantKnowledgePage() {
   const formRef = useRef<HTMLFormElement>(null);

@@ -12,6 +12,7 @@ public enum ActivityType
     LoginFailed,
     CreatedUser,
     DeleteUser,
+    AssistantChatLog,
 
     Logout,
     DemoHomepageUpdated,
