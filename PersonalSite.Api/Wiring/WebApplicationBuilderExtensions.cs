@@ -23,6 +23,8 @@ using PersonalSite.Api.Infrastructure.Mails;
 using PersonalSite.Api.Application.Mails;
 using PersonalSite.Api.Infrastructure.OpenAI;
 using OpenAI.Responses;
+using PersonalSite.Api.Storage.Assistant;
+using PersonalSite.Api.Application.Assistant;
 
 namespace PersonalSite.Api.Wiring;
 
@@ -56,10 +58,13 @@ public static class WebApplicationBuilderExtensions
         builder.Services.AddScoped<IFileStorage, AzureBlobFileStorage>();
         builder.Services.AddScoped<IStoredFileRepository, EfStoredFileRepository>();
         builder.Services.AddScoped<IFeaturedContentRepository, EfFeaturedContentRepository>();
+        builder.Services.AddScoped<IAssistantKnowledgeRepository, EfAssistantKnowledgeRepository>();
 
         builder.Services.AddScoped<ICompromisedPasswordChecker, DatabaseCompromisedPasswordChecker>();
         builder.Services.AddScoped<IPasswordPolicy, PassphrasePasswordPolicy>();
         builder.Services.AddScoped<ISeedPasswordProvider, PassphraseSeedPasswordProvider>();
+        builder.Services.AddScoped<AssistantKnowledgeReader>();
+        builder.Services.AddScoped<OpenAiAssistantClient>();
         builder.Services.AddScoped<UserFuzzr>();
         builder.Services.AddScoped<ProjectFuzzr>();
         builder.Services.AddScoped<TagFuzzr>();

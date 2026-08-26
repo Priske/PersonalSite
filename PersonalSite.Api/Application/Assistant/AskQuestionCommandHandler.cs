@@ -1,11 +1,9 @@
-using System.Text.Json;
-using PersonalSite.Api.Application.Projects.GetProjectSummeries;
 using PersonalSite.Api.Infrastructure.OpenAI;
 
 namespace PersonalSite.Api.Application.Assistant;
 
 public class AskQuestionCommandHandler(
-    GetProjectSummeriesQueryHandler getProjectsHandler,
+    AssistantKnowledgeReader knowledgeReader,
     OpenAiAssistantClient assistantClient) : IHandler
 {
     public async Task<AskQuestionResponse?> Execute(
@@ -13,21 +11,12 @@ public class AskQuestionCommandHandler(
         int? userId,
         CancellationToken cancellationToken)
     {
+        var knowledge = await knowledgeReader.ReadAsync(
+            cancellationToken);
+
         var answer = await assistantClient.AskAsync(
             request.Question,
-            async (search, token) =>
-            {
-                var projects = await getProjectsHandler.Execute(
-                    new GetProjectSummariesRequest
-                    {
-                        Page = 1,
-                        PageSize = 10,
-                        Search = search
-                    },
-                    token);
-
-                return JsonSerializer.Serialize(projects.Items);
-            },
+            knowledge,
             cancellationToken);
 
         return new AskQuestionResponse

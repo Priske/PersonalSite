@@ -14,7 +14,7 @@ public static class FileEndpoints
         app.MapPost("/files/cv", UploadCv)
             .RequireAuthorization()
             .DisableAntiforgery();
-        app.MapPost("/file/AssistantKnowledge", UploadAssistantKnowledge)
+        app.MapPost("/file/assistantknowledge", UploadAssistantKnowledge)
             .RequireAuthorization()
             .DisableAntiforgery();
         app.MapGet("/files/cv", GetCv);

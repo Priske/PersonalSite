@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Analytics;
+using PersonalSite.Api.Domain.Assistant;
 using PersonalSite.Api.Domain.FeaturedContent;
 using PersonalSite.Api.Domain.Files;
 using PersonalSite.Api.Domain.HomePageConfigs;
@@ -26,7 +27,9 @@ public sealed class AppDbContext(
     public DbSet<StoredFile> StoredFiles => Set<StoredFile>();
 
     public DbSet<FeaturedContentFile> FeaturedContentFiles => Set<FeaturedContentFile>();
+    public DbSet<AssistantKnowledgeFile> AssistantKnowledgeFiles => Set<AssistantKnowledgeFile>();
     public DbSet<FeaturedContent> FeaturedContents => Set<FeaturedContent>();
+    public DbSet<AssistantKnowledge> AssistantKnowledges => Set<AssistantKnowledge>();
 
     public DbSet<HomePageConfig> HomepageConfigs => Set<HomePageConfig>();
 
