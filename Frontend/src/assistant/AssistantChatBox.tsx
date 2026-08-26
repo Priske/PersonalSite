@@ -98,7 +98,9 @@ export function AssistantChatBox() {
         messagesStorageKey,
         JSON.stringify(messages),
       );
-    } catch {}
+    } catch {
+      // Session storage may be unavailable; the chat still works in memory.
+    }
   }, [messages]);
 
   useEffect(() => {
@@ -275,6 +277,7 @@ export function AssistantChatBox() {
             className="assistant-chat__input"
             value={question}
             rows={2}
+            maxLength={1000}
             placeholder="Ask a question…"
             disabled={askMutation.isPending}
             onChange={(event) => setQuestion(event.target.value)}
