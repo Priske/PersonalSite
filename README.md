@@ -1,12 +1,14 @@
 # Personal Site
 
-A full-stack personal portfolio and content-management application built with ASP.NET Core, React, TypeScript, PostgreSQL, and Azure Blob Storage.
+A full-stack portfolio and content-management application built with ASP.NET Core, React, TypeScript, PostgreSQL, Azure Blob Storage, and OpenAI.
 
-The public site presents my homepage, skills, projects, featured content, CV, and contact information. An authenticated account area provides the management tools behind that content. Administrators manage the official portfolio, while regular users can experiment with isolated demo homepage and project content without changing the public site.
+The public site presents my homepage, skills, projects, featured content, CV, and contact information. It also includes a portfolio assistant that answers questions about me and my work using administrator-managed Markdown knowledge files.
+
+An authenticated account area provides the management tools behind the site. Administrators manage the official portfolio, assistant knowledge, and analytics. Regular users can experiment with isolated demo homepage and project content without changing the public site.
 
 Production is available at [beneeckman.be](https://beneeckman.be) and is deployed to Azure Container Apps through GitHub Actions.
 
-> This is an actively developed personal project used to expand and demonstrate full-stack, testing, cloud, and software-design skills.
+> This is an actively developed personal project used to expand and demonstrate full-stack development, testing, cloud deployment, AI integration, and software-design skills.
 
 ## Technology
 
@@ -16,8 +18,10 @@ Production is available at [beneeckman.be](https://beneeckman.be) and is deploye
 - ASP.NET Core Minimal APIs
 - Entity Framework Core
 - PostgreSQL with Npgsql
-- JWT authentication and role-based authorization
-- Azure Blob Storage using managed identity/default Azure credentials
+- JWT bearer authentication and role-based authorization
+- Azure Blob Storage using `DefaultAzureCredential`
+- Official OpenAI .NET SDK and Responses API
+- ASP.NET Core rate limiting
 - Swagger/OpenAPI
 
 ### Frontend
@@ -28,6 +32,7 @@ Production is available at [beneeckman.be](https://beneeckman.be) and is deploye
 - React Router
 - Vite
 - Responsive custom CSS
+- Per-tab assistant history using `sessionStorage`
 
 ### Testing and delivery
 
@@ -52,6 +57,57 @@ Production is available at [beneeckman.be](https://beneeckman.be) and is deploye
 - Inline images, videos, and PDFs
 - Downloadable CV
 - Responsive desktop and mobile layouts
+- Public portfolio assistant
+
+### Portfolio assistant
+
+Visitors can open the assistant from any page and ask questions about me, my skills, my projects, or how the portfolio was built.
+
+The assistant:
+
+- Uses the OpenAI Responses API through the official .NET SDK
+- Answers from administrator-uploaded portfolio knowledge rather than querying unrelated application tables
+- Sends the current question and assembled knowledge to OpenAI for each request
+- Treats uploaded knowledge as reference material, not executable instructions
+- Is instructed not to invent undocumented details, expose secrets, or follow prompt-injection attempts
+- Explains technical subjects in language suitable for general visitors
+- Limits questions to 1,000 characters
+- Limits each client address to 10 requests per 10 minutes
+- Returns a controlled `503 Service Unavailable` response when OpenAI cannot provide an answer
+
+The frontend keeps displayed messages in `sessionStorage`, so refreshing a tab does not remove the visible conversation. Closing the tab ends that local session. Each question is evaluated independently; earlier displayed messages are not sent back to OpenAI as conversation context.
+
+The browser detects offline mode immediately and cancels assistant requests that exceed 30 seconds. Quota failures, provider errors, invalid responses, network failures, and timeouts are presented to visitors as a simple temporary-unavailability message while the rest of the portfolio remains usable.
+
+### Assistant knowledge
+
+Administrators manage the assistant's knowledge from the account area by uploading Markdown documents such as `about-me.md` and `projects.md`.
+
+Knowledge uploads:
+
+- Require administrator authorization
+- Accept `.md` files up to 256 KiB
+- Require non-empty, valid UTF-8 content
+- Normalize filenames before storage
+- Reject duplicate filenames instead of silently overwriting existing knowledge
+- Store file metadata and relationships in PostgreSQL
+- Store the Markdown contents in Azure Blob Storage
+- Remove the uploaded blob when the database save fails
+
+At request time, the application reads every linked knowledge file in filename order, labels the documents, and supplies the combined content to the assistant.
+
+### Assistant chat analytics
+
+Successful assistant exchanges are recorded as analytics activities. Each record contains:
+
+- The visitor's question
+- The assistant's answer
+- The authenticated user ID when available
+- The creation timestamp
+
+Administrators can review chat logs from the Assistant management page. The interface supports question-and-answer search, exact user-ID filtering, date filtering, date or user sorting, ascending or descending order, and pagination. Anonymous and authenticated conversations are summarized separately.
+
+Failed or rejected assistant requests are not stored as successful exchanges.
 
 ### Featured content and files
 
@@ -63,7 +119,7 @@ Supported featured files:
 - JPG, JPEG, PNG, and WebP images up to 10 MB
 - PDF documents up to 10 MB
 
-File metadata and relationships are stored in PostgreSQL. File contents are stored in Azure Blob Storage. Public file responses support range requests for efficient video playback. Removing the last reference to an attached file also removes its blob and database record.
+File metadata and relationships are stored in PostgreSQL. File contents are stored in Azure Blob Storage. Public file responses support HTTP range requests for efficient video playback. Removing the last reference to an attached file also removes its blob and database record.
 
 The CV uses the same blob-storage abstraction but has its own upload and download endpoints.
 
@@ -78,6 +134,7 @@ The account area includes management pages for:
 - Tags
 - Users
 - Account information
+- Assistant knowledge and chat logs
 - Analytics
 
 Backend handlers enforce permissions independently of frontend route protection.
@@ -101,10 +158,11 @@ The site records public engagement and server-side account activity, including:
 - Video starts, completed plays, and watched duration
 - Login activity
 - User creation and deletion activity
+- Successful assistant questions and answers
 
-Public visitors can submit engagement events. Analytics reports require authentication and administrator authorization.
+Public visitors can submit supported engagement events. Analytics reports require authentication and administrator authorization.
 
-The analytics dashboard supports searching, date filtering, sorting, and aggregated totals.
+The analytics interfaces support searching, date filtering, sorting, pagination, and aggregated totals.
 
 ## Architecture
 
@@ -113,8 +171,9 @@ The backend is organized by responsibility:
 ```text
 PersonalSite.Api/
 ├── Application/   Request models and command/query handlers
-├── Domain/        Entities, value objects, permissions, and validation
+├── Domain/        Entities, value objects, permissions, validation, and exceptions
 ├── Endpoints/     ASP.NET Core Minimal API route definitions
+├── Infrastructure/ External integrations such as OpenAI, SMTP, and security services
 ├── Migrations/    Entity Framework Core migrations
 ├── Storage/       EF repositories, database configuration, and blob storage
 ├── Analytics/     Activity entities and metadata value types
@@ -129,6 +188,7 @@ The frontend is feature-oriented:
 Frontend/src/
 ├── account/
 ├── analytics/
+├── assistant/
 ├── auth/
 ├── featured/
 ├── home/
@@ -150,6 +210,7 @@ TanStack Query manages server state, mutations, caching, and invalidation. In pr
 - Docker
 - Azure CLI or another credential supported by `DefaultAzureCredential`
 - Access to an Azure Storage account when testing uploads
+- An OpenAI API key when testing the portfolio assistant
 
 ### 1. Create the local environment file
 
@@ -159,13 +220,24 @@ Create an untracked `.env.local` file in the repository root:
 POSTGRES_PASSWORD=choose-a-local-password
 AZURE_STORAGE_ACCOUNT_NAME=your-storage-account
 AZURE_STORAGE_CONTAINER_NAME=your-container
+SMTP_PASSWORD=your-development-smtp-password
 ```
 
-The PostgreSQL password must match the password in the local connection string configured below.
+The PostgreSQL password must match the password in the local connection string configured below. The development script reads the Azure Storage and SMTP values from this file.
+
+If the complete API container is started through `compose.local.yaml`, also add:
+
+```dotenv
+JWT_SIGNING_KEY=replace-this-with-a-long-random-development-key
+INITIAL_ADMIN_NAME=Your Name
+INITIAL_ADMIN_EMAIL=your@email.example
+INITIAL_ADMIN_PASSWORD=choose-a-development-password
+OPENAI_API_KEY=your-development-openai-api-key
+```
 
 ### 2. Configure API user secrets
 
-The API project already has a user-secrets identifier. Configure the local database, JWT signing key, and initial administrator:
+The API project already has a user-secrets identifier. Configure the local database, JWT signing key, initial administrator, and OpenAI API key:
 
 ```bash
 dotnet user-secrets set \
@@ -192,9 +264,14 @@ dotnet user-secrets set \
   "InitialAdmin:Password" \
   "choose-a-development-password" \
   --project PersonalSite.Api
+
+dotnet user-secrets set \
+  "OpenAI:ApiKey" \
+  "your-development-openai-api-key" \
+  --project PersonalSite.Api
 ```
 
-The issuer and audience already have development defaults in `appsettings.json`.
+The JWT issuer and audience and the OpenAI model have defaults in `appsettings.json`.
 
 ### 3. Authenticate to Azure
 
@@ -241,7 +318,7 @@ npm --prefix Frontend run dev
 
 ## Configuration
 
-Production configuration is supplied through environment variables and Azure Container App secrets.
+ASP.NET Core configuration is supplied through `appsettings.json`, user secrets, environment variables, GitHub Actions secrets, and Azure Container App secrets.
 
 | Configuration | Purpose |
 | --- | --- |
@@ -254,13 +331,18 @@ Production configuration is supplied through environment variables and Azure Con
 | `InitialAdmin__Password` | Initial administrator password |
 | `AzureStorage__AccountName` | Azure Storage account containing portfolio files |
 | `AzureStorage__ContainerName` | Blob container used for portfolio files |
+| `Smtp__Password` | SMTP account password used by the contact form |
+| `OpenAI__ApiKey` | OpenAI API key used by the portfolio assistant |
+| `OpenAI__Model` | OpenAI model name; defaults to the value in `appsettings.json` |
 | `SeedDatabase` | Enables additional development seed data |
 
 Blob authentication does not use a storage connection string. Production uses the Azure identity available to the application.
 
+The production deployment stores the SMTP password and OpenAI API key as GitHub Actions secrets, writes them to Azure Container App secrets, and maps them into the container through secret references. Secret values are not committed to the repository or embedded in the container image.
+
 ## Database migrations
 
-The API applies pending Entity Framework Core migrations during startup.
+The API applies pending Entity Framework Core migrations during startup. The assistant knowledge model uses an additive migration that creates the knowledge and attachment tables. Assistant chat logs reuse the existing analytics activity and metadata tables.
 
 Create a migration after changing the persisted model:
 
@@ -284,10 +366,10 @@ Always inspect a generated migration before committing or deploying it.
 
 Docker must be running because the integration tests use Testcontainers.
 
-Run the backend test suite:
+Run the backend test suite in the same configuration used by deployment:
 
 ```bash
-dotnet test PersonalSite.sln
+dotnet test PersonalSite.sln --configuration Release
 ```
 
 Lint and build the frontend:
@@ -312,13 +394,17 @@ The general CI workflow runs on pushes and pull requests. It restores the .NET s
 
 Pushes to `main` also trigger the production workflow:
 
-1. Restore and build the backend.
-2. Run the backend tests in Release mode.
+1. Restore and build the backend in Release mode.
+2. Run the backend tests.
 3. Install and build the frontend under Node.js 24.
 4. Build the production Docker image.
 5. Push commit-specific and `latest` tags to Azure Container Registry.
-6. Deploy the commit-specific image to Azure Container Apps.
-7. Verify the deployed image and public website.
+6. Validate and configure the SMTP and OpenAI secrets in Azure Container Apps.
+7. Deploy the commit-specific image as a new Container App revision.
+8. Wait for the revision to report healthy and running.
+9. Verify that the revision uses the expected commit-specific image.
+10. Route production traffic to the healthy revision when multiple-revision mode is enabled.
+11. Verify the public website.
 
 The production container is built in three stages:
 
@@ -328,6 +414,18 @@ The production container is built in three stages:
 
 Azure access from GitHub Actions uses OpenID Connect rather than a long-lived Azure password.
 
+## Production rollout
+
+After the first deployment containing the assistant knowledge migration:
+
+1. Sign in to the production administrator account.
+2. Open the Assistant management page.
+3. Upload the production Markdown knowledge files.
+4. Ask a grounded question through the public chatbox.
+5. Confirm that the successful exchange appears in the administrator chat logs.
+
+Local database rows and local blob relationships are not copied to production automatically.
+
 ## Project status
 
-The application is actively developed. Current work focuses on expanding portfolio content, analytics, test coverage, and production hardening while keeping official and demo data isolated.
+The application is actively developed and deployed. Current work focuses on expanding portfolio content, assistant knowledge, analytics, test coverage, and production hardening while keeping official and demo data isolated.

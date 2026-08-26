@@ -6,6 +6,8 @@ import type {
   GetAssistantChatAnalyticsRequest,
 } from "./types";
 
+const assistantRequestTimeoutMilliseconds = 30_000;
+
 export function uploadAssistantKnowledge(file: File) {
   const body = new FormData();
 
@@ -17,11 +19,27 @@ export function uploadAssistantKnowledge(file: File) {
   });
 }
 
-export function askQuestion(request: AskQuestionRequest) {
-  return apiRequest<AskQuestionResponse>("/assistant/ask", {
-    method: "POST",
-    body: JSON.stringify(request),
-  });
+export async function askQuestion(request: AskQuestionRequest) {
+  if (!window.navigator.onLine) {
+    throw new Error("The browser is currently offline.");
+  }
+
+  const controller = new AbortController();
+
+  const timeoutId = window.setTimeout(
+    () => controller.abort(),
+    assistantRequestTimeoutMilliseconds,
+  );
+
+  try {
+    return await apiRequest<AskQuestionResponse>("/assistant/ask", {
+      method: "POST",
+      body: JSON.stringify(request),
+      signal: controller.signal,
+    });
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
 }
 
 export function getAssistantChatAnalytics(
