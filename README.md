@@ -429,8 +429,3 @@ Local database rows and local blob relationships are not copied to production au
 ## Project status
 
 The application is actively developed and deployed. Current work focuses on expanding portfolio content, assistant knowledge, analytics, test coverage, and production hardening while keeping official and demo data isolated.
-
-## Motivation
-## Quick Start
-## Usage
-## Contributing
