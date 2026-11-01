@@ -12,7 +12,7 @@ export function RegistrationAnalyticsSection({
   resetKey,
 }: RegistrationAnalyticsSectionProps) {
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
+  const [pageSize, setPageSize] = useState(5);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("createdAt");
   const [descending, setDescending] = useState(true);
@@ -21,7 +21,7 @@ export function RegistrationAnalyticsSection({
 
   useEffect(() => {
     setPage(1);
-    setPageSize(20);
+    setPageSize(5);
     setSearch("");
     setSortBy("createdAt");
     setDescending(true);

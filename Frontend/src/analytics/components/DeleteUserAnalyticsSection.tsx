@@ -12,7 +12,7 @@ export function DeleteUserAnalyticsSection({
   resetKey,
 }: DeleteUserAnalyticsSectionProps) {
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
+  const [pageSize, setPageSize] = useState(5);
   const [search, setSearch] = useState("");
   const [successful, setSuccessful] = useState<boolean | undefined>();
   const [sortBy, setSortBy] = useState("createdAt");
@@ -22,7 +22,7 @@ export function DeleteUserAnalyticsSection({
 
   useEffect(() => {
     setPage(1);
-    setPageSize(20);
+    setPageSize(5);
     setSearch("");
     setSuccessful(undefined);
     setSortBy("createdAt");

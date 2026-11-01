@@ -37,7 +37,7 @@ public sealed class UploadAssistantKnowledgeCommandHandler(
         string contentType,
         long fileSize,
         CancellationToken cancellationToken,
-        bool replaceAll = false)
+        bool replaceExisting = false)
     {
         if (!actor.IsAdministrator)
         {
@@ -67,7 +67,7 @@ public sealed class UploadAssistantKnowledgeCommandHandler(
         await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
         if (dbContext.Database.IsNpgsql())
             await dbContext.Database.ExecuteSqlRawAsync("SELECT pg_advisory_xact_lock(34034)", cancellationToken);
-        var storageKey = replaceAll
+        var storageKey = replaceExisting
             ? $"assistant/knowledge/{Guid.NewGuid():N}/{safeFileName}"
             : $"assistant/knowledge/{safeFileName}";
 
@@ -81,14 +81,14 @@ public sealed class UploadAssistantKnowledgeCommandHandler(
             knowledgeRepository.Add(knowledge);
         }
 
-        var fileAlreadyExists = knowledge.Files.Any(
+        var matchingAttachments = knowledge.Files.Where(
             attachment =>
                 string.Equals(
                     attachment.File.OriginalFileName,
                     safeFileName,
-                    StringComparison.OrdinalIgnoreCase));
+                    StringComparison.OrdinalIgnoreCase)).ToArray();
 
-        if (fileAlreadyExists && !replaceAll)
+        if (matchingAttachments.Length > 0 && !replaceExisting)
         {
             throw new ArgumentException(
                 $"A knowledge file named '{safeFileName}' already exists.");
@@ -120,8 +120,10 @@ public sealed class UploadAssistantKnowledgeCommandHandler(
 
         storedFileRepository.Add(storedFile);
 
-        var previous = replaceAll ? knowledge.Files.Select(attachment => attachment.File).ToArray() : [];
-        if (replaceAll) knowledge.Files.Clear();
+        // Only the uploaded filename may be replaced. Never clear the collection
+        // or detach files with different names, including manually uploaded ones.
+        var previous = matchingAttachments.Select(attachment => attachment.File).ToArray();
+        foreach (var attachment in matchingAttachments) knowledge.Files.Remove(attachment);
         foreach (var previousFile in previous)
         {
             storedFileRepository.Remove(previousFile);
@@ -156,7 +158,7 @@ public sealed class UploadAssistantKnowledgeCommandHandler(
         // A failed/ambiguous commit must not delete the possibly active new blob.
         await transaction.CommitAsync(cancellationToken);
 
-        // Detach old knowledge atomically before deleting old blobs. Cleanup
+        // Detach only same-name knowledge atomically before deleting its old blobs. Cleanup
         // failure must never roll back the active set or delete the new blob.
         var cleanupFailed = false;
         foreach (var previousFile in previous)
@@ -165,11 +167,11 @@ public sealed class UploadAssistantKnowledgeCommandHandler(
             catch
             {
                 cleanupFailed = true;
-                logger.LogWarning("Old assistant knowledge blob cleanup failed for {StorageKey}.", previousFile.StorageKey);
+                logger.LogWarning("Replaced knowledge file blob cleanup failed for {StorageKey}.", previousFile.StorageKey);
             }
         }
         if (cleanupFailed)
-            throw new InvalidOperationException("Knowledge was replaced, but old blob cleanup failed. Do not retry automatically.");
+            throw new InvalidOperationException("The same-name knowledge file was replaced, but its old blob cleanup failed. Do not retry automatically.");
     }
 
     private static void ValidateMarkdownContent(

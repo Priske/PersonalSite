@@ -62,7 +62,8 @@ public static class FileEndpoints
     }
     private static async Task<IResult> UploadAssistantKnowledge(
      IFormFile file,
-    bool? replaceAll,
+    bool? replaceExisting,
+    HttpRequest request,
     ClaimsPrincipal principal,
     UploadAssistantKnowledgeCommandHandler handler,
     CancellationToken cancellationToken)
@@ -70,6 +71,11 @@ public static class FileEndpoints
         try
         {
             var actor = principal.ToActor();
+
+            // Retired destructive contract: reject even when combined with the
+            // new flag. Never silently interpret an old replace-all request.
+            if (request.Query.ContainsKey("replaceAll"))
+                return Results.BadRequest(new KnowledgeUploadError("replaceAll is not supported. Only same-filename replacement is available."));
 
             await using var stream = file.OpenReadStream();
 
@@ -80,7 +86,7 @@ public static class FileEndpoints
                 file.ContentType,
                 file.Length,
                 cancellationToken,
-                replaceAll: replaceAll == true);
+                replaceExisting: replaceExisting == true);
 
             return Results.NoContent();
         }
@@ -98,7 +104,8 @@ public static class FileEndpoints
 
     }
 
-    private sealed record KnowledgeCapabilities(bool ReplaceAll);
+    private sealed record KnowledgeCapabilities(bool ReplaceExisting);
+    private sealed record KnowledgeUploadError(string Error);
 
     private static async Task<IResult> GetCv(
      IFileStorage fileStorage,
