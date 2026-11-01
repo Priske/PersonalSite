@@ -17,6 +17,10 @@ public static class FileEndpoints
         app.MapPost("/file/assistantknowledge", UploadAssistantKnowledge)
             .RequireAuthorization()
             .DisableAntiforgery();
+        app.MapGet("/file/assistantknowledge", (ClaimsPrincipal principal) =>
+            principal.ToActor().IsAdministrator
+                ? Results.Ok(new KnowledgeCapabilities(true))
+                : Results.Forbid()).RequireAuthorization();
         app.MapGet("/files/cv", GetCv);
         app.MapGet("/files/{fileId:int}", GetFile);
         return app;
@@ -57,7 +61,8 @@ public static class FileEndpoints
         }
     }
     private static async Task<IResult> UploadAssistantKnowledge(
-    IFormFile file,
+     IFormFile file,
+    bool? replaceAll,
     ClaimsPrincipal principal,
     UploadAssistantKnowledgeCommandHandler handler,
     CancellationToken cancellationToken)
@@ -74,7 +79,8 @@ public static class FileEndpoints
                 file.FileName,
                 file.ContentType,
                 file.Length,
-                cancellationToken);
+                cancellationToken,
+                replaceAll: replaceAll == true);
 
             return Results.NoContent();
         }
@@ -91,6 +97,8 @@ public static class FileEndpoints
         }
 
     }
+
+    private sealed record KnowledgeCapabilities(bool ReplaceAll);
 
     private static async Task<IResult> GetCv(
      IFileStorage fileStorage,

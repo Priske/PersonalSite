@@ -60,3 +60,5 @@ dist/
 *.db
 *.db*
 *.png
+
+/docs

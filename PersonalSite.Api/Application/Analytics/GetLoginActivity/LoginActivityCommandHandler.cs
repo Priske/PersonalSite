@@ -9,7 +9,7 @@ public sealed class LoginActivityCommandHandler(
     IActivityRepository activityRepository) : IHandler
 {
     private const int DefaultPage = 1;
-    private const int DefaultPageSize = 20;
+    private const int DefaultPageSize = 5;
     private const int MinPage = 1;
     private const int MaxPageSize = 50;
 

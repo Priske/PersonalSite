@@ -4,6 +4,8 @@ using PersonalSite.Api.Domain.Assistant;
 using PersonalSite.Api.Domain.Files;
 using PersonalSite.Api.Storage.Assistant;
 using PersonalSite.Api.Storage.Files;
+using PersonalSite.Api.Storage;
+using Microsoft.EntityFrameworkCore;
 
 namespace PersonalSite.Api.Application.Files;
 
@@ -11,7 +13,8 @@ public sealed class UploadAssistantKnowledgeCommandHandler(
     IFileStorage fileStorage,
     IStoredFileRepository storedFileRepository,
     IAssistantKnowledgeRepository knowledgeRepository,
-    ILogger<UploadAssistantKnowledgeCommandHandler> logger)
+    ILogger<UploadAssistantKnowledgeCommandHandler> logger,
+    AppDbContext dbContext)
     : IHandler
 {
     private static readonly FileRules Rules = new(
@@ -33,7 +36,8 @@ public sealed class UploadAssistantKnowledgeCommandHandler(
         string fileName,
         string contentType,
         long fileSize,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        bool replaceAll = false)
     {
         if (!actor.IsAdministrator)
         {
@@ -58,8 +62,14 @@ public sealed class UploadAssistantKnowledgeCommandHandler(
                 "The knowledge filename is invalid.");
         }
 
-        var storageKey =
-            $"assistant/knowledge/{safeFileName}";
+        // All writes serialize, including legacy append uploads. New blobs use a
+        // unique key so readers never see partially overwritten active content.
+        await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
+        if (dbContext.Database.IsNpgsql())
+            await dbContext.Database.ExecuteSqlRawAsync("SELECT pg_advisory_xact_lock(34034)", cancellationToken);
+        var storageKey = replaceAll
+            ? $"assistant/knowledge/{Guid.NewGuid():N}/{safeFileName}"
+            : $"assistant/knowledge/{safeFileName}";
 
         var knowledge =
             await knowledgeRepository.GetWithFilesAsync(
@@ -74,11 +84,11 @@ public sealed class UploadAssistantKnowledgeCommandHandler(
         var fileAlreadyExists = knowledge.Files.Any(
             attachment =>
                 string.Equals(
-                    attachment.File.StorageKey,
-                    storageKey,
+                    attachment.File.OriginalFileName,
+                    safeFileName,
                     StringComparison.OrdinalIgnoreCase));
 
-        if (fileAlreadyExists)
+        if (fileAlreadyExists && !replaceAll)
         {
             throw new ArgumentException(
                 $"A knowledge file named '{safeFileName}' already exists.");
@@ -110,6 +120,12 @@ public sealed class UploadAssistantKnowledgeCommandHandler(
 
         storedFileRepository.Add(storedFile);
 
+        var previous = replaceAll ? knowledge.Files.Select(attachment => attachment.File).ToArray() : [];
+        if (replaceAll) knowledge.Files.Clear();
+        foreach (var previousFile in previous)
+        {
+            storedFileRepository.Remove(previousFile);
+        }
         knowledge.Files.Add(
             new AssistantKnowledgeFile(storedFile));
 
@@ -136,6 +152,24 @@ public sealed class UploadAssistantKnowledgeCommandHandler(
 
             throw;
         }
+
+        // A failed/ambiguous commit must not delete the possibly active new blob.
+        await transaction.CommitAsync(cancellationToken);
+
+        // Detach old knowledge atomically before deleting old blobs. Cleanup
+        // failure must never roll back the active set or delete the new blob.
+        var cleanupFailed = false;
+        foreach (var previousFile in previous)
+        {
+            try { await fileStorage.DeleteAsync(previousFile.StorageKey, CancellationToken.None); }
+            catch
+            {
+                cleanupFailed = true;
+                logger.LogWarning("Old assistant knowledge blob cleanup failed for {StorageKey}.", previousFile.StorageKey);
+            }
+        }
+        if (cleanupFailed)
+            throw new InvalidOperationException("Knowledge was replaced, but old blob cleanup failed. Do not retry automatically.");
     }
 
     private static void ValidateMarkdownContent(
