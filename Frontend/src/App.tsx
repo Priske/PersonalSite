@@ -29,6 +29,7 @@ import { AddFeaturedContentPage } from "./featured/AddFeaturedContentPage";
 import { ManageFeaturedContentPage } from "./featured/ManageFeaturedContentPage";
 import { AssistantPage } from "./assistant/AssistantPage";
 import { AssistantChatBox } from "./assistant/AssistantChatBox";
+import { AccountRedirectLinksPage } from "./account/AccountRedirectLinksPage";
 
 function App() {
   return (
@@ -65,6 +66,7 @@ function App() {
             <Route path="homePage" element={<EditHomePage />} />
             <Route path="analytics" element={<AnalyticsAdminPage />} />
             <Route element={<RequireAdministrator />}>
+              <Route path="redirect-links" element={<AccountRedirectLinksPage />} />
               <Route
                 path="featured-content"
                 element={<AccountFeaturedContentPage />}

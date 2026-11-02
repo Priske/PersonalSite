@@ -103,6 +103,12 @@ export function AccountNavigation({ user }: AccountNavigationProps) {
             <span>Analytics</span>
           </NavLink>
         )}
+        {isAdministrator && (
+          <NavLink className={navigationClass} to="/account/redirect-links">
+            <span className="account-navigation__number">09</span>
+            <span>Redirect links</span>
+          </NavLink>
+        )}
       </nav>
 
       <div className="account-navigation__user">

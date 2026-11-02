@@ -59,7 +59,7 @@ export function RedirectAnalyticsSection({ resetKey }: { resetKey: number }) {
         onToChange={setTo}
       />
       <div className="analytics-referrers">
-        <div className="analytics-referrers__header"><span>Link / campaign / referrer</span><span>Visits</span></div>
+        <div className="analytics-referrers__header"><span>Link</span><span>Visits</span></div>
         {query.data.links.length === 0 && <p>No redirect visits in this selection.</p>}
         {query.data.links.map((link) => (
           <div className="analytics-referrers__row" key={JSON.stringify([link.slug, link.campaign, link.referrer])}>
