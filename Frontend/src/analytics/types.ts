@@ -86,6 +86,18 @@ export type ReferrerAnalyticsResponse = {
 
 export type ContactLinkAnalyticsRequest = ReferrerActivityRequest;
 
+export type RedirectAnalyticsItem = {
+  slug: string;
+  campaign: string | null;
+  referrer: string;
+  visits: number;
+};
+
+export type RedirectAnalyticsResponse = {
+  totalVisits: number;
+  links: RedirectAnalyticsItem[];
+};
+
 export type ContactLinkAnalyticsItem = {
   label: string;
   clicks: number;

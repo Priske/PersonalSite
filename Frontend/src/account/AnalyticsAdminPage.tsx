@@ -5,6 +5,7 @@ import { LoginAnalyticsSection } from "../analytics/components/LoginAnalyticsSec
 import { ReferrerAnalyticsSection } from "../analytics/components/ReferrerAnalyticsSection";
 import { RegistrationAnalyticsSection } from "../analytics/components/RegistrationAnalyticsSection";
 import { VideoAnalyticsSection } from "../analytics/components/VideoAnalyticsSection";
+import { RedirectAnalyticsSection } from "../analytics/components/RedirectAnalyticsSection";
 
 export function AnalyticsAdminPage() {
   const [resetKey, setResetKey] = useState(0);
@@ -41,6 +42,8 @@ export function AnalyticsAdminPage() {
       <ReferrerAnalyticsSection resetKey={resetKey} />
 
       <ContactLinkAnalyticsSection resetKey={resetKey} />
+
+      <RedirectAnalyticsSection resetKey={resetKey} />
 
       <VideoAnalyticsSection resetKey={resetKey} />
 

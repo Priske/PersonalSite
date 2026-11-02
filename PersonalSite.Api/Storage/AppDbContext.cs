@@ -9,6 +9,7 @@ using PersonalSite.Api.Domain.Projects;
 using PersonalSite.Api.Domain.Skills;
 using PersonalSite.Api.Domain.Tags;
 using PersonalSite.Api.Domain.Users;
+using PersonalSite.Api.Domain.Redirects;
 using PersonalSite.Api.Infrastructure.Security.Password;
 
 namespace PersonalSite.Api.Storage;
@@ -35,6 +36,7 @@ public sealed class AppDbContext(
 
 
     public DbSet<Activity> Activities => Set<Activity>();
+    public DbSet<RedirectLink> RedirectLinks => Set<RedirectLink>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -12,6 +12,7 @@ using PersonalSite.Api.Endpoints.Projects;
 using PersonalSite.Api.Endpoints.Skills;
 using PersonalSite.Api.Endpoints.Tags;
 using PersonalSite.Api.Endpoints.Users;
+using PersonalSite.Api.Endpoints.Redirects;
 using PersonalSite.Api.Seeding;
 using PersonalSite.Api.Storage;
 
@@ -148,6 +149,7 @@ public static class WebApplicationExtensions
         app.MapProjectEndpoints();
         app.MapHomePageEndpoints();
         app.MapAnalyticsEndpoints();
+        app.MapRedirectEndpoints();
         app.MapTagEndpoints();
         app.MapMailEndpoints();
 

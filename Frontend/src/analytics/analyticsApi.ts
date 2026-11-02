@@ -14,6 +14,7 @@ import type {
   TrackActivityRequest,
   VideoAnalyticsRequest,
   VideoAnalyticsResponse,
+  RedirectAnalyticsResponse,
 } from "./types";
 
 type AnalyticsFilterRequest = {
@@ -93,6 +94,14 @@ export function getVideoAnalytics(request: VideoAnalyticsRequest) {
 
   return apiRequest<VideoAnalyticsResponse>(
     `/analytics/videos?${searchParams.toString()}`,
+  );
+}
+
+export function getRedirectAnalytics(request: AnalyticsFilterRequest) {
+  const searchParams = new URLSearchParams();
+  addAnalyticsFilters(searchParams, request);
+  return apiRequest<RedirectAnalyticsResponse>(
+    `/analytics/redirect-links?${searchParams.toString()}`,
   );
 }
 

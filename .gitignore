@@ -61,4 +61,5 @@ dist/
 *.db*
 *.png
 
-/docs
+/docs/*
+!/docs/tracked-redirects.md
