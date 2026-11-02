@@ -62,4 +62,4 @@ dist/
 *.png
 
 /docs/*
-!/docs/tracked-redirects.md
+

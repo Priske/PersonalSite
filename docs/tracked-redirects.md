@@ -1,4 +1,4 @@
-# Tracked redirects — CareerKit UC-035
+# Tracked redirects
 
 ## What changed, and why
 
@@ -170,7 +170,7 @@ Analytics accepts the existing-style `from`, `to` (inclusive UTC timestamps),
 Defaults: visits descending. Each row is one slug/campaign/referrer-origin group;
 the total reflects the current filters. No visitor-level export is added. Like
 the existing contact analytics, the query loads LinkClicked metadata before
-grouping; at larger volumes this may need a separate performance use case.
+grouping; at larger volumes this may need a separate performance review.
 
 ## Deployment and verification checklist
 
