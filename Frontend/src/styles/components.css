@@ -1586,3 +1586,211 @@
     font-size: 2rem;
   }
 }
+
+/* Redirect visit presentation */
+
+.redirect-visits .analytics-section__header {
+  align-items: flex-start;
+}
+
+.redirect-visits-description {
+  max-width: 38rem;
+  margin: var(--space-3) 0 0;
+  color: var(--color-muted);
+}
+
+.redirect-visits .redirect-visits-total {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 7rem;
+  text-align: right;
+}
+
+.redirect-visits-total strong {
+  font-size: 2rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.redirect-visits-note {
+  margin: var(--space-3) 0 var(--space-4);
+  color: var(--color-muted);
+  font-size: .85rem;
+}
+
+.redirect-visits .analytics-filters {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.redirect-visits .analytics-filter {
+  border: 0;
+  border-top: var(--border-thin);
+}
+
+.redirect-visits .analytics-filter--search {
+  grid-column: 1 / -1;
+  border-top: 0;
+}
+
+.redirect-visits .analytics-filter:nth-child(even) {
+  border-right: var(--border-thin);
+}
+
+.redirect-visits-list {
+  border: var(--border-thin);
+}
+
+.redirect-visits-columns,
+.redirect-visits-link > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 6rem 1.25rem;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+.redirect-visits-columns {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-size: .75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.redirect-visits-columns > :nth-child(2) {
+  text-align: right;
+}
+
+.redirect-visits-link {
+  background: var(--color-paper);
+  border-top: var(--border-thin);
+}
+
+.redirect-visits-link > summary {
+  min-width: 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.redirect-visits-link > summary::-webkit-details-marker {
+  display: none;
+}
+
+.redirect-visits-link > summary:hover,
+.redirect-visits-link[open] > summary {
+  background: var(--color-panel);
+}
+
+.redirect-visits-name,
+.redirect-visits-count {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-1);
+}
+
+.redirect-visits-name strong {
+  font-size: 1.15rem;
+  overflow-wrap: anywhere;
+}
+
+.redirect-visits-name > span,
+.redirect-visits-count > span {
+  color: var(--color-muted);
+  font-size: .8rem;
+}
+
+.redirect-visits-count {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.redirect-visits-count strong {
+  font-size: 1.4rem;
+  line-height: 1.2;
+}
+
+.redirect-visits-toggle::before {
+  content: "+";
+  font-size: 1.4rem;
+}
+
+.redirect-visits-link[open] .redirect-visits-toggle::before {
+  content: "−";
+}
+
+.redirect-visits-breakdown {
+  min-width: 0;
+  padding: var(--space-4);
+  border-top: var(--border-thin);
+}
+
+.redirect-visits-breakdown h4 {
+  margin: 0 0 var(--space-4);
+  overflow-wrap: anywhere;
+}
+
+.redirect-visits-breakdown ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.redirect-visits-breakdown li + li {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-muted);
+}
+
+.redirect-visits-breakdown dl {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) 4rem;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.redirect-visits-breakdown dl > div {
+  min-width: 0;
+}
+
+.redirect-visits-breakdown dt {
+  color: var(--color-muted);
+  font-size: .75rem;
+  font-weight: 700;
+}
+
+.redirect-visits-breakdown dd {
+  margin: var(--space-1) 0 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 700px) {
+  .redirect-visits .analytics-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .redirect-visits .analytics-filter:nth-child(even) {
+    border-right: 0;
+  }
+
+  .redirect-visits .analytics-section__header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .redirect-visits .redirect-visits-total {
+    min-width: 0;
+    text-align: left;
+  }
+
+  .redirect-visits-columns,
+  .redirect-visits-link > summary {
+    grid-template-columns: minmax(0, 1fr) 3.25rem 1rem;
+    gap: var(--space-2);
+    padding: var(--space-3);
+  }
+
+  .redirect-visits-breakdown dl {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+}
