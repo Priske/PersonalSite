@@ -5,6 +5,17 @@ import { AnalyticsFilters } from "./AnalyticsFilters";
 import { toIsoDate } from "./analyticsHelpers";
 import { groupRedirectVisits } from "./redirectVisitGroups";
 
+function referringWebsite(value: string) {
+  try {
+    const website = new URL(value);
+    return ["http:", "https:"].includes(website.protocol) && website.hostname
+      ? value
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 export function RedirectAnalyticsSection({ resetKey }: { resetKey: number }) {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("visits");
@@ -69,23 +80,27 @@ export function RedirectAnalyticsSection({ resetKey }: { resetKey: number }) {
           <div className="redirect-visits-columns" aria-hidden="true"><span>Link</span><span>Visits</span><span /></div>
           {groups.map((group) => (
             <details className="redirect-visits-link" key={group.slug}>
-              <summary>
-                <span className="redirect-visits-name"><strong>{group.slug}</strong><span>Details</span></span>
-                <span className="redirect-visits-count"><strong>{group.visits}</strong><span>{group.visits === 1 ? "visit" : "visits"}</span></span>
+              <summary aria-label={`${group.slug}: ${group.visits} ${group.visits === 1 ? "visit" : "visits"}. Show campaign and referrer details.`}>
+                <span className="redirect-visits-name"><strong>{group.slug}</strong></span>
+                <span className="redirect-visits-count"><strong>{group.visits}</strong></span>
                 <span className="redirect-visits-toggle" aria-hidden="true" />
               </summary>
               <div className="redirect-visits-breakdown">
-                <h4>Visit details for {group.slug}</h4>
+                <h4>Entry link: <code>/r/{group.slug}</code></h4>
+                <p className="redirect-visits-detail-help">These visitors used this redirect. The campaign label is the optional label you assigned to it.</p>
                 <ul>
-                  {group.details.map((detail) => (
-                    <li key={JSON.stringify([detail.campaign, detail.referrer])}>
-                      <dl>
-                        <div><dt>Campaign</dt><dd>{detail.campaign ?? "No campaign"}</dd></div>
-                        <div><dt>Referrer</dt><dd>{detail.referrer || "Direct / unavailable"}</dd></div>
-                        <div><dt>Visits</dt><dd>{detail.visits}</dd></div>
-                      </dl>
-                    </li>
-                  ))}
+                  {group.details.map((detail) => {
+                    const website = referringWebsite(detail.referrer);
+                    return (
+                      <li key={JSON.stringify([detail.campaign, detail.referrer])}>
+                        <dl>
+                          <div><dt>Campaign label</dt><dd>{detail.campaign ?? "Not set"}</dd></div>
+                          {website && <div><dt>Referring website</dt><dd>{website}</dd></div>}
+                          <div className="redirect-visits-detail-count"><dt>Recorded visits</dt><dd>{detail.visits}</dd></div>
+                        </dl>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             </details>

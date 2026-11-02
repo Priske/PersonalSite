@@ -1693,12 +1693,6 @@
   overflow-wrap: anywhere;
 }
 
-.redirect-visits-name > span,
-.redirect-visits-count > span {
-  color: var(--color-muted);
-  font-size: .8rem;
-}
-
 .redirect-visits-count {
   text-align: right;
   font-variant-numeric: tabular-nums;
@@ -1729,6 +1723,12 @@
   overflow-wrap: anywhere;
 }
 
+.redirect-visits-detail-help {
+  margin: var(--space-3) 0;
+  color: var(--color-muted);
+  font-size: .85rem;
+}
+
 .redirect-visits-breakdown ul {
   margin: 0;
   padding: 0;
@@ -1750,6 +1750,10 @@
 
 .redirect-visits-breakdown dl > div {
   min-width: 0;
+}
+
+.redirect-visits-detail-count {
+  grid-column: -2 / -1;
 }
 
 .redirect-visits-breakdown dt {
