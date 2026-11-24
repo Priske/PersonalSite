@@ -1,12 +1,12 @@
 .assistant-chat-logs {
   width: 100%;
   margin-top: 48px;
-  border-top: 2px solid #080808;
+  border-top: 2px solid var(--appearance-ink, #080808);
 }
 
 .assistant-chat-logs__summary {
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-bottom: 2px solid #080808;
+  border-bottom: 2px solid var(--appearance-ink, #080808);
 }
 
 .assistant-chat-logs__content {
@@ -21,8 +21,8 @@
 
 .assistant-chat-log {
   overflow: hidden;
-  border: 2px solid #080808;
-  background: #fff;
+  border: 2px solid var(--appearance-ink, #080808);
+  background: var(--appearance-paper, #fff);
 }
 
 .assistant-chat-log__header {
@@ -31,8 +31,8 @@
   justify-content: space-between;
   gap: 24px;
   padding: 16px 20px;
-  color: #fff;
-  background: #080808;
+  color: var(--appearance-paper, #fff);
+  background: var(--appearance-ink, #080808);
 }
 
 .assistant-chat-log__header > div {
@@ -52,12 +52,12 @@
 }
 
 .assistant-chat-log__id {
-  color: #bdbdbd;
+  color: var(--appearance-inverse-muted, #bdbdbd);
 }
 
 .assistant-chat-log__header time {
   flex-shrink: 0;
-  color: #fff;
+  color: var(--appearance-paper, #fff);
   text-align: right;
 }
 
@@ -72,11 +72,11 @@
 }
 
 .assistant-chat-log__message + .assistant-chat-log__message {
-  border-top: 1px solid #080808;
+  border-top: 1px solid var(--appearance-ink, #080808);
 }
 
 .assistant-chat-log__message--answer {
-  background: #ededed;
+  background: var(--appearance-panel, #ededed);
 }
 
 .assistant-chat-log__label {
@@ -98,9 +98,9 @@
 .assistant-chat-logs__empty {
   margin-top: 28px;
   padding: 36px 24px;
-  border: 2px solid #080808;
+  border: 2px solid var(--appearance-ink, #080808);
   text-align: center;
-  background: #ededed;
+  background: var(--appearance-panel, #ededed);
 }
 
 .assistant-chat-logs__empty strong {
@@ -122,7 +122,7 @@
   .assistant-chat-logs__summary
     .analytics-summary__item
     + .analytics-summary__item {
-    border-top: 1px solid #080808;
+    border-top: 1px solid var(--appearance-ink, #080808);
     border-left: 0;
   }
 

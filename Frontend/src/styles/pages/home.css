@@ -605,7 +605,7 @@
 
 .contact-panel__description {
   max-width: 38rem;
-  color: rgb(255 255 255 / 0.72);
+  color: var(--appearance-inverse-muted, rgb(255 255 255 / 0.72));
 }
 
 .contact-panel__links {
@@ -623,7 +623,7 @@
   height: 2.75rem;
   color: var(--color-paper);
   background: transparent;
-  border: 1px solid rgb(255 255 255 / 0.35);
+  border: 1px solid var(--appearance-paper, rgb(255 255 255 / 0.35));
   border-radius: 50%;
   transition:
     color 0.2s ease,
@@ -867,8 +867,8 @@
   display: grid;
   gap: var(--space-5);
   padding: clamp(1.5rem, 4vw, 2.5rem);
-  background: #171717;
-  border: 1px solid rgb(255 255 255 / 0.14);
+  background: var(--appearance-panel, #171717);
+  border: 1px solid var(--appearance-ink, rgb(255 255 255 / 0.14));
   box-shadow: 0 1.25rem 3rem rgb(0 0 0 / 0.28);
 }
 
@@ -888,7 +888,7 @@
 }
 
 .contact-form__field label {
-  color: var(--color-paper);
+  color: var(--appearance-ink, var(--color-paper));
   font-size: 0.9rem;
   font-weight: 700;
 }
@@ -897,9 +897,9 @@
 .contact-form__field textarea {
   width: 100%;
   padding: 0.9rem 1rem;
-  color: var(--color-paper);
-  background: #0e0e0e;
-  border: 1px solid rgb(255 255 255 / 0.25);
+  color: var(--appearance-ink, var(--color-paper));
+  background: var(--appearance-paper, #0e0e0e);
+  border: 1px solid var(--appearance-ink, rgb(255 255 255 / 0.25));
   transition:
     background-color 0.2s ease,
     border-color 0.2s ease,
@@ -908,15 +908,15 @@
 
 .contact-form__field input:hover,
 .contact-form__field textarea:hover {
-  border-color: rgb(255 255 255 / 0.45);
+  border-color: var(--appearance-ink, rgb(255 255 255 / 0.45));
 }
 
 .contact-form__field input:focus,
 .contact-form__field textarea:focus {
-  background: #111;
-  border-color: var(--color-paper);
+  background: var(--appearance-paper, #111);
+  border-color: var(--appearance-focus, var(--color-paper));
   outline: none;
-  box-shadow: 0 0 0 3px rgb(255 255 255 / 0.12);
+  box-shadow: 0 0 0 3px var(--appearance-focus, rgb(255 255 255 / 0.12));
 }
 
 .contact-form__field textarea {

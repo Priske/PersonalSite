@@ -1,4 +1,5 @@
 :root {
+  color-scheme: light;
   --color-ink: #090909;
   --color-paper: #ffffff;
   --color-panel: #ececec;
@@ -24,4 +25,22 @@
   --radius-pill: 999px;
   --border-thin: 1px solid var(--color-line);
   --shadow-soft: 0 18px 50px rgb(0 0 0 / 0.08);
+}
+
+:root[data-appearance="dark"] {
+  color-scheme: dark;
+  --color-ink: #f3f4f6;
+  --color-paper: #16181c;
+  --color-panel: #2b3038;
+  --color-muted: #b8bec7;
+  --color-line: #a3aab5;
+  --color-focus: #8fc4ff;
+  --shadow-soft: 0 18px 50px rgb(0 0 0 / 0.35);
+  /* Dark-only overrides retain the exact existing light values at each use. */
+  --appearance-ink: var(--color-ink);
+  --appearance-paper: var(--color-paper);
+  --appearance-panel: var(--color-panel);
+  --appearance-inverse-muted: var(--color-paper);
+  --appearance-header: rgb(22 24 28 / 0.94);
+  --appearance-focus: var(--color-focus);
 }

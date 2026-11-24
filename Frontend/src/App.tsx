@@ -1,5 +1,8 @@
 import "./styles/global.css";
 import "./styles/components.css";
+import { useLayoutEffect, useState } from "react";
+import { readAppearance, saveAppearance } from "./appearance";
+import type { Appearance } from "./appearance";
 import { Route, Routes } from "react-router-dom";
 import { Navigation } from "./components/Navigation";
 import { LoginPage } from "./auth/LoginPage";
@@ -32,10 +35,34 @@ import { AssistantChatBox } from "./assistant/AssistantChatBox";
 import { AccountRedirectLinksPage } from "./account/AccountRedirectLinksPage";
 
 function App() {
+  const [preference, setPreference] = useState(readAppearance);
+  const [systemDark, setSystemDark] = useState(
+    () => window.matchMedia("(prefers-color-scheme: dark)").matches,
+  );
+  const appearance: Appearance = preference ?? (systemDark ? "dark" : "light");
+
+  useLayoutEffect(() => {
+    const system = window.matchMedia("(prefers-color-scheme: dark)");
+    const update = () => setSystemDark(system.matches);
+    update();
+    system.addEventListener("change", update);
+    return () => system.removeEventListener("change", update);
+  }, []);
+
+  useLayoutEffect(() => {
+    document.documentElement.dataset.appearance = appearance;
+  }, [appearance]);
+
+  function toggleAppearance() {
+    const next = appearance === "dark" ? "light" : "dark";
+    setPreference(next);
+    saveAppearance(next);
+  }
+
   return (
     <>
       <SiteEntryTracker />
-      <Navigation />
+      <Navigation appearance={appearance} onAppearanceToggle={toggleAppearance} />
 
       <Routes>
         <Route path="/" element={<HomePage />} />

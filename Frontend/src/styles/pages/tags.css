@@ -7,7 +7,7 @@
 .tag-list-card {
   overflow: hidden;
   border: 1px solid currentColor;
-  background: var(--surface-color, #fff);
+  background: var(--surface-color, var(--appearance-paper, #fff));
 }
 
 .tag-list-card__header {
@@ -146,8 +146,8 @@
 
 .tag-list__toggle:hover,
 .tag-list__toggle:focus-visible {
-  background: #000;
-  color: #fff;
+  background: var(--appearance-ink, #000);
+  color: var(--appearance-paper, #fff);
 }
 
 .tag-list__toggle:focus-visible {
@@ -193,14 +193,14 @@
 }
 
 .tag-list__item--expanded .tag-list__toggle {
-  background: #000;
-  color: #fff;
+  background: var(--appearance-ink, #000);
+  color: var(--appearance-paper, #fff);
 }
 
 .tag-list__details {
   padding: 0 1.5rem 1.5rem;
-  background: #f3f3f3;
-  color: #000;
+  background: var(--appearance-panel, #f3f3f3);
+  color: var(--appearance-ink, #000);
 }
 
 .tag-details__section {
@@ -305,10 +305,10 @@
 .button {
   min-height: 3.25rem;
   padding: 0.75rem 1.4rem;
-  border: 2px solid #000;
+  border: 2px solid var(--appearance-ink, #000);
   border-radius: 999px;
-  background: #000;
-  color: #fff;
+  background: var(--appearance-ink, #000);
+  color: var(--appearance-paper, #fff);
   cursor: pointer;
   font: inherit;
   font-weight: 800;
@@ -316,30 +316,30 @@
 
 .button:hover:not(:disabled),
 .button:focus-visible:not(:disabled) {
-  background: #fff;
-  color: #000;
+  background: var(--appearance-paper, #fff);
+  color: var(--appearance-ink, #000);
 }
 
 .button--secondary {
   background: transparent;
-  color: #000;
+  color: var(--appearance-ink, #000);
 }
 
 .button--secondary:hover:not(:disabled),
 .button--secondary:focus-visible:not(:disabled) {
-  background: #000;
-  color: #fff;
+  background: var(--appearance-ink, #000);
+  color: var(--appearance-paper, #fff);
 }
 
 .button--danger {
   background: transparent;
-  color: #000;
+  color: var(--appearance-ink, #000);
 }
 
 .button--danger:hover:not(:disabled),
 .button--danger:focus-visible:not(:disabled) {
-  background: #000;
-  color: #fff;
+  background: var(--appearance-ink, #000);
+  color: var(--appearance-paper, #fff);
 }
 
 .button:disabled {

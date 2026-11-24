@@ -218,7 +218,7 @@
 }
 
 .user-search__field input:focus {
-  outline: 3px solid rgb(0 0 0 / 0.18);
+  outline: 3px solid var(--appearance-focus, rgb(0 0 0 / 0.18));
   outline-offset: 2px;
 }
 
@@ -746,7 +746,7 @@
 }
 
 .edit-user-form__field input:focus {
-  outline: 3px solid rgb(0 0 0 / 0.18);
+  outline: 3px solid var(--appearance-focus, rgb(0 0 0 / 0.18));
   outline-offset: 2px;
 }
 

@@ -3,8 +3,16 @@ import { Link, NavLink } from "react-router-dom";
 import { getCurrentUser } from "../auth/authApi";
 import { LogoutButton } from "../auth/LogoutButton";
 import { useAccessToken } from "../auth/tokenStorage";
+import type { Appearance } from "../appearance";
+import { AppearanceToggle } from "./AppearanceToggle";
 
-export function Navigation() {
+export function Navigation({
+  appearance,
+  onAppearanceToggle,
+}: {
+  appearance: Appearance;
+  onAppearanceToggle: () => void;
+}) {
   const accessToken = useAccessToken();
   const hasAccessToken = accessToken !== null;
 
@@ -28,7 +36,7 @@ export function Navigation() {
   const isUser = currentUserQuery.data?.role === "User";
   return (
     <header className="site-header">
-      <nav className="site-nav container" aria-label="Main navigation">
+      <div className="site-nav container">
         <Link className="site-nav__brand" to="/">
           <span className="site-nav__brand-name">Ben Eeckman</span>
 
@@ -37,7 +45,8 @@ export function Navigation() {
           </span>
         </Link>
 
-        <ul className="site-nav__links">
+        <nav className="site-nav__navigation" aria-label="Main navigation">
+          <ul className="site-nav__links">
           <li>
             <a className="site-nav__link" href="/#about">
               About
@@ -102,8 +111,12 @@ export function Navigation() {
               </li>
             </>
           )}
-        </ul>
-      </nav>
+          </ul>
+        </nav>
+        <div className="site-header__appearance">
+          <AppearanceToggle appearance={appearance} onToggle={onAppearanceToggle} />
+        </div>
+      </div>
     </header>
   );
 }

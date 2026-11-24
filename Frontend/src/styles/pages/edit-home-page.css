@@ -186,11 +186,11 @@
 
 .form-field input:focus,
 .form-field textarea:focus {
-  outline: 3px solid rgb(0 0 0 / 15%);
+  outline: 3px solid var(--appearance-focus, rgb(0 0 0 / 15%));
   outline-offset: 1px;
 }
 .form-field :disabled{
-  background-color:#d8d8d8;
+  background-color:var(--appearance-panel, #d8d8d8);
 }
 
 /* --------------------------------
@@ -205,11 +205,11 @@
 }
 
 .form-message--success {
-  background: #e7f4e7;
+  background: var(--appearance-panel, #e7f4e7);
 }
 
 .form-message--error {
-  background: #f8e2e2;
+  background: var(--appearance-panel, #f8e2e2);
 }
 
 /* --------------------------------
@@ -256,7 +256,7 @@
   max-height: calc(100vh - 13rem);
   overflow: auto;
   padding: 3rem 1.5rem 1.5rem;
-  background: #d8d8d8;
+  background: var(--appearance-panel, #d8d8d8);
 }
 
 .home-preview-modal__page {
