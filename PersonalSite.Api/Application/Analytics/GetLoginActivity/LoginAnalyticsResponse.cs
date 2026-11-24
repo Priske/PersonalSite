@@ -6,4 +6,7 @@ public sealed record LoginAnalyticsResponse(
     int Page,
     int PageSize,
     int TotalItems,
-    int TotalPages);
+    int TotalPages)
+{
+    public IReadOnlyList<DailyOutcome> Daily { get; init; } = [];
+}

@@ -6,4 +6,7 @@ public sealed record CreateUserAnalyticsResponse(
     int Page,
     int PageSize,
     int TotalItems,
-    int TotalPages);
+    int TotalPages)
+{
+    public IReadOnlyList<DailyCount> Daily { get; init; } = [];
+}

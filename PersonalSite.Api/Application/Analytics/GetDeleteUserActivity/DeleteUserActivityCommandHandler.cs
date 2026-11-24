@@ -180,7 +180,11 @@ public sealed class DeleteUserActivityCommandHandler(
             page,
             pageSize,
             totalItems,
-            totalPages);
+            totalPages)
+        {
+            Daily = AnalyticsCalendar.Outcomes(deleteActivities.Select(activity =>
+                (activity.CreatedAt, activity.Successful)), request.TimeZone)
+        };
     }
 
     private static string? GetStringMetadataValue(

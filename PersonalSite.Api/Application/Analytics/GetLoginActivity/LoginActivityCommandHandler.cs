@@ -129,7 +129,11 @@ public sealed class LoginActivityCommandHandler(
             page,
             pageSize,
             totalItems,
-            totalPages);
+            totalPages)
+        {
+            Daily = AnalyticsCalendar.Outcomes(allActivities.Select(activity =>
+                (activity.CreatedAt, activity.Type == ActivityType.Login)), request.TimeZone)
+        };
     }
 
     private static string? GetFailureReason(Activity activity)

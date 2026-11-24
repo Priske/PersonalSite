@@ -8,4 +8,5 @@ public sealed record GetCreateUserAnalyticsRequest(
     string? SortBy,
     bool? Descending,
     int? Page,
-    int? PageSize);
+    int? PageSize,
+    string? TimeZone = null);

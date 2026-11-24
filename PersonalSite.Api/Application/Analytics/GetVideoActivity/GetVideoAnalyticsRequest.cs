@@ -5,4 +5,5 @@ public sealed record GetVideoAnalyticsRequest(
     DateTimeOffset? From,
     DateTimeOffset? To,
     string? SortBy,
-    bool? Descending);
+    bool? Descending,
+    string? TimeZone = null);

@@ -13,6 +13,7 @@ type AnalyticsFiltersProps = {
   descending: boolean;
   from: string;
   to: string;
+  showDates?: boolean;
   onSearchChange: (value: string) => void;
   onSortByChange: (value: string) => void;
   onDescendingChange: (value: boolean) => void;
@@ -29,6 +30,7 @@ export function AnalyticsFilters({
   descending,
   from,
   to,
+  showDates = true,
   onSearchChange,
   onSortByChange,
   onDescendingChange,
@@ -51,25 +53,27 @@ export function AnalyticsFilters({
 
       {children}
 
-      <label className="analytics-filter">
-        <span>From</span>
+      {showDates && (
+        <>
+          <label className="analytics-filter">
+            <span>From</span>
+            <input
+              type="date"
+              value={from}
+              onChange={(event) => onFromChange(event.target.value)}
+            />
+          </label>
 
-        <input
-          type="date"
-          value={from}
-          onChange={(event) => onFromChange(event.target.value)}
-        />
-      </label>
-
-      <label className="analytics-filter">
-        <span>To</span>
-
-        <input
-          type="date"
-          value={to}
-          onChange={(event) => onToChange(event.target.value)}
-        />
-      </label>
+          <label className="analytics-filter">
+            <span>To</span>
+            <input
+              type="date"
+              value={to}
+              onChange={(event) => onToChange(event.target.value)}
+            />
+          </label>
+        </>
+      )}
 
       <label className="analytics-filter">
         <span>Sort by</span>

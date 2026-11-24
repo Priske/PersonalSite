@@ -58,9 +58,19 @@ public sealed class ContactLinkActivityCommandHandler(
                 : links.OrderBy(link => link.Clicks).ToList()
         };
 
+        var matchingLabels = links.Select(item => item.Label).ToHashSet();
+        var matchingActivities = activities.Where(activity =>
+            matchingLabels.Contains(GetContactLabel(activity)!)).ToList();
         return new ContactLinkAnalyticsResponse(
             links.Sum(link => link.Clicks),
-            links);
+            links)
+        {
+            Daily = AnalyticsCalendar.Counts(matchingActivities.Select(activity => activity.CreatedAt), request.TimeZone),
+            DailyByLink = matchingActivities.GroupBy(activity => GetContactLabel(activity)!)
+                .OrderBy(group => group.Key)
+                .Select(group => new ContactLinkDailySeries(group.Key,
+                    AnalyticsCalendar.Counts(group.Select(activity => activity.CreatedAt), request.TimeZone))).ToList()
+        };
     }
 
     private static string? GetContactLabel(Activity activity)

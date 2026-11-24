@@ -31,6 +31,7 @@ export type TrackActivityRequest = {
 };
 
 export type GetLoginAnalyticsRequest = {
+  timeZone?: string;
   userId?: number;
   search?: string;
   successful?: boolean;
@@ -59,6 +60,7 @@ export type LoginAnalyticsSummary = {
 };
 
 export type LoginAnalyticsResponse = {
+  daily: DailyOutcome[];
   summary: LoginAnalyticsSummary;
   items: LoginActivityResponse[];
   page: number;
@@ -68,6 +70,7 @@ export type LoginAnalyticsResponse = {
 };
 
 export type ReferrerActivityRequest = {
+  timeZone?: string;
   search?: string;
   from?: string;
   to?: string;
@@ -80,6 +83,9 @@ export type ReferrerAnalyticsItem = {
 };
 
 export type ReferrerAnalyticsResponse = {
+  dailyByReferrer: { referrer: string; daily: DailyCount[] }[];
+  matchingPageViews: number;
+  daily: DailyCount[];
   totalPageViews: number;
   referrers: ReferrerAnalyticsItem[];
 };
@@ -94,6 +100,8 @@ export type RedirectAnalyticsItem = {
 };
 
 export type RedirectAnalyticsResponse = {
+  dailyByLink: { slug: string; daily: DailyCount[] }[];
+  daily: DailyCount[];
   totalVisits: number;
   links: RedirectAnalyticsItem[];
 };
@@ -104,6 +112,8 @@ export type ContactLinkAnalyticsItem = {
 };
 
 export type ContactLinkAnalyticsResponse = {
+  dailyByLink: { label: string; daily: DailyCount[] }[];
+  daily: DailyCount[];
   totalClicks: number;
   links: ContactLinkAnalyticsItem[];
 };
@@ -120,6 +130,8 @@ export type VideoAnalyticsItem = {
 };
 
 export type VideoAnalyticsResponse = {
+  dailyByVideo: { featuredContentId: number; fileId: number; fileName: string; daily: DailyVideo[] }[];
+  daily: DailyVideo[];
   totalPlays: number;
   totalCompletions: number;
   totalWatchedSeconds: number;
@@ -127,6 +139,7 @@ export type VideoAnalyticsResponse = {
 };
 
 export type GetCreateUserAnalyticsRequest = {
+  timeZone?: string;
   search?: string;
   from?: string;
   to?: string;
@@ -149,6 +162,7 @@ export type CreateUserAnalyticsSummary = {
 };
 
 export type CreateUserAnalyticsResponse = {
+  daily: DailyCount[];
   summary: CreateUserAnalyticsSummary;
   items: CreateUserActivityResponse[];
   page: number;
@@ -157,6 +171,7 @@ export type CreateUserAnalyticsResponse = {
   totalPages: number;
 };
 export type GetDeleteUserAnalyticsRequest = {
+  timeZone?: string;
   userId?: number;
   search?: string;
   successful?: boolean;
@@ -184,6 +199,7 @@ export type DeleteUserAnalyticsSummary = {
 };
 
 export type DeleteUserAnalyticsResponse = {
+  daily: DailyOutcome[];
   summary: DeleteUserAnalyticsSummary;
   items: DeleteUserActivityResponse[];
   page: number;
@@ -191,3 +207,7 @@ export type DeleteUserAnalyticsResponse = {
   totalItems: number;
   totalPages: number;
 };
+
+export type DailyCount = { date: string; count: number };
+export type DailyOutcome = { date: string; successful: number; failed: number };
+export type DailyVideo = { date: string; plays: number; completions: number; watchedSeconds: number };

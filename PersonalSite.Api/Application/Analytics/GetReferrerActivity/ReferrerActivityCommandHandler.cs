@@ -72,9 +72,20 @@ public sealed class ReferrerActivityCommandHandler(
                 .ToList()
         };
 
+        var matchingReferrers = referrers.Select(item => item.Referrer).ToHashSet();
+        var matchingActivities = allActivities.Where(activity =>
+            matchingReferrers.Contains(NormalizeReferrer(GetReferrer(activity)))).ToList();
         return new ReferrerAnalyticsResponse(
             totalPageViews,
-            referrers);
+            referrers)
+        {
+            MatchingPageViews = referrers.Sum(item => item.Count),
+            Daily = AnalyticsCalendar.Counts(matchingActivities.Select(activity => activity.CreatedAt), request.TimeZone),
+            DailyByReferrer = matchingActivities.GroupBy(activity => NormalizeReferrer(GetReferrer(activity)))
+                .OrderBy(group => group.Key)
+                .Select(group => new ReferrerDailySeries(group.Key,
+                    AnalyticsCalendar.Counts(group.Select(activity => activity.CreatedAt), request.TimeZone))).ToList()
+        };
     }
 
     private static string? GetReferrer(Activity activity)

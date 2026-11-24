@@ -18,6 +18,7 @@ import type {
 } from "./types";
 
 type AnalyticsFilterRequest = {
+  timeZone?: string;
   search?: string;
   from?: string;
   to?: string;
@@ -34,6 +35,9 @@ function addAnalyticsFilters(
   searchParams: URLSearchParams,
   request: AnalyticsFilterRequest,
 ) {
+  if (request.timeZone) {
+    searchParams.set("timeZone", request.timeZone);
+  }
   if (request.search) {
     searchParams.set("search", request.search);
   }

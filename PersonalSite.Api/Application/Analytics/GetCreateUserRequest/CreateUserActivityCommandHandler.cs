@@ -113,7 +113,10 @@ public sealed class CreateUserActivityCommandHandler(
             page,
             pageSize,
             totalItems,
-            totalPages);
+            totalPages)
+        {
+            Daily = AnalyticsCalendar.Counts(createdUsers.Select(item => item.CreatedAt), request.TimeZone)
+        };
     }
 
     private static string? GetCreatedUserValue(

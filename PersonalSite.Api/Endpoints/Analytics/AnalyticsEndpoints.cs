@@ -18,14 +18,14 @@ public static class AnalyticsEndpoints
     {
         app.MapPost("/analytics", TrackActivity);
         app.MapGet("/analytics/referrers", GetReferrerActivity)
-            .RequireAuthorization();
+            .RequireAuthorization().AddEndpointFilter<AnalyticsDateFilter>();
         app.MapGet("/analytics/contact-links", GetContactLinkActivity)
-            .RequireAuthorization();
+            .RequireAuthorization().AddEndpointFilter<AnalyticsDateFilter>();
         app.MapGet("/analytics/videos", GetVideoActivity)
-            .RequireAuthorization();
-        app.MapGet("/analytics/login", GetLoginActivity).RequireAuthorization();
-        app.MapGet("/analytics/create-users", GetCreateUserAnalytics).RequireAuthorization();
-        app.MapGet("/analytics/delete-users", GetDeleteUsersAnalytics).RequireAuthorization();
+            .RequireAuthorization().AddEndpointFilter<AnalyticsDateFilter>();
+        app.MapGet("/analytics/login", GetLoginActivity).RequireAuthorization().AddEndpointFilter<AnalyticsDateFilter>();
+        app.MapGet("/analytics/create-users", GetCreateUserAnalytics).RequireAuthorization().AddEndpointFilter<AnalyticsDateFilter>();
+        app.MapGet("/analytics/delete-users", GetDeleteUsersAnalytics).RequireAuthorization().AddEndpointFilter<AnalyticsDateFilter>();
         app.MapGet("/analytics/assistant-chat", GetAssistantChatAnalytics).RequireAuthorization();
 
         return app;

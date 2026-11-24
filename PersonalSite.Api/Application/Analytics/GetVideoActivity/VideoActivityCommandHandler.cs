@@ -96,12 +96,33 @@ public sealed class VideoActivityCommandHandler(
                 : videos.OrderBy(video => video.WatchedSeconds).ToList()
         };
 
+        var zone = AnalyticsCalendar.Resolve(request.TimeZone);
+        var matchingVideos = videos.Select(video => (video.FeaturedContentId, video.FileId, video.FileName)).ToHashSet();
+        var matchingActivities = videoActivities
+            .Where(item => matchingVideos.Contains((item.FeaturedContentId, item.FileId, item.FileName)))
+            .ToList();
+
         return new VideoAnalyticsResponse(
             videos.Sum(video => video.Plays),
             videos.Sum(video => video.Completions),
             videos.Sum(video => video.WatchedSeconds),
-            videos);
+            videos)
+        {
+            Daily = DailyValues(matchingActivities, zone),
+            DailyByVideo = matchingActivities.GroupBy(item => new { item.FeaturedContentId, item.FileId, item.FileName })
+                .OrderBy(group => group.Key.FileName).ThenBy(group => group.Key.FileId).ThenBy(group => group.Key.FeaturedContentId)
+                .Select(group => new VideoDailySeries(group.Key.FeaturedContentId, group.Key.FileId,
+                    group.Key.FileName, DailyValues(group, zone))).ToList()
+        };
     }
+
+    private static IReadOnlyList<DailyVideo> DailyValues(IEnumerable<VideoActivityData> activities, TimeZoneInfo zone) =>
+        activities.GroupBy(item => AnalyticsCalendar.Date(item.CreatedAt, zone))
+            .OrderBy(group => group.Key)
+            .Select(group => new DailyVideo(group.Key,
+                group.Count(item => item.Type == ActivityType.VideoStarted),
+                group.Count(item => item.Type == ActivityType.VideoCompleted),
+                group.Sum(item => item.WatchedSeconds))).ToList();
 
     private static VideoActivityData? GetVideoActivity(
         Activity activity)
@@ -135,6 +156,7 @@ public sealed class VideoActivityCommandHandler(
                 fileId.Value,
                 fileName,
                 activity.Type,
+                activity.CreatedAt,
                 GetDecimal(video, "watchedSeconds") ?? 0);
         }
 
@@ -183,5 +205,6 @@ public sealed class VideoActivityCommandHandler(
         int FileId,
         string FileName,
         ActivityType Type,
+        DateTimeOffset CreatedAt,
         decimal WatchedSeconds);
 }

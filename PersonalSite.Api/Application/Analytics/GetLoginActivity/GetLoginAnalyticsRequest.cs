@@ -9,4 +9,5 @@ public sealed record GetLoginAnalyticsRequest(
     string? SortBy,
     bool? Descending,
     int? Page,
-    int? PageSize);
+    int? PageSize,
+    string? TimeZone = null);

@@ -5,5 +5,6 @@ public sealed record GetReferrerAnalyticsRequest(
     DateTimeOffset? From,
     DateTimeOffset? To,
     string? SortBy,
-    bool? Descending
+    bool? Descending,
+    string? TimeZone = null
 );

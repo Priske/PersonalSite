@@ -36,7 +36,8 @@ public static class RedirectEndpoints
             if (request.From > request.To)
                 return Results.ValidationProblem(new Dictionary<string, string[]> { ["to"] = ["End date must not precede start date."] });
             return Results.Ok(await handler.AnalyticsAsync(request, cancellationToken));
-        }).RequireAuthorization(policy => policy.RequireRole("Administrator"));
+        }).RequireAuthorization(policy => policy.RequireRole("Administrator"))
+            .AddEndpointFilter<PersonalSite.Api.Endpoints.Analytics.AnalyticsDateFilter>();
         return app;
     }
 }

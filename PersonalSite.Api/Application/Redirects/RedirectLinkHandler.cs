@@ -93,16 +93,19 @@ public sealed class RedirectLinkHandler(
     public async Task<RedirectAnalyticsResponse> AnalyticsAsync(RedirectAnalyticsRequest request, CancellationToken cancellationToken)
     {
         var activities = await activityRepository.GetAsync(ActivityType.LinkClicked, request.From, request.To, cancellationToken);
-        var visits = activities.SelectMany(activity => activity.Metadata)
+        var events = activities.SelectMany(activity => activity.Metadata
             .Where(metadata => metadata.Values.TryGetValue("Redirect", out var value) && value is ObjectMetadataValue)
-            .Select(metadata => (ObjectMetadataValue)metadata.Values["Redirect"])
-            .Select(metadata => new
+            .Select(metadata => new { activity.CreatedAt, Metadata = (ObjectMetadataValue)metadata.Values["Redirect"] }))
+            .Select(item => new
             {
-                Slug = Text(metadata, "slug"),
-                Campaign = Text(metadata, "campaign"),
-                Referrer = Text(metadata, "referrer")
+                item.CreatedAt,
+                Slug = Text(item.Metadata, "slug"),
+                Campaign = Text(item.Metadata, "campaign"),
+                Referrer = Text(item.Metadata, "referrer")
             })
             .Where(visit => !string.IsNullOrEmpty(visit.Slug))
+            .ToList();
+        var visits = events
             .GroupBy(visit => new { visit.Slug, visit.Campaign, visit.Referrer })
             .Select(group => new RedirectAnalyticsItem(group.Key.Slug,
                 string.IsNullOrEmpty(group.Key.Campaign) ? null : group.Key.Campaign,
@@ -121,7 +124,17 @@ public sealed class RedirectLinkHandler(
             ? (descending ? visits.OrderByDescending(item => item.Slug) : visits.OrderBy(item => item.Slug))
             : (descending ? visits.OrderByDescending(item => item.Visits) : visits.OrderBy(item => item.Visits));
         var links = sorted.ThenBy(item => item.Slug).ThenBy(item => item.Campaign).ThenBy(item => item.Referrer).ToList();
-        return new(links.Sum(item => item.Visits), links);
+        var matchingKeys = links.Select(item => (item.Slug, item.Campaign ?? string.Empty, item.Referrer)).ToHashSet();
+        var matchingEvents = events.Where(item => matchingKeys.Contains((item.Slug, item.Campaign, item.Referrer))).ToList();
+        return new(links.Sum(item => item.Visits), links)
+        {
+            Daily = PersonalSite.Api.Application.Analytics.AnalyticsCalendar.Counts(matchingEvents
+                .Select(item => item.CreatedAt), request.TimeZone),
+            DailyByLink = matchingEvents.GroupBy(item => item.Slug).OrderBy(group => group.Key)
+                .Select(group => new RedirectDailySeries(group.Key,
+                    PersonalSite.Api.Application.Analytics.AnalyticsCalendar.Counts(
+                        group.Select(item => item.CreatedAt), request.TimeZone))).ToList()
+        };
     }
 
     private static string Text(ObjectMetadataValue metadata, string key) =>
