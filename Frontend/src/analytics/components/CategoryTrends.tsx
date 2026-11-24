@@ -1,6 +1,6 @@
 import type { ContactLinkAnalyticsResponse, RedirectAnalyticsResponse, VideoAnalyticsResponse } from "../types";
 import type { Period } from "../dashboardHelpers";
-import { alignDailySeries, watchedTime } from "../dashboardHelpers";
+import { alignDailySeries } from "../dashboardHelpers";
 import { TrendChart } from "./AnalyticsCharts";
 
 export function ContactTrends({ data, period }: { data: ContactLinkAnalyticsResponse; period: Period }) {
@@ -34,11 +34,5 @@ export function VideoTrends({ data, period }: { data: VideoAnalyticsResponse; pe
     return nameCounts.get(video.fileName)! > 1 ? `${video.fileName} (${occurrence})` : video.fileName;
   });
   const plays = alignDailySeries(data.dailyByVideo.map(video => video.daily.map(day => ({ date: day.date, value: day.plays }))));
-  const completions = alignDailySeries(data.dailyByVideo.map(video => video.daily.map(day => ({ date: day.date, value: day.completions }))));
-  const duration = alignDailySeries(data.dailyByVideo.map(video => video.daily.map(day => ({ date: day.date, value: day.watchedSeconds }))));
-  return <>
-    <TrendChart title="Daily plays by video" series={labels} points={plays} period={period} />
-    <TrendChart title="Daily completions by video" series={labels} points={completions} period={period} />
-    <TrendChart title="Daily watched duration by video" series={labels} points={duration} period={period} format={watchedTime} />
-  </>;
+  return <TrendChart title="Daily plays by video" series={labels} points={plays} period={period} />;
 }
